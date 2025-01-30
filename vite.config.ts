@@ -11,7 +11,7 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react()],
-  base: "/",
+  base: "/booking-system",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
