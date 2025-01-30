@@ -9,7 +9,7 @@ const Home = lazy(() => import('./../pages/Home'));
 
 function AppLayout() {
   return (
-    <main>
+    <main className="bg-[#EEEEEE]">
         <SidebarProvider>
             <AppSidebar />
                 <SidebarTrigger />
