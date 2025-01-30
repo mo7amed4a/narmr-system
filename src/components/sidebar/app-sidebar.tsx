@@ -60,7 +60,7 @@ export function AppSidebar() {
                     فواتير الحجوزات
                </LinkActive>
             </SidebarGroup>
-            <Collapsible defaultOpen className="group/collapsible">
+            <Collapsible className="group/collapsible">
                 <SidebarGroup className="group-data-[state=open]/collapsible:bg-[#F5F5F5] rounded-md">
                     <SidebarGroupLabel asChild>
                         <CollapsibleTrigger className="!text-sidebar-foreground flex items-center gap-2 text-base !h-10">
