@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import PasswordInput from "./_components/PasswordInput";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -30,16 +30,7 @@ export default function LoginForm() {
       dir="rtl"
     >
       <div className="grid grid-cols-2 w-screen h-screen fixed inset-0">
-        <div
-          className="w-[1000px] h-[900px] md:w-[4000px] md:h-[3000px] fixed -start-1/2 translate-x-1/4 -translate-y-1/2 top-1/2 rotate-[60deg]"
-          style={{
-            background: "linear-gradient(200deg,  #A73D4A 0%, #411822 90%)",
-            borderRadius: "0% 100% 0% 100%/ 0% 100% 0% 100%",
-          }}
-        ></div>
-        {/* <div className="bg-red-500 w-40 rounded-full h-screen" style={{borderRadius: "50%"}}>
-          nj
-        </div> */}
+        <img src="/auth/background.png" className="h-screen fixed start-0 top-0 w-2/4" />
       </div>
       <Card className="w-full max-w-xl p-6 space-y-6 relative z-10">
         <div className="flex justify-center mb-6">

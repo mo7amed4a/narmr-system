@@ -7,6 +7,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import SearchInput from "./SearchInput";
+import { NavLink } from "react-router-dom";
 
 
 export function AppSidebar() {
@@ -24,6 +25,13 @@ export function AppSidebar() {
             </SidebarGroup>
             <SidebarGroup className="py-4 space-y-4">
                 <h2 className="text-lg font-bold">أدوات  الحجوزات</h2>
+
+                <NavLink
+        to="/" 
+        className={({ isActive }) => isActive ? "text-blue-500 font-bold" : "text-gray-700"}
+      > 
+        الرئيسية
+      </NavLink>
             </SidebarGroup>
         </div>
       </SidebarContent>
