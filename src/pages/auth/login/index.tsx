@@ -10,17 +10,17 @@ import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     mobile: "",
     password: "",
     rememberPassword: false,
-    userType: "محولات",
+    userType: "booking",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/')
+    navigate(`/${formData.userType}`);
+    localStorage.setItem('userType', formData.userType);
     console.log("Form submitted:", formData);
   };
 
@@ -160,11 +160,11 @@ export default function LoginForm() {
             }
           >
             <div className="flex items-center gap-x-2">
-              <RadioGroupItem value="محولات" id="transformers" />
+              <RadioGroupItem value="booking" id="transformers" />
               <Label htmlFor="transformers">موظف المحولات</Label>
             </div>
             <div className="flex items-center gap-x-2">
-              <RadioGroupItem value="حسابات" id="accounts" />
+              <RadioGroupItem value="accounting" id="accounts" />
               <Label htmlFor="accounts">موظف الحسابات</Label>
             </div>
             <div className="flex items-center gap-x-2">

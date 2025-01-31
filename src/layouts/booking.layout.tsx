@@ -2,19 +2,18 @@ import { Route, Routes } from "react-router-dom"
 import { lazy } from "react"
 import NotFoundPage from "@/pages/NotFoundPage";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { BookingSidebar } from "@/components/sidebar/booking-sidebar";
 
+const BookingHome = lazy(() => import('@/apps/booking/home/Home'));
 
-const Home = lazy(() => import('./../pages/Home'));
-
-function AppLayout() {
+function BookingLayout() {
   return (
     <main className="bg-[#EEEEEE]">
         <SidebarProvider>
-            <AppSidebar />
-                <SidebarTrigger />
+              <BookingSidebar />
+              <SidebarTrigger />
               <Routes>
-                  <Route path="/" element={<Home />}/>
+                  <Route path="/" element={<BookingHome />}/>
                   <Route path="/*" element={<NotFoundPage />}/>
               </Routes>  
           </SidebarProvider>
@@ -22,4 +21,4 @@ function AppLayout() {
   )
 }
 
-export default AppLayout
+export default BookingLayout
