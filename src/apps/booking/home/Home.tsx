@@ -19,7 +19,7 @@ type UpcomingReservationsType = {};
 
 export default function BookingHome() {
   return (
-    <div className="">
+    <div className="space-y-4">
       <Card className="">
         <CardHeader className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StateCard
