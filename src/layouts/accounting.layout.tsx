@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 // import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 
-const Home = lazy(() => import('../apps/admin/home/Home'));
+const Home = lazy(() => import('../apps/accounting/home/Home'));
 
 function AccountingLayout() {
   return (

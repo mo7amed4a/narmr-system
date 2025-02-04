@@ -9,11 +9,15 @@ import AdminLayout from "./layouts/admin.layout.tsx";
 import AccountingLayout from "./layouts/accounting.layout.tsx";
 import BookingLayout from "./layouts/booking.layout.tsx";
 import { NotProtectedRoute, ProtectedRoute } from "./guard/auth.guard.tsx";
+import { Toaster } from 'react-hot-toast';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Suspense fallback={<LoadingPage />}>
       <BrowserRouter>
+        {/* Toast */}
+        <Toaster/>
+        
         <Routes>
           <Route
             path="/*"

@@ -11,6 +11,7 @@ function AdminLayout() {
     <main className="bg-[#EEEEEE]">
         <SidebarProvider>
             {/* <AppSidebar /> */}
+            
             <SidebarTrigger />
               <Routes>
                   <Route path="/" element={<Home />}/>
