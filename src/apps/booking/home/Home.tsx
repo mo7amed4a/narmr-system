@@ -21,7 +21,7 @@ export default function BookingHome() {
   return (
     <div className="">
       <Card className="">
-        <CardHeader className="grid grid-cols-4 gap-4">
+        <CardHeader className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StateCard
             title="Sales"
             value="+12,234"
@@ -48,7 +48,7 @@ export default function BookingHome() {
           />
         </CardHeader>
 
-        <CardContent className="flex gap-4">
+        <CardContent className="grid md:grid-cols-2 gap-4">
           <ChartOne />
           <BookingChart />
         </CardContent>
