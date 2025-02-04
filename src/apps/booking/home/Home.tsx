@@ -60,9 +60,9 @@ export default function BookingHome() {
           <DataTable
             columns={columnsUpcomingReservations}
             data={data}
-            searchKey="name"
-            textKey="الاسم"
-          />
+            searchKey="client_name"
+            textKey="اسم العميل"
+            />
         </CardHeader>
       </Card>
     </div>

@@ -23,7 +23,7 @@ export default function ReservationsPage() {
             <DataTable
                 columns={columnsUpcomingReservations}
                 data={data}
-                searchKey="name"
+                searchKey="client_name"
                 textKey="اسم العميل"
             />
           </CardContent>
@@ -78,10 +78,7 @@ const data = [
       accessorKey: "client_name",
       header: () => <div className="text-right">أسم العميل</div>,
       cell: ({ row }) => {
-        const amount = row.getValue("time") as Date;
-        // Format the amount as a dollar amount
-        const formatted = new Intl.DateTimeFormat("en-US").format(amount);
-        return <div className="text-right font-medium">{formatted}</div>;
+        return <div className="text-right font-medium">{row.getValue("client_name")}</div>;
       },
     },
     {
