@@ -19,16 +19,29 @@ export default function BookingHeader({
     "/booking/clients/add": "اضافة عميل جديد",
     "/booking/clients/:id": "عرض بيانات العميل",
     "/booking/clients/:id/edit": "تعديل بيانات العميل",
+    // 
     "/booking/reservations": "قائمة الحجوزات",
     "/booking/reservations/:id": "تفاصيل الحجز",
+
+    // 
+    "/booking/doctors": "قائمة الاطباء",
+    "/booking/doctors/:id": "صفحة الطبيب",
+    "/booking/doctors/:id/edit": "تعديل بيانات الطبيب",
+    // 
+    "/booking/invoices": "فواتير الحجوزات",
+    "/booking/invoices/:id": "تفاصيل الفاتورة",
+    "/booking/invoices/:id/edit": "تعديل بيانات الفاتورة",
+    "/booking/invoices/add": "اضافة فاتورة جديدة",
   };
   
   const breadcrumbMap: Record<string, string> = {
+    "edit": "تعديل",
+    "add": "اضافة",
     "booking": "لوحة التحكم",
     "clients": "قائمة العملاء",
-    "edit": "تعديل بيانات العميل",
-    "add": "اضافة عميل جديد",
     "reservations": "قائمة الحجوزات",
+    "doctors": "قائمة الاطباء",
+    "invoices": "فواتير الحجوزات",
   };
 
   const matchedTitle =

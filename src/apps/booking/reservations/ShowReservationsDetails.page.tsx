@@ -1,8 +1,21 @@
+import ModalAddNote from "@/components/modals/ModalAddNote";
+import CardPdfNote from "@/components/reservations/CardPdfNote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+
 
 export default function ShowReservationsDetailsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notes, setNotes] = useState<any>([]);
+
+  const handleAddNote = (note:any) => {
+    setNotes((prevNotes:any) => [...prevNotes, note]);
+  };
+
+  const handleDeleteNote = (index:any) => {
+    setNotes((prevNotes:any) => prevNotes.filter((_:any, i:number) => i !== index));
+  };
   return (
     <div className="w-full p-4 grid lg:grid-cols-2 gap-4">
        <div className="flex flex-col gap-4">
@@ -85,16 +98,26 @@ export default function ShowReservationsDetailsPage() {
       <Card className="shadow-none border-none">
       <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>ملاحظات الكشف</CardTitle>
-          <Link to={'/booking/clients/add'} >
-            <Button className="bg-green-700 md:px-7 hover:bg-green-800">ملاحظة جديدة</Button>
-          </Link>
+          <Button onClick={() => setIsModalOpen(true)} className="bg-green-700 md:px-7 hover:bg-green-800">ملاحظة جديدة</Button>
         </CardHeader>
-        <CardContent>
-          <div className="flex justify-center items-center lg:h-96">
-            <p className="text-gray-500 font-bold">لا توجد ملاحظات</p>
-          </div>
+        <CardContent className="space-y-4">
+        {notes.length > 0 ? (
+            notes.map((note: {
+              name: string;
+              description: string
+              file: File
+            }, index: number) => (
+              <CardPdfNote key={index} name={note.name} description={note.description} file={note.file} onDelete={() => handleDeleteNote(index)} />
+            ))
+          ) : (
+            <div className="flex justify-center items-center lg:h-96">
+              <p className="text-gray-500 font-bold">لا توجد ملاحظات</p>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      <ModalAddNote isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddNote} />
     </div>
   )
 }

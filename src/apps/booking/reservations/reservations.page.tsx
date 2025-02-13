@@ -14,7 +14,7 @@ export default function ReservationsPage() {
     <Card className="p-4">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>قائمة الحجوزات</CardTitle>
-          <Link to={'/booking/clients/add'} >
+          <Link to={'/booking/reservations/add'} >
             <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة حجز جديد</Button>
           </Link>
         </CardHeader>
