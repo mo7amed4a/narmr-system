@@ -32,6 +32,12 @@ export default function BookingHeader({
     "/booking/invoices/:id": "تفاصيل الفاتورة",
     "/booking/invoices/:id/edit": "تعديل بيانات الفاتورة",
     "/booking/invoices/add": "اضافة فاتورة جديدة",
+    // 
+    "/booking/accounts/bands": "السندات",
+    // 
+    "/booking/accounts/statement": "كشف حساب",
+    // 
+    "/booking/accounts/treasury": "الخزينة",
   };
   
   const breadcrumbMap: Record<string, string> = {
@@ -42,6 +48,10 @@ export default function BookingHeader({
     "reservations": "قائمة الحجوزات",
     "doctors": "قائمة الاطباء",
     "invoices": "فواتير الحجوزات",
+    "accounts": "الحسابات",
+    "bonds": "السندات",
+    "statement": "كشف حساب",
+    "treasury": "الخزينة",
   };
 
   const matchedTitle =
@@ -65,7 +75,7 @@ export default function BookingHeader({
         <div className="text-xs md:text-lg font-bold">
           <div>{pageTitle}</div>
           {pagination && location.pathname !== "/booking" && (
-            <nav className="text-[10px] md:text-xs text-gray-400 flex gap-1">
+            <nav className="text-[10px] md:text-xs text-gray-400 flex gap-1 flex-wrap">
               {breadcrumbs.map((crumb, index) => (
                 <span key={crumb.path} className="flex items-center">
                   {index > 0 && <span className="mx-1">/</span>}

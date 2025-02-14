@@ -3,7 +3,7 @@ import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type UpcomingReservationsType = {
@@ -90,11 +90,11 @@ const data = [
               <Eye className="size-5" />
             </Button>
           </Link>
-          <Link to={`/booking/doctors/1/edit`}>
+          {/* <Link to={`/booking/doctors/1/edit`}>
             <Button variant="ghost" size="icon">
               <Edit className="size-5" />
             </Button>
-          </Link>
+          </Link> */}
         </div>
       ),
     },

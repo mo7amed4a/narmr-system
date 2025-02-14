@@ -18,6 +18,11 @@ import InvoicesPage from "@/apps/booking/invoices/invoices.page";
 import InvoiceDetailsPage from "@/apps/booking/invoices/invoicesDetails.page";
 import InvoicesEditPage from "@/apps/booking/invoices/invoicesEdit.page";
 import InvoicesAddPage from "@/apps/booking/invoices/invoicesAdd.page";
+import BondsPage from "@/apps/booking/accounts/bonds/bonds.page";
+import AddBondsPage from "@/apps/booking/accounts/bonds/AddBonds.page";
+import BondsDetailsPage from "@/apps/booking/accounts/bonds/bondsDetails.page";
+import StatementPage from "@/apps/booking/accounts/statement/statement.page";
+import TreasuryPage from "@/apps/booking/accounts/treasury/treasury.page";
 
 const BookingHome = lazy(() => import("@/apps/booking/home/Home"));
 
@@ -47,6 +52,14 @@ function BookingLayout() {
               <Route path="/invoices/:id" element={<InvoiceDetailsPage />} />
               <Route path="/invoices/add" element={<InvoicesAddPage />} />
               <Route path="/invoices/:id/edit" element={<InvoicesEditPage />} />
+              <Route path="/accounts/*" >
+                  <Route index element={<BondsPage />} />
+                  <Route path="bonds" element={<BondsPage />} />
+                  <Route path="bonds/add" element={<AddBondsPage />} />
+                  <Route path="bonds/:id" element={<BondsDetailsPage />} />
+                  <Route path="statement" element={<StatementPage />} />
+                  <Route path="treasury" element={<TreasuryPage />} />
+              </Route>
               <Route path="/*" element={<NotFoundPage />} />
             </Routes>
           </main>

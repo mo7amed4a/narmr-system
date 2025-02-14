@@ -1,24 +1,29 @@
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./select";
+import { forwardRef } from "react";
 
-export default function SelectCustom({
-    children,
-    label,
-    ...props
-}:{
-    children: React.ReactNode,
-    label: string
-}) {
+const SelectCustom = forwardRef<
+  HTMLButtonElement, // نوع العنصر الذي سيتم تمرير `ref` إليه (زر التحديد)
+  { label: string } & React.ComponentProps<typeof Select> // دمج `label` مع جميع `props` المتاحة لـ Select
+>(({ children, label, ...props }, ref) => {
   return (
     <div className="relative w-full">
-        <Select {...props}>
-          <SelectTrigger className="w-full bg-white border-gray-200 h- text-right pt-2">
-            <SelectValue placeholder="" />
-          </SelectTrigger>
-          <SelectContent>
-            {children}
-          </SelectContent>
-        </Select>
-        <span className="absolute start-2 -top-2 px-2 bg-white text-gray-500 text-xs">{label}</span>
-      </div>
-  )
-}
+      <Select {...props}>
+        <SelectTrigger
+          ref={ref}
+          className="w-full bg-white border-gray-200 text-right pt-2 text-xs text-gray-600"
+          {...props} // تمرير جميع `props` بما في ذلك `onChange` و `disabled` وغيره
+        >
+          <SelectValue className="!text-gray-400" placeholder={label || ""} />
+        </SelectTrigger>
+        <SelectContent>{children}</SelectContent>
+      </Select>
+      <span className="absolute start-2 -top-2 px-2 bg-white text-gray-500 text-xs">
+        {label}
+      </span>
+    </div>
+  );
+});
+
+SelectCustom.displayName = "SelectCustom"; // مهم عند استخدام forwardRef
+
+export default SelectCustom;
