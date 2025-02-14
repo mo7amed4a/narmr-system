@@ -1,23 +1,25 @@
-import { StrictMode, Suspense } from "react";
+import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoadingPage from "./pages/LoadingPage.tsx";
-import AuthLayout from "./layouts/auth.layout.tsx";
-import AdminLayout from "./layouts/admin.layout.tsx";
-import AccountingLayout from "./layouts/accounting.layout.tsx";
-import BookingLayout from "./layouts/booking.layout.tsx";
+
+const AuthLayout = lazy(() => import("./layouts/auth.layout.tsx"));
+const AdminLayout = lazy(() => import("./layouts/admin.layout.tsx"));
+const AccountingLayout = lazy(() => import("./layouts/accounting.layout.tsx"));
+const BookingLayout = lazy(() => import("./layouts/booking.layout.tsx"));
+
 import { NotProtectedRoute, ProtectedRoute } from "./guard/auth.guard.tsx";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Suspense fallback={<LoadingPage />}>
       <BrowserRouter>
         {/* Toast */}
-        <Toaster/>
-        
+        <Toaster />
+
         <Routes>
           <Route
             path="/*"
