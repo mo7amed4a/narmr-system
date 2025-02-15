@@ -21,8 +21,8 @@ export default function SuppliersPage() {
           <DataTable
             columns={columnsSuppliers}
             data={suppliersData}
-            searchKey="name"
-            textKey="اسم المورد"
+            searchKey={["company_name", "name"]}
+            textKey="اسم المورد او اسم الشركة"
           />
         </CardContent>
       </Card>
@@ -44,7 +44,7 @@ const suppliersData = [
   {
     name: "مورد الأجهزة الطبية",
     phone: "0551234567",
-    company_name: "kwejnjn",
+    company_name: "ha",
     initial_balance: "178",
     debtor: "0551234567",
     creditor: "0551234567",
@@ -82,7 +82,7 @@ const suppliersData = [
     balance: "0551234567",
   },
   {
-    name: "مورد الأجهزة الطبية",
+    name: "ههه الطبية",
     phone: "0551234567",
     company_name: "kwejnjn",
     initial_balance: "178",

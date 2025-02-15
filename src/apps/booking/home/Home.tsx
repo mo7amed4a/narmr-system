@@ -60,7 +60,7 @@ export default function BookingHome() {
           <DataTable
             columns={columnsUpcomingReservations}
             data={data}
-            searchKey="client_name"
+            searchKey={["client_name"]}
             textKey="اسم العميل"
             />
         </CardHeader>

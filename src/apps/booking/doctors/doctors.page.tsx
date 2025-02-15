@@ -27,7 +27,7 @@ export default function DoctorsPage() {
             <DataTable
                 columns={columnsUpcomingReservations}
                 data={data}
-                searchKey="doctor_name"
+                searchKey={["doctor_name"]}
                 textKey="اسم الطبيب"
             />
           </CardContent>

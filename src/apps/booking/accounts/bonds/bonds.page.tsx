@@ -75,8 +75,8 @@ export default function BandsPage() {
             <DataTable
                 columns={columnsDocuments}
                 data={data}
-                searchKey="document_type"
-                textKey="رقم السند"
+                searchKey={["document_type", "customer_supplier"]}
+                textKey="رقم السند او اسم العميل"
             />
           </CardContent>
         </Card>

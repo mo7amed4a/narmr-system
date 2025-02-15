@@ -30,7 +30,7 @@ export default function InvoicesPage() {
           <DataTable
             columns={columnsInvoices}
             data={data}
-            searchKey="invoice_code"
+            searchKey={["invoice_code", "client"]}
             textKey="كود الفاتورة أو اسم العميل"
           />
         </CardContent>

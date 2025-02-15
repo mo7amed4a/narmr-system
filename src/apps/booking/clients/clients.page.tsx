@@ -49,7 +49,7 @@ export default function ClientsPage() {
             <DataTable
               columns={columnsClientsDataTable}
               data={data}
-              searchKey="name"
+              searchKey={["name"]}
               textKey="اسم العميل"
             />
           </CardContent>

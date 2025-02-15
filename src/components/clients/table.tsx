@@ -35,7 +35,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey: string
+  searchKey: string[]
   textKey: string
 }
 
@@ -53,6 +53,8 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [globalFilter, setGlobalFilter] = React.useState('');
+  
   const table = useReactTable({
     data,
     columns,
@@ -64,13 +66,25 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    globalFilterFn: (row, columnId, filterValue) => {
+      console.log(columnId);
+      const searchValue = filterValue.toLowerCase();
+      return searchKey.some(key => {
+        const cellValue = row.getValue(key);
+        return cellValue && cellValue.toString().toLowerCase().includes(searchValue);
+      });
+    },
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
+    onGlobalFilterChange: setGlobalFilter,
   });
+
+  
 
   return (
     <Card className="w-full bg-transparent shadow-none  border-none">
@@ -83,11 +97,9 @@ export function DataTable<TData, TValue>({
           <Input
             className="mt-2"
             placeholder={`${textKey} ...`}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-          />
+  value={globalFilter}
+  onChange={(event) => setGlobalFilter(event.target.value)}
+/>
         </div>
         <div className="flex items-center gap-x-2">
           <div className="gap-x-2 flex">
