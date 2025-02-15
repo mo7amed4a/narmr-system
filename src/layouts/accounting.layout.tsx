@@ -9,6 +9,8 @@ import LoadingPage from "@/pages/LoadingPage";
 
 const Home = lazy(() => import("../apps/accounting/home/Home"));
 const SuppliersPage = lazy(() => import("../apps/accounting/suppliers/suppliers.page"));
+const SuppliersAddPage = lazy(() => import("../apps/accounting/suppliers/suppliersAdd.page"));
+const SuppliersEditPage = lazy(() => import("../apps/accounting/suppliers/suppliersEdit.page"));
 const SuppliersDetailsPage = lazy(() => import("../apps/accounting/suppliers/suppliersDetails.page"));
 
 function AccountingLayout() {
@@ -25,7 +27,9 @@ function AccountingLayout() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/suppliers" element={<SuppliersPage />} />
+                <Route path="/suppliers/add" element={<SuppliersAddPage />} />
                 <Route path="/suppliers/:id" element={<SuppliersDetailsPage />} />
+                <Route path="/suppliers/:id/edit" element={<SuppliersEditPage />} />
                 <Route path="/*" element={<NotFoundPage />} />
               </Routes>
             </main>

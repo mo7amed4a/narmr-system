@@ -1,9 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/clients/table";
 import { Link } from "react-router-dom";
-import { ArrowUpDown, Edit, Eye, Plus, Scroll } from "lucide-react";
-import { ColumnDef } from "@tanstack/react-table";
+import CardBorderStart from "@/components/global/CardBorderStart";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Eye } from "lucide-react";
 
 export default function SuppliersDetailsPage() {
   return (
@@ -12,328 +19,93 @@ export default function SuppliersDetailsPage() {
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>بيانات المورد</CardTitle>
           <Link to={`/accounting/suppliers/1/edit`}>
-            <Button variant="outline">
-              تعديل
-            </Button>
+            <Button variant="outline">تعديل</Button>
           </Link>
         </CardHeader>
         <CardContent className="grid gap-4 text-right">
-          {/* <DataTable
-            columns={columnsSuppliers}
-            data={suppliersData}
-            searchKey="name"
-            textKey="اسم المورد"
-          /> */}
+          <CardBorderStart title="اسم المورد" value="محمد علي" />
+          <div className="flex gap-5 md:gap-20 lg:gap-32">
+            <CardBorderStart title="اسم الشركة" value="شركة الرحمة للتوريد" />
+            <CardBorderStart title="رقم الجوال" value="+252414" />
+            <CardBorderStart title="العنوان" value="العراق بغداد" />
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="w-full shadow-none">
+        <CardHeader className="flex justify-between flex-row items-center">
+          <CardTitle>تاريخ الفاتورة</CardTitle>
+          <Link to={`/accounting/suppliers/1/edit`}>
+            <Button variant="green">فاتورة جديدة</Button>
+          </Link>
+        </CardHeader>
+        <CardContent className="grid gap-4 text-right">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell>اسم المنتج</TableCell>
+                <TableCell>الكمية</TableCell>
+                <TableCell>سعر الوحدة</TableCell>
+                <TableCell>حالة الفاتورة</TableCell>
+                <TableCell>الاجمالي</TableCell>
+                <TableCell>الاجراءات</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.product_name}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.unit_price}</TableCell>
+                  <TableCell>
+                    {item.status ? (
+                      <Badge variant={"green"}>مؤكدة</Badge>
+                    ) : (
+                      <Badge variant={"yellow"}>غير مؤكدة</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>{item.total}</TableCell>
+                  <TableCell>
+                    <Link to={`/accounting/suppliers/1/edit`}>
+                      <Button variant="ghost"><Eye/></Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </Card>
   );
 }
 
-const suppliersData = [
+const data = [
   {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
+    product_name: "كريم شعر",
+    quantity: 4,
+    unit_price: 100,
+    status: true,
+    total: 400,
   },
   {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
+    product_name: "كريم شعر",
+    quantity: 4,
+    unit_price: 100,
+    status: true,
+    total: 400,
   },
   {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
+    product_name: "كريم شعر",
+    quantity: 4,
+    unit_price: 100,
+    status: false,
+    total: 400,
   },
   {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-  {
-    name: "مورد الأجهزة الطبية",
-    phone: "0551234567",
-    company_name: "kwejnjn",
-    initial_balance: "178",
-    debtor: "0551234567",
-    creditor: "0551234567",
-    amount: "0551234567",
-    balance: "0551234567",
-  },
-];
-
-const columnsSuppliers: ColumnDef<any>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        className="text-current font-bold"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        اسم المورد <ArrowUpDown />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="font-bold">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "phone",
-    header: "رقم الجوال",
-    cell: ({ row }) => <div>{row.getValue("phone")}</div>,
-  },
-  {
-    accessorKey: "company_name",
-    header: "اسم الشركة",
-    cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
-  },
-  {
-    accessorKey: "initial_balance",
-    header: "الرصيد الاولى",
-    cell: ({ row }) => <div className="line-clamp-1">{row.getValue("initial_balance")}</div>,
-  },
-  {
-    accessorKey: "debtor",
-    header: "مدين",
-    cell: ({ row }) => <div className="line-clamp-1">{row.getValue("debtor")}</div>,
-  },
-  {
-    accessorKey: "creditor",
-    header: "دائن",
-    cell: ({ row }) => <div className="line-clamp-1">{row.getValue("creditor")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: "المبلغ",
-    cell: ({ row }) => <div className="line-clamp-1">{row.getValue("amount")}</div>,
-  },
-  {
-    accessorKey: "balance",
-    header: "الرصيد",
-    cell: ({ row }) => <div className="line-clamp-1">{row.getValue("balance")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    header: "الإجراءات",
-    cell: () => (
-      <div className="flex gap-1">
-        <Link to={`/accounting/suppliers/1/edit`}>
-          <Button variant="ghost" size="icon">
-            <Scroll />
-          </Button>
-        </Link>
-        <Link to={`/accounting/suppliers`}>
-          <Button variant="ghost" size="icon">
-            <Eye />
-          </Button>
-        </Link>
-        <Link to={`/accounting/suppliers/1/edit`}>
-          <Button variant="ghost" size="icon">
-            <Edit />
-          </Button>
-        </Link>
-      </div>
-    ),
+    product_name: "كريم شعر",
+    quantity: 4,
+    unit_price: 100,
+    status: false,
+    total: 400,
   },
 ];

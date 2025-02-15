@@ -11,9 +11,11 @@ export default function SuppliersPage() {
       <Card className="w-full shadow-none">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>بيانات الموردين</CardTitle>
-          <Button variant="green">
-            اضافة جديد <Plus />
-          </Button>
+          <Link to={`/accounting/suppliers/add`}>
+            <Button variant="green">
+              اضافة جديد <Plus />
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent className="grid gap-4 text-right">
           <DataTable
