@@ -8,6 +8,8 @@ import LoadingPage from "@/pages/LoadingPage";
 // import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 const Home = lazy(() => import("../apps/accounting/home/Home"));
+const SuppliersPage = lazy(() => import("../apps/accounting/suppliers/suppliers.page"));
+const SuppliersDetailsPage = lazy(() => import("../apps/accounting/suppliers/suppliersDetails.page"));
 
 function AccountingLayout() {
   return (
@@ -22,6 +24,8 @@ function AccountingLayout() {
             <main className="w-full p-4">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/suppliers" element={<SuppliersPage />} />
+                <Route path="/suppliers/:id" element={<SuppliersDetailsPage />} />
                 <Route path="/*" element={<NotFoundPage />} />
               </Routes>
             </main>

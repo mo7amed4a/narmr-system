@@ -1,11 +1,15 @@
+import ChartBarAccountingHome from "@/components/charts/ChartBarAccountingHome";
 import StateCard from "@/components/home/StateCard";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DollarSign,
-  Users,
-} from "lucide-react";
-
-// type UpcomingReservationsType = {};
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { DollarSign, Users } from "lucide-react";
 
 export default function BookingHome() {
   return (
@@ -37,146 +41,196 @@ export default function BookingHome() {
             className="bg-green-900"
           />
         </CardHeader>
-
-        {/* <CardContent className="grid md:grid-cols-2 gap-4">
-          <ChartOne />
-          <BookingChart />
-        </CardContent> */}
+        <CardContent className="grid md:grid-cols-6 gap-4 lg:h-[34rem]">
+          <div className="lg:col-span-4">
+            <ChartBarAccountingHome />
+          </div>
+          <Card className="lg:col-span-2 h-96 lg:h-full overflow-y-auto custom-scrollbar">
+            <CardHeader>
+              <CardTitle className="text-sm font-bold">الموردين</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table className="mt-6 !h-40 !overflow-hidden">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="!text-gray-800 !font-bold">
+                      اسم المورد
+                    </TableHead>
+                    <TableHead className="!text-gray-800 !font-bold">
+                      رقم الجوال
+                    </TableHead>
+                    <TableHead className="!text-gray-800 !font-bold">
+                      اجمالي المبيعات
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {dataTable.map((item, index) => (
+                    <TableRow key={index} className="[&>*]:border-t">
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.phone}</TableCell>
+                      <TableCell>{item.total}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </CardContent>
       </Card>
-
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>الحجوزات القادمة</CardTitle>
-          <DataTable
-            columns={columnsUpcomingReservations}
-            data={data}
-            searchKey="client_name"
-            textKey="اسم العميل"
-            />
-        </CardHeader>
-      </Card> */}
     </div>
   );
 }
 
-// const data = [
-//   {
-//     code: "#APP43",
-//     branch: "مركز بيوني",
-//     client_name: "ريم فهد",
-//     doctor: "Hebah Abdullah",
-//     service_type: "فحص بشري",
-//     appointment_time: "٠٦:٣٠ م",
-//     booking_status: "قيد الانتظار",
-//     booking_type: "زيارات المتابعة",
-//   },
-// ];
-
-// const columnsUpcomingReservations: ColumnDef<UpcomingReservationsType>[] = [
-//   {
-//     accessorKey: "code",
-//     header: ({ column }) => {
-//       return (
-//         <Button
-//           variant="ghost"
-//           className="text-current font-bold"
-//           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//         >
-//           كود الحجز <ArrowUpDown />
-//         </Button>
-//       );
-//     },
-//     cell: ({ row }) => (
-//       <>
-//         <div className="capitalize text-red-900">{row.getValue("code")}</div>
-//       </>
-//     ),
-//   },
-//   {
-//     accessorKey: "branch",
-//     header: "فرع الحجز",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("branch")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "client_name",
-//     header: () => <div className="text-right">أسم العميل</div>,
-//     cell: ({ row }) => {
-//       const amount = row.getValue("time") as Date;
-//       // Format the amount as a dollar amount
-//       const formatted = new Intl.DateTimeFormat("en-US").format(amount);
-//       return <div className="text-right font-medium">{formatted}</div>;
-//     },
-//   },
-//   {
-//     accessorKey: "doctor",
-//     header: "الطبيب المعالج",
-//     cell: ({ row }) => (
-//       <>
-//         <div className="lowercase line-clamp-1">{row.getValue("doctor")}</div>
-//       </>
-//     ),
-//   },
-//   {
-//     accessorKey: "service_type",
-//     header: "نوع الخدمة",
-//     cell: ({ row }) => (
-//       <>
-//         <div className="lowercase line-clamp-1">{row.getValue("service_type")}</div>
-//       </>
-//     ),
-//   },
-//   {
-//     accessorKey: "appointment_time",
-//     header: "موعد الحجز",
-//     cell: ({ row }) => (
-//       <>
-//         <div className="lowercase line-clamp-1">{row.getValue("appointment_time")}</div>
-//       </>
-//     ),
-//   },
-//   {
-//     accessorKey: "booking_status",
-//     header: "حالة الحجز",
-//     cell: ({ row }) => (
-//       <>
-//         <div className="lowercase line-clamp-1">
-//           <span className="bg-blue-100 rounded-full p-2 text-blue-600">{row.getValue("booking_status")}</span>
-//         </div>
-//       </>
-//     ),
-//   },
-//   {
-//     accessorKey: "booking_type",
-//     header: "نوع الحجز",
-//     cell: ({ row }) => (
-//       <>
-//         <div className="lowercase line-clamp-1">{row.getValue("booking_type")}</div>
-//       </>
-//     ),
-//   },
-//   {
-//     id: "actions",
-//     enableHiding: false,
-//     header: "اجراءات",
-//     //   cell: ({ row }) => {
-//     cell: () => {
-//       // const payment = row.original;
-//       return (
-//         <div className="flex gap-1">
-//           <Link to={`/booking/clients/1`}>
-//             <Button variant="ghost" size="icon">
-//               <Eye className="size-5" />
-//             </Button>
-//           </Link>
-//           <Link to={`/booking/clients/1/edit`}>
-//             <Button variant="ghost" size="icon">
-//               <Edit className="size-5" />
-//             </Button>
-//           </Link>
-//         </div>
-//       );
-//     },
-//   },
-// ];
+const dataTable = [
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+  {
+    name: "محمد علي",
+    phone: "+5441542",
+    total: "10000",
+  },
+];

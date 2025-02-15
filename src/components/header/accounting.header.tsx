@@ -14,14 +14,15 @@ export default function AccountingHeader({
   const location = useLocation();
 
   const titles: Record<string, string> = {
-    "/booking": "لوحة التحكم (مسؤول الحسابات)",
-    "/booking/clients": "قائمة العملاء",
+    "/accounting": "لوحة التحكم (مسؤول الحسابات)",
+    "/accounting/suppliers": "قائمة الموردين",
   };
   
   const breadcrumbMap: Record<string, string> = {
     "edit": "تعديل",
     "add": "اضافة",
     "accounting": "لوحة التحكم",
+    "suppliers": "قائمة الموردين",
   };
 
   const matchedTitle =
@@ -50,7 +51,7 @@ export default function AccountingHeader({
                 <span key={crumb.path} className="flex items-center">
                   {index > 0 && <span className="mx-1">/</span>}
                   <Link to={crumb.path} className={`hover:underline ${index === breadcrumbs.length - 1 && "text-gray-900"}`}>
-                    {crumb.label}
+                    {decodeURIComponent(crumb.label)}
                   </Link>
                 </span>
               ))}
