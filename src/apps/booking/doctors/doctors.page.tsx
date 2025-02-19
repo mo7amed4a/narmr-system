@@ -1,7 +1,7 @@
 
 import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -18,21 +18,16 @@ type UpcomingReservationsType = {
 export default function DoctorsPage() {
   return (
     <Card className="p-4">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>قائمة الأطباء</CardTitle>
-          
-        </CardHeader>
-        <Card className="shadow-none">
-          <CardContent className="p-3 py-0">
-            <DataTable
-                columns={columnsUpcomingReservations}
-                data={data}
-                searchKey={["doctor_name"]}
-                textKey="اسم الطبيب"
-            />
-          </CardContent>
-        </Card>
-      </Card>
+      <CardContent className="p-3 py-0">
+        <DataTable
+            title="قائمة الأطباء"
+            columns={columnsUpcomingReservations}
+            data={data}
+            searchKey={["doctor_name"]}
+            textKey="اسم الطبيب"
+        />
+      </CardContent>
+    </Card>
   )
 }
 

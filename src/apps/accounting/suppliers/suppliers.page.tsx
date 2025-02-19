@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/clients/table";
 import { Link } from "react-router-dom";
@@ -8,24 +8,20 @@ import { ColumnDef } from "@tanstack/react-table";
 export default function SuppliersPage() {
   return (
     <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
-      <Card className="w-full shadow-none">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>بيانات الموردين</CardTitle>
-          <Link to={`/accounting/suppliers/add`}>
-            <Button variant="green">
-              اضافة جديد <Plus />
-            </Button>
-          </Link>
-        </CardHeader>
-        <CardContent className="grid gap-4 text-right">
-          <DataTable
+        <CardContent>
+          <DataTable title="بيانات الموردين"
             columns={columnsSuppliers}
             data={suppliersData}
             searchKey={["company_name", "name"]}
             textKey="اسم المورد او اسم الشركة"
-          />
+          >
+             <Link to={`/accounting/suppliers/add`}>
+              <Button variant="green">
+                اضافة جديد <Plus />
+              </Button>
+            </Link>
+          </DataTable>
         </CardContent>
-      </Card>
     </Card>
   );
 }

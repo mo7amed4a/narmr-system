@@ -1,7 +1,7 @@
 
 import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,22 +12,19 @@ type UpcomingReservationsType = any;
 export default function ReservationsPage() {
   return (
     <Card className="p-4">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>قائمة الحجوزات</CardTitle>
-          <Link to={'/booking/reservations/add'} >
-            <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة حجز جديد</Button>
-          </Link>
-        </CardHeader>
-        <Card className="shadow-none">
           <CardContent className="p-3 py-0">
             <DataTable
+                title="قائمة الحجوزات"
                 columns={columnsUpcomingReservations}
                 data={data}
                 searchKey={["client_name"]}
                 textKey="اسم العميل"
-            />
+            >
+               <Link to={'/booking/reservations/add'} >
+                <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة حجز جديد</Button>
+              </Link>
+            </DataTable>
           </CardContent>
-        </Card>
       </Card>
   )
 }

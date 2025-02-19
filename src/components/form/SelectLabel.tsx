@@ -22,7 +22,6 @@ export default function SelectLabel({ label, onChange, options = [], className =
           >
             <SelectValue placeholder=" " />
           </SelectTrigger>
-
           <SelectContent>
             {options.map((option, index) => (
               <SelectItem key={index} value={option}>

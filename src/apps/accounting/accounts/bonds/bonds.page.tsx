@@ -19,7 +19,7 @@ type DocumentType = {
   addition_date: string;
 }
 
-export default function BandsPage() {
+export default function BandsAccountingPage() {
   return (
     <Card className="p-4">
         <CardHeader className="flex justify-end flex-row items-center">
@@ -74,7 +74,7 @@ export default function BandsPage() {
                 searchKey={["document_type", "customer_supplier"]}
                 textKey="رقم السند او اسم العميل"
             >
-              <Link to={'/booking/accounts/bonds/add'}><Button variant={"green"}>اضافة سند</Button></Link>
+              <Link to={'/accounting/accounts/bonds/add'}><Button variant={"green"}>اضافة سند</Button></Link>
             </DataTable>
           </CardContent>
       </Card>
@@ -163,7 +163,7 @@ const columnsDocuments: ColumnDef<DocumentType>[] = [
     enableHiding: false,
     header: "اجراءات",
     cell: () => (
-      <Link to={`/booking/accounts/bonds/1`} className="flex gap-1">
+      <Link to={`/accounting/accounts/bonds/1`} className="flex gap-1">
         <Button variant="ghost" size="icon">
           <Eye className="size-5" />
         </Button>

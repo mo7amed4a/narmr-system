@@ -18,7 +18,10 @@ const SelectCustom = forwardRef<
         <SelectContent>{children}</SelectContent>
       </Select>
       <span className="absolute start-2 -top-2 px-2 bg-white text-gray-500 text-xs">
-        {label}
+        {props.required ? label &&  <span>
+          {label}
+          <span className="text-red-500">   *</span>
+        </span>: label}
       </span>
     </div>
   );

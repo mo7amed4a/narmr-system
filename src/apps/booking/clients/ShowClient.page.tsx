@@ -39,14 +39,12 @@ export default function ShowClientPage() {
         </CardContent>
        </Card>
       <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>تاريخ الزيارات السابقة</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="flex justify-center">
             <p className="text-gray-500">لا توجد زيارات</p>
           </div>
           <DataTable
+            title="تاريخ الزيارات السابقة"
             columns={columnsUpcomingReservations}
             data={data}
             searchKey={["name"]}

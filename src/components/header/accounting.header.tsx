@@ -16,6 +16,9 @@ export default function AccountingHeader({
   const titles: Record<string, string> = {
     "/accounting": "لوحة التحكم (مسؤول الحسابات)",
     "/accounting/suppliers": "قائمة الموردين",
+    "/accounting/purchases": "قائمة المشتريات",
+    "/accounting/sales": "قائمة المبيعات",
+    "/accounting/staff": "قائمة الموظفين",
   };
   
   const breadcrumbMap: Record<string, string> = {
@@ -23,6 +26,9 @@ export default function AccountingHeader({
     "add": "اضافة",
     "accounting": "لوحة التحكم",
     "suppliers": "قائمة الموردين",
+    "purchases": "قائمة المشتريات",
+    "sales": "قائمة المبيعات",
+    "staff": "قائمة الموظفين",
   };
 
   const matchedTitle =

@@ -3,7 +3,7 @@ import { ChartOne } from "@/components/charts/ChartOne";
 import { DataTable } from "@/components/clients/table";
 import StateCard from "@/components/home/StateCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -56,8 +56,8 @@ export default function BookingHome() {
 
       <Card>
         <CardHeader>
-          <CardTitle>الحجوزات القادمة</CardTitle>
           <DataTable
+            title="الحجوزات القادمة"
             columns={columnsUpcomingReservations}
             data={data}
             searchKey={["client_name"]}

@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/clients/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, Eye, ArrowLeftRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -19,22 +19,19 @@ type InvoiceType = {
 export default function InvoicesPage() {
   return (
     <Card className="p-4">
-      <CardHeader className="flex justify-between flex-row items-center">
-        <CardTitle>قائمة فواتير الحجوزات</CardTitle>
-       <Link to={'/booking/invoices/add'} >
-        <Button variant="default">إضافة فاتورة</Button>
-       </Link>
-      </CardHeader>
-      <Card className="shadow-none">
-        <CardContent className="p-3 py-0">
-          <DataTable
-            columns={columnsInvoices}
-            data={data}
-            searchKey={["invoice_code", "client"]}
-            textKey="كود الفاتورة أو اسم العميل"
-          />
-        </CardContent>
-      </Card>
+      <CardContent className="p-3 py-0">
+        <DataTable
+          title="قائمة فواتير الحجوزات"
+          columns={columnsInvoices}
+          data={data}
+          searchKey={["invoice_code", "client"]}
+          textKey="كود الفاتورة أو اسم العميل"
+        >
+          <Link to={'/booking/invoices/add'} >
+            <Button variant="default">إضافة فاتورة</Button>
+          </Link>
+        </DataTable>
+      </CardContent>
     </Card>
   );
 }

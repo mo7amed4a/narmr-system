@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -38,22 +38,19 @@ export default function ClientsPage() {
 
   return (
       <Card className="p-4">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>قائمة العملاء</CardTitle>
-          <Link to={'/booking/clients/add'} >
-            <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة جديد</Button>
-          </Link>
-        </CardHeader>
-        <Card className="shadow-none">
           <CardContent className="p-3 py-0">
             <DataTable
+            title="قائمة العملاء"
               columns={columnsClientsDataTable}
               data={data}
               searchKey={["name"]}
               textKey="اسم العميل"
-            />
+            >
+              <Link to={'/booking/clients/add'} >
+                <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة جديد</Button>
+              </Link>
+            </DataTable>
           </CardContent>
-        </Card>
       </Card>
   );
 }
