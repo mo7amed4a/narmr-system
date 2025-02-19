@@ -14,7 +14,7 @@ export default function LoginForm() {
     mobile: "",
     password: "",
     rememberPassword: false,
-    userType: "booking",
+    userType: "accounting",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
