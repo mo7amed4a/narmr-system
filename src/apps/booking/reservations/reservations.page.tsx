@@ -2,11 +2,22 @@
 import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { filterColumnsIsAdminTable } from "@/utils/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
-type UpcomingReservationsType = any;
+type UpcomingReservationsType = {
+  code: string;
+  branch: string;
+  client_name: string;
+  doctor: string;
+  service_type: string;
+  created_by: string;
+  appointment_time: string;
+  booking_status: string;
+  booking_type: string;
+};
 
 
 export default function ReservationsPage() {
@@ -15,12 +26,12 @@ export default function ReservationsPage() {
           <CardContent className="p-3 py-0">
             <DataTable
                 title="قائمة الحجوزات"
-                columns={columnsUpcomingReservations}
+                columns={filterColumnsIsAdminTable(columnsUpcomingReservations, "created_by")}
                 data={data}
                 searchKey={["client_name"]}
                 textKey="اسم العميل"
             >
-               <Link to={'/booking/reservations/add'} >
+               <Link to={'add'} >
                 <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة حجز جديد</Button>
               </Link>
             </DataTable>
@@ -31,13 +42,14 @@ export default function ReservationsPage() {
 
 
 
-const data = [
+const data:UpcomingReservationsType[] = [
     {
       code: "#APP43",
       branch: "مركز بيوني",
       client_name: "ريم فهد",
       doctor: "Hebah Abdullah",
       service_type: "فحص بشري",
+      created_by: "Administrator",
       appointment_time: "٠٦:٣٠ م",
       booking_status: "قيد الانتظار",
       booking_type: "زيارات المتابعة",
@@ -115,6 +127,17 @@ const data = [
           </div>
         </>
       ),
+    },{
+      accessorKey: "created_by",
+      
+      header: "انشئ بواسطة",
+      cell: ({ row }) => (
+        <>
+          <div className="lowercase line-clamp-1">
+            <span>{row.getValue("created_by")}</span>
+          </div>
+        </>
+      ),
     },
     {
       accessorKey: "booking_type",
@@ -134,12 +157,12 @@ const data = [
         // const payment = row.original;
         return (
           <div className="flex gap-1">
-            <Link to={`/booking/reservations/1`}>
+            <Link to={`1`}>
               <Button variant="ghost" size="icon">
                 <Eye className="size-5" />
               </Button>
             </Link>
-            <Link to={`/booking/reservations/1/edit`}>
+            <Link to={`1/edit`}>
               <Button variant="ghost" size="icon">
                 <Edit className="size-5" />
               </Button>

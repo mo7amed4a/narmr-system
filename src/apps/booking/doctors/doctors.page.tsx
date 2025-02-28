@@ -80,7 +80,7 @@ const data = [
       header: "اجراءات",
       cell: () => (
         <div className="flex gap-1">
-          <Link to={`/booking/doctors/1`}>
+          <Link to={`1`}>
             <Button variant="ghost" size="icon">
               <Eye className="size-5" />
             </Button>

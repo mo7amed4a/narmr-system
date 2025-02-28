@@ -18,7 +18,7 @@ export default function SuppliersDetailsPage() {
       <Card className="w-full shadow-none">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>بيانات المورد</CardTitle>
-          <Link to={`/accounting/suppliers/1/edit`}>
+          <Link to={`edit`}>
             <Button variant="outline">تعديل</Button>
           </Link>
         </CardHeader>
@@ -34,7 +34,7 @@ export default function SuppliersDetailsPage() {
       <Card className="w-full shadow-none">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>تاريخ الفاتورة</CardTitle>
-          <Link to={`/accounting/suppliers/1/edit`}>
+          <Link to={`edit`}>
             <Button variant="green">فاتورة جديدة</Button>
           </Link>
         </CardHeader>
@@ -65,7 +65,7 @@ export default function SuppliersDetailsPage() {
                   </TableCell>
                   <TableCell>{item.total}</TableCell>
                   <TableCell>
-                    <Link to={`/accounting/suppliers/1/edit`}>
+                    <Link to={`edit`}>
                       <Button variant="ghost"><Eye/></Button>
                     </Link>
                   </TableCell>

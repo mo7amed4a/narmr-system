@@ -17,7 +17,7 @@ export default function PurchasesPage() {
             searchKey={["code", "name"]}
             textKey="كود الفاتورة او اسم العميل"
           >
-            <Link to={`/accounting/purchases/add`}>
+            <Link to={`add`}>
               <Button variant="green">
                 اضافة جديد <Plus />
               </Button>
@@ -87,12 +87,12 @@ const columnsSuppliers: ColumnDef<any>[] = [
     header: "الإجراءات",
     cell: ({row}) => (
       <div className="flex gap-1">
-        <Link to={`/accounting/purchases/1/edit`}>
+        <Link to={`1/edit`}>
           <Button variant="ghost" size="icon">
             <ArrowRightLeft /> 
           </Button>
         </Link>
-        <Link to={`/accounting/purchases/${row.getValue("name")}`}>
+        <Link to={`${row.getValue("name")}`}>
           <Button variant="ghost" size="icon">
             <Eye />
           </Button>

@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import InputLabel from "@/components/form/InputLabel";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function SuppliersAddPage() {
+  const navigate = useNavigate()
   return (
     <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
       <form>
@@ -11,11 +12,9 @@ export default function SuppliersAddPage() {
           <CardHeader className="flex justify-between flex-row items-center">
             <CardTitle>اضافة مورد جديد</CardTitle>
             <div className="flex gap-3">
-              <Link to={`/accounting/suppliers`}>
-                <Button variant="outline" className="text-red-500">
-                  الغاء
-                </Button>
-              </Link>
+              <Button onClick={()=> navigate(-1)} variant="outline" className="text-red-500">
+                الغاء
+              </Button>
               <Button variant="green">حفظ</Button>
             </div>
           </CardHeader>

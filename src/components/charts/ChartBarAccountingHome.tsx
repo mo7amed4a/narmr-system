@@ -59,7 +59,7 @@ export default function ChartBarAccountingHome() {
   const data = year === 2025 ? data2025 : data2024;
 
   return (
-    <Card className="w-full" dir="rtl">
+    <Card className="w-full border" dir="rtl">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between">
         <CardTitle className="text-2xl">احصائيات التدفق المالي</CardTitle>
         <div className="flex items-center flex-wrap gap-4">

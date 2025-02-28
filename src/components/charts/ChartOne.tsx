@@ -40,17 +40,8 @@ const chartConfig = {
 export function ChartOne() {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("2024")
-
-//   const total = React.useMemo(
-//     () => ({
-//       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-//       mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
-//     }),
-//     []
-//   )
-
   return (
-    <Card className="w-full">
+    <Card className="w-full border">
       <CardHeader className="flex flex-col items-stretch space-y-4 border-b p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div>
           <CardTitle className="font-bold">أحصائيات الحجوزات المكتملة </CardTitle>

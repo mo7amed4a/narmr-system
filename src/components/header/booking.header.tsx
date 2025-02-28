@@ -3,6 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link, useLocation, matchPath } from "react-router-dom";
+import { breadcrumbMapApp, titlesBooking } from "@/static/titles";
 
 export default function BookingHeader({
   children,
@@ -12,47 +13,15 @@ export default function BookingHeader({
   pagination?: boolean;
 }) {
   const location = useLocation();
-
   const titles: Record<string, string> = {
+    ...titlesBooking,
     "/booking": "لوحة التحكم (مسؤول الحجوزات)",
-    "/booking/clients": "قائمة العملاء",
-    "/booking/clients/add": "اضافة عميل جديد",
-    "/booking/clients/:id": "عرض بيانات العميل",
-    "/booking/clients/:id/edit": "تعديل بيانات العميل",
-    // 
-    "/booking/reservations": "قائمة الحجوزات",
-    "/booking/reservations/:id": "تفاصيل الحجز",
+  }
 
-    // 
-    "/booking/doctors": "قائمة الاطباء",
-    "/booking/doctors/:id": "صفحة الطبيب",
-    "/booking/doctors/:id/edit": "تعديل بيانات الطبيب",
-    // 
-    "/booking/invoices": "فواتير الحجوزات",
-    "/booking/invoices/:id": "تفاصيل الفاتورة",
-    "/booking/invoices/:id/edit": "تعديل بيانات الفاتورة",
-    "/booking/invoices/add": "اضافة فاتورة جديدة",
-    // 
-    "/booking/accounts/bands": "السندات",
-    // 
-    "/booking/accounts/statement": "كشف حساب",
-    // 
-    "/booking/accounts/treasury": "الخزينة",
-  };
-  
   const breadcrumbMap: Record<string, string> = {
-    "edit": "تعديل",
-    "add": "اضافة",
-    "booking": "لوحة التحكم",
-    "clients": "قائمة العملاء",
-    "reservations": "قائمة الحجوزات",
-    "doctors": "قائمة الاطباء",
-    "invoices": "فواتير الحجوزات",
-    "accounts": "الحسابات",
-    "bonds": "السندات",
-    "statement": "كشف حساب",
-    "treasury": "الخزينة",
-  };
+    ...breadcrumbMapApp,
+    booking: "لوحة التحكم"
+  }
 
   const matchedTitle =
     Object.keys(titles).find((path) => matchPath(path, location.pathname)) ||

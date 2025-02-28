@@ -82,7 +82,7 @@ export default function BookingHome() {
   );
 }
 
-const dataTable = [
+export const dataTable = [
   {
     name: "محمد علي",
     phone: "+5441542",

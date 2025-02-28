@@ -23,7 +23,7 @@ import LogoAndInfo from "@/components/global/LogoAndInfo";
 
 export default function StatementPage() {
   const [account, setAccount] = useState("");
-  const [fromDate, setFromDate] = useState("");
+  const [fromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [isNotEmptyForm, setIsNotEmptyForm] = useState(false);
 
@@ -46,16 +46,15 @@ export default function StatementPage() {
               <SelectItem value="erj">حساب 1</SelectItem>
               <SelectItem value="xyz">حساب 2</SelectItem>
             </SelectCustom>
-            <div className="flex gap-3 items-center w-full">
-              <InputLabel
-                type="date"
-                label="المدة الزمنية من"
-                className="w-full"
-                placeholder=" "
-                classNameInput="!h-9"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-              <span>الى</span>
+            <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
+                    <InputLabel
+                      type="date"
+                      label="المدة الزمنية من"
+                      className="w-full"
+                      placeholder=" "
+                      classNameInput="!h-9"
+                    />
+              <span className="text-xs md:text-base">الى</span>
               <InputLabel
                 type="date"
                 label="المدة الزمنية الى"

@@ -17,7 +17,7 @@ export default function SalesPage() {
             searchKey={["code", "name"]}
             textKey="كود الفاتورة او اسم العميل"
           >
-            <Link to={`/accounting/sales/add`}>
+            <Link to={`add`}>
               <Button variant="green">
                 اضافة جديد <Plus />
               </Button>
@@ -87,12 +87,12 @@ const columnsSuppliers: ColumnDef<any>[] = [
     header: "الإجراءات",
     cell: ({row}) => (
       <div className="flex gap-1">
-        <Link to={`/accounting/sales/1/edit`}>
+        <Link to={`1/edit`}>
           <Button variant="ghost" size="icon">
             <ArrowRightLeft /> 
           </Button>
         </Link>
-        <Link to={`/accounting/sales/${row.getValue("name")}`}>
+        <Link to={`${row.getValue("name")}`}>
           <Button variant="ghost" size="icon">
             <Eye />
           </Button>

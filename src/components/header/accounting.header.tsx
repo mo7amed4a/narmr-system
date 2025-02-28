@@ -3,6 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link, useLocation, matchPath } from "react-router-dom";
+import { breadcrumbMapApp, titlesAccounting } from "@/static/titles";
 
 export default function AccountingHeader({
   children,
@@ -15,25 +16,17 @@ export default function AccountingHeader({
 
   const titles: Record<string, string> = {
     "/accounting": "لوحة التحكم (مسؤول الحسابات)",
-    "/accounting/suppliers": "قائمة الموردين",
-    "/accounting/purchases": "قائمة المشتريات",
-    "/accounting/sales": "قائمة المبيعات",
-    "/accounting/staff": "قائمة الموظفين",
-  };
-  
-  const breadcrumbMap: Record<string, string> = {
-    "edit": "تعديل",
-    "add": "اضافة",
-    "accounting": "لوحة التحكم",
-    "suppliers": "قائمة الموردين",
-    "purchases": "قائمة المشتريات",
-    "sales": "قائمة المبيعات",
-    "staff": "قائمة الموظفين",
+    ...titlesAccounting
   };
 
+  const breadcrumbMap: Record<string, string> = {
+    ...breadcrumbMapApp,
+    accounting: "لوحة التحكم",
+  }
+  
   const matchedTitle =
     Object.keys(titles).find((path) => matchPath(path, location.pathname)) ||
-    "لوحة الحجز";
+    "لوحة الحجز"; 
   const pageTitle = titles[matchedTitle];
 
   const breadcrumbs = location.pathname

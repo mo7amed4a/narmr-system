@@ -15,7 +15,7 @@ export default function SuppliersPage() {
             searchKey={["company_name", "name"]}
             textKey="اسم المورد او اسم الشركة"
           >
-             <Link to={`/accounting/suppliers/add`}>
+             <Link to={`add`}>
               <Button variant="green">
                 اضافة جديد <Plus />
               </Button>
@@ -314,17 +314,17 @@ const columnsSuppliers: ColumnDef<any>[] = [
     header: "الإجراءات",
     cell: ({row}) => (
       <div className="flex gap-1">
-        <Link to={`/accounting/suppliers/1/edit`}>
+        <Link to={`1/edit`}>
           <Button variant="ghost" size="icon">
             <Scroll /> 
           </Button>
         </Link>
-        <Link to={`/accounting/suppliers/${row.getValue("name")}`}>
+        <Link to={`${row.getValue("name")}`}>
           <Button variant="ghost" size="icon">
             <Eye />
           </Button>
         </Link>
-        <Link to={`/accounting/suppliers/1/edit`}>
+        <Link to={`1/edit`}>
           <Button variant="ghost" size="icon">
             <Edit />
           </Button>

@@ -36,7 +36,7 @@ export default function DoctorDetailsPage() {
         <CardTitle>بيانات الطبيب</CardTitle>
         <Dialog>
           <DialogTrigger>
-                <Button variant="green">حجز موعد</Button>
+            <Button variant="green">حجز موعد</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -44,7 +44,7 @@ export default function DoctorDetailsPage() {
                 <Input type="time"/>
                 <div className="flex justify-end">
                   <Button variant={"ghost"} className="text-primary">الغاء</Button>
-                  <Link to="/booking/doctors/1/booking"><Button >حفظ</Button></Link>
+                  <Link to="booking"><Button >حفظ</Button></Link>
                 </div>
               </DialogDescription>
             </DialogHeader>

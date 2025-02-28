@@ -1,8 +1,13 @@
 import CardBorderStart from "@/components/global/CardBorderStart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import BondsHistory from "./components/BondsHistory";
+import { useState } from "react";
+import BondAddInStaff from "./components/bond-add";
 
 export default function StaffDetails() {
+    const isAdmin = localStorage.getItem("userType") === "admin" ? true : false;
+    const [open, setOpen] = useState(false)
   return (
    <Card>
     <CardHeader>
@@ -22,6 +27,21 @@ export default function StaffDetails() {
             </CardContent>
         </Card>
     </CardHeader>
+    { isAdmin &&
+        <CardContent>
+             <Card className="border">
+                <CardHeader className="flex justify-between flex-row items-center">
+                    <CardTitle>اضافة سند</CardTitle>
+                    <div className="flex gap-3">
+                        <Button variant={"ghost"} className="text-red-500">استرجاع</Button>
+                        <Button onClick={() => setOpen(true)} variant={"green"}>اضافة سند</Button>
+                    </div>
+                </CardHeader>
+                <BondAddInStaff open={open} />
+            </Card>
+            <BondsHistory />
+        </CardContent>
+    }
    </Card>
   )
 }

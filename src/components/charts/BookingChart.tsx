@@ -15,7 +15,7 @@ const EMPTY_COLOR = "#F2F4F7"; // اللون الرمادي للأجزاء ال�
 
 export default function BookingChart() {
   return (
-    <Card>
+    <Card className="border">
       <CardContent>
 
     <div className="flex flex-col items-center text-center rtl relative">

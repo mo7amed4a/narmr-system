@@ -16,7 +16,7 @@ export default function StaffPage() {
             searchKey={["name"]}
             textKey="اسم الموظف"
           >
-            <Link to={`/accounting/staff/add`}>
+            <Link to={`add`}>
               <Button variant="green">
                 اضافة جديد <Plus />
               </Button>
@@ -77,12 +77,12 @@ const columnsSuppliers: ColumnDef<any>[] = [
     header: "الإجراءات",
     cell: ({row}) => (
       <div className="flex gap-1">
-        <Link to={`/accounting/staff/1/edit`}>
+        <Link to={`1/edit`}>
           <Button variant="ghost" size="icon">
             <Scroll /> 
           </Button>
         </Link>
-        <Link to={`/accounting/staff/${row.getValue("name")}`}>
+        <Link to={`${row.getValue("name")}`}>
           <Button variant="ghost" size="icon">
             <Eye />
           </Button>

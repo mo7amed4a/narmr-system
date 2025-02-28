@@ -46,7 +46,7 @@ export default function ClientsPage() {
               searchKey={["name"]}
               textKey="اسم العميل"
             >
-              <Link to={'/booking/clients/add'} >
+              <Link to={'add'} >
                 <Button className="bg-green-700 md:px-7 hover:bg-green-800">اضافة جديد</Button>
               </Link>
             </DataTable>
@@ -133,12 +133,12 @@ const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
       // const payment = row.original;
       return (
         <div className="flex gap-1">
-          <Link to={`/booking/clients/1`}>
+          <Link to={`1`}>
             <Button variant="ghost" size="icon">
               <Eye className="size-5" />
             </Button>
           </Link>
-          <Link to={`/booking/clients/1/edit`}>
+          <Link to={`1/edit`}>
             <Button variant="ghost" size="icon">
               <Edit className="size-5" />
             </Button>

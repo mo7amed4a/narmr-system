@@ -74,7 +74,7 @@ export default function BandsAccountingPage() {
                 searchKey={["document_type", "customer_supplier"]}
                 textKey="رقم السند او اسم العميل"
             >
-              <Link to={'/accounting/accounts/bonds/add'}><Button variant={"green"}>اضافة سند</Button></Link>
+              <Link to={'add'}><Button variant={"green"}>اضافة سند</Button></Link>
             </DataTable>
           </CardContent>
       </Card>
@@ -163,7 +163,7 @@ const columnsDocuments: ColumnDef<DocumentType>[] = [
     enableHiding: false,
     header: "اجراءات",
     cell: () => (
-      <Link to={`/accounting/accounts/bonds/1`} className="flex gap-1">
+      <Link to={`1`} className="flex gap-1">
         <Button variant="ghost" size="icon">
           <Eye className="size-5" />
         </Button>
