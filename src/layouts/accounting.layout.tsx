@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AccountingHeader from "@/components/header/accounting.header";
 import { AccountingSidebar } from "@/components/sidebar/accounting-sidebar";
 import LoadingPage from "@/pages/LoadingPage";
+import ProfilePage from "@/apps/profile/profile";
 
 const Home = lazy(() => import("../apps/accounting/home/Home"));
 const SuppliersPage = lazy(() => import("../apps/accounting/suppliers/suppliers.page"));
@@ -48,6 +49,7 @@ function AccountingLayout() {
             <main className="w-full p-4">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/suppliers" element={<SuppliersPage />} />
                 <Route path="/suppliers/add" element={<SuppliersAddPage />} />
                 <Route path="/suppliers/:id" element={<SuppliersDetailsPage />} />

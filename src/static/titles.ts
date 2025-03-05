@@ -34,6 +34,7 @@ export const titlesAccounting: Record<string, string> = {
 export const breadcrumbMapApp: Record<string, string> = {
   edit: "تعديل",
   add: "اضافة",
+  profile: "الصفحة الشخصية",
 
   // booking
   clients: "قائمة العملاء",

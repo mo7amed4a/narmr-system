@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { BookingSidebar } from "@/components/sidebar/booking-sidebar";
 import BookingHeader from "@/components/header/booking.header";
 import LoadingPage from "@/pages/LoadingPage";
+import ProfilePage from "@/apps/profile/profile";
 
 const ClientsPage = lazy(() => import("@/apps/booking/clients/clients.page"));
 const ShowClientPage = lazy(() => import("@/apps/booking/clients/ShowClient.page"));
@@ -46,6 +47,7 @@ function BookingLayout() {
             <main className="w-full p-4">
               <Routes>
                 <Route path="/" element={<BookingHome />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/clients" element={<ClientsPage />} />
                 <Route path="/clients/add" element={<AddClientPage />} />
                 <Route path="/clients/:id" element={<ShowClientPage />} />

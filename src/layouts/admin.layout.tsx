@@ -14,6 +14,7 @@ import BranchesDetailsPage from "@/apps/admin/branches/branchesDetails.page";
 import BranchesAddPage from "@/apps/admin/branches/branchesAdd.page";
 import StaffEditPage from "@/apps/accounting/staff/staffEdit.page";
 import BranchStaffDetailsPage from "@/apps/admin/branches/staff/BranchStaffDetails.page";
+import ProfilePage from "@/apps/profile/profile";
 
 const Home = lazy(() => import("../apps/admin/home/Home"));
 
@@ -82,6 +83,7 @@ function AccountingLayout() {
             <main className="w-full p-4">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 
                 <Route path="/branches/*" >
                     <Route index element={<BranchesPage />} />

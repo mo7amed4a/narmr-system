@@ -1,9 +1,6 @@
-import { ChevronDown } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link, useLocation, matchPath } from "react-router-dom";
 import { breadcrumbMapApp, titlesAccounting } from "@/static/titles";
+import User from "./user";
 
 export default function AccountingHeader({
   children,
@@ -59,34 +56,7 @@ export default function AccountingHeader({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-12 px-1 md:px-2 flex items-center md:gap-2" variant={"ghost"}>
-              <ChevronDown />
-              <span>Mohamed</span>
-              <Avatar>
-                <AvatarImage src="/placeholder.svg" alt="" />
-                <AvatarFallback>MO</AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                localStorage.removeItem("userType");
-                window.location.reload();
-              }}
-            >
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+       <User link="/accounting/profile" />
       </div>
     </header>
   );
