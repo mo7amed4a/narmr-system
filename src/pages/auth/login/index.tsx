@@ -3,24 +3,36 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import PasswordInput from "./_components/PasswordInput";
 import { useNavigate } from "react-router-dom";
+import api from "@/lib/axios";
+import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    mobile: "",
+    phone: "",
     password: "",
     rememberPassword: false,
     userType: "accounting",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(`/${formData.userType}`);
-    localStorage.setItem('userType', formData.userType);
+    if (formData.rememberPassword) {
+      try {
+        const res = api.post("/login", {
+          phone: formData.phone,
+          password: formData.password
+        });
+        console.log(res);
+      } catch (error) {
+        
+      }
+    }
+    // navigate(`/${formData.userType}`);
+    
+    // localStorage.setItem('userType', formData.userType);
     console.log("Form submitted:", formData);
   };
 
@@ -97,17 +109,17 @@ export default function LoginForm() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="mobile" className="text-right block">
+            <Label htmlFor="phone" className="text-right block">
               رقم الجوال :
             </Label>
             <Input
-              id="mobile"
+              id="phone"
               type="tel"
               dir="ltr"
               className="text-right"
-              value={formData.mobile}
+              value={formData.phone}
               onChange={(e) =>
-                setFormData({ ...formData, mobile: e.target.value })
+                setFormData({ ...formData, phone: e.target.value })
               }
             />
           </div>
@@ -151,7 +163,7 @@ export default function LoginForm() {
             تسجيل الدخول
           </Button>
           <div className="py-2"></div>
-          <RadioGroup
+          {/* <RadioGroup
             dir="rtl"
             defaultValue="محولات"
             className="flex justify-center gap-6"
@@ -171,7 +183,7 @@ export default function LoginForm() {
               <RadioGroupItem value="admin" id="admin" />
               <Label htmlFor="admin">المسؤول الرئيسي (الأدمن)</Label>
             </div>
-          </RadioGroup>
+          </RadioGroup> */}
         </form>
       </Card>
     </div>
