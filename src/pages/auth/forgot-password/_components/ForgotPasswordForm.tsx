@@ -10,7 +10,7 @@ import { role } from "@/utils/roleStatic";
 export default function ForgotPasswordForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    phone: "",
+    phone: localStorage.getItem("otp_phone") || "",
     otp_code: "",
     new_password: "",
     confirm_password: "",

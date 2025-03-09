@@ -20,6 +20,7 @@ export default function OtpForm({setSteps, page=false}:{setSteps:React.Dispatch<
           const res = (await response)
           if (res.status == 200) {
             toast.success("تم ارسال رمز التحقق")
+            localStorage.setItem("otp_phone", formData.phone)
             setSteps(2)
           }
           else {

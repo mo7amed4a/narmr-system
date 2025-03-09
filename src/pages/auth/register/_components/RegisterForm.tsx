@@ -38,7 +38,7 @@ export default function RegisterForm() {
   const initialValues = {
     first_name: "",
     last_name: "",
-    phone: "",
+    phone: localStorage.getItem("otp_phone") || "",
     otp_code: "",
     user_category: "transformer_employee",
     password: "",
