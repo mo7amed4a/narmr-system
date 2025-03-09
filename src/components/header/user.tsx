@@ -3,12 +3,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
+import { useUser } from "@/hooks/auth.context";
 
 export default function User({
     link
 }:{
     link: string
 }) {
+  const {logout} = useUser()
   return (
     <DropdownMenu dir="rtl">
     <DropdownMenuTrigger asChild>
@@ -37,8 +39,7 @@ export default function User({
       <DropdownMenuItem
         className="cursor-pointer"
         onClick={() => {
-          localStorage.removeItem("userType");
-          window.location.reload();
+          logout()
         }}
       >
         <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

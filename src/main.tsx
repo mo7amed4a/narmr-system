@@ -12,49 +12,52 @@ const BookingLayout = lazy(() => import("./layouts/booking.layout.tsx"));
 
 import { NotProtectedRoute, ProtectedRoute } from "./guard/auth.guard.tsx";
 import { Toaster } from "react-hot-toast";
+import { UserProvider } from "./hooks/auth.context.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Suspense fallback={<LoadingPage />}>
       <BrowserRouter>
-        {/* Toast */}
-        <Toaster />
+        <UserProvider>
+          {/* Toast */}
+          <Toaster />
 
-        <Routes>
-          <Route
-            path="/*"
-            element={
-              <NotProtectedRoute>
-                <AuthLayout />
-              </NotProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking/*"
-            element={
-              <ProtectedRoute route="booking">
-                <BookingLayout />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/accounting/*"
-            element={
-              <ProtectedRoute route="accounting">
-                <AccountingLayout />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute route="admin">
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+          <Routes>
+            <Route
+              path="/*"
+              element={
+                <NotProtectedRoute>
+                  <AuthLayout />
+                </NotProtectedRoute>
+              }
+            />
+            <Route
+              path="/booking/*"
+              element={
+                <ProtectedRoute route="booking">
+                  <BookingLayout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/accounting/*"
+              element={
+                <ProtectedRoute route="accounting">
+                  <AccountingLayout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute route="admin">
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </UserProvider>
       </BrowserRouter>
     </Suspense>
   </StrictMode>

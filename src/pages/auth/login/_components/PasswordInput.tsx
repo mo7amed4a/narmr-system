@@ -22,7 +22,7 @@ export default function PasswordInput({ label, className, ...props }: PasswordIn
       {label && <Label className="mb-1 block text-sm font-medium text-gray-700">{label}</Label>}
       <div className="relative">
         <Input
-          className={cn("pe-10 bg-gray-50/80 border-gray-200 placeholder:text-gray-400", className)}
+          className={cn("pe-10 bg-white border-gray-200 placeholder:text-gray-400", className)}
           {...props}
           type={showPassword ? "text" : "password"} 
         />

@@ -5,7 +5,7 @@ type ProtectedRouteProps = {
     route: string;
   };
   const ProtectedRoute = ({ children, route}: ProtectedRouteProps) => {
-    const type = localStorage.getItem("userType") as "admin" | "accounting" | "booking" | null;
+    const type = JSON.parse(localStorage.getItem("user") || "{}").user_category as "admin" | "accounting" | "booking" | null;
     if (type) {
         if (type === "admin" && route === "admin") {
           return children;
