@@ -25,6 +25,7 @@ export default function PasswordInput({ label, className, ...props }: PasswordIn
           className={cn("pe-10 bg-white border-gray-200 placeholder:text-gray-400", className)}
           {...props}
           type={showPassword ? "text" : "password"} 
+          placeholder="********"
         />
         <Button
           type="button"

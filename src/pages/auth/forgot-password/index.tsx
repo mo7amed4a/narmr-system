@@ -85,7 +85,6 @@ export default function ForgotPasswordPage() {
 
         <div className="flex justify-between">
             <Link className="text-sm text-primary hover:underline" to="/">تسجيل الدخول</Link>
-            <Link className="text-sm text-primary hover:underline" to="/register">تسجيل حساب</Link>
           </div>
       </Card>
     </div>

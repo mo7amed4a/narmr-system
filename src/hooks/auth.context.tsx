@@ -39,6 +39,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       throw error;
     }
   };
+  
 
   const logout = async () => {
     try {

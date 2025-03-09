@@ -19,7 +19,10 @@ export default function ForgotPasswordForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post("/forgot_password", formData);
+      const response = await api.post("/forgot_password", {
+        ...formData,
+        phone: formData.phone.split("+").join("")
+      });
       if (response.status === 200) {
         localStorage.setItem("userType", role(response.data.user_type));
         navigate(`/${role(response.data.user_type)}`);
@@ -41,7 +44,8 @@ export default function ForgotPasswordForm() {
             <Input
               id="phone"
               type="tel"
-              dir="ltr"
+              // dir="ltr"
+              placeholder="+96650000000"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             />

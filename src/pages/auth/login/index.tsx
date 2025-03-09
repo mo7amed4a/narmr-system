@@ -8,9 +8,8 @@ import { Link } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { useUser } from "@/hooks/auth.context";
 
-
 export default function LoginForm() {
-  const { login } = useUser()
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     phone: "",
     password: "",
@@ -19,11 +18,11 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (formData.rememberPassword) 
+    // if (formData.rememberPassword)
     login({
-      "phone": formData.phone,
-      "password": formData.password
-      })
+      phone: formData.phone.split("+").join(""),
+      password: formData.password,
+    });
   };
 
   return (
@@ -32,7 +31,10 @@ export default function LoginForm() {
       dir="rtl"
     >
       <div className="grid grid-cols-2 w-screen h-screen fixed inset-0">
-        <img src="/auth/background.png" className="h-screen fixed start-0 top-0 w-2/4" />
+        <img
+          src="/auth/background.png"
+          className="h-screen fixed start-0 top-0 w-2/4"
+        />
       </div>
       <Card className="w-full max-w-xl p-6 space-y-6 relative z-10">
         <div className="flex justify-center mb-6">
@@ -106,6 +108,7 @@ export default function LoginForm() {
               id="phone"
               type="tel"
               dir="ltr"
+              placeholder="+96650000000"
               className="text-right"
               value={formData.phone}
               onChange={(e) =>
@@ -154,8 +157,12 @@ export default function LoginForm() {
           </Button>
           {/* <div className="py-2"></div> */}
           <div className="flex justify-between">
-            <Link className="text-sm text-primary hover:underline" to="/forgot-password">نسيت كلمة السر؟</Link>
-            <Link className="text-sm text-primary hover:underline" to="/register">تسجيل حساب</Link>
+            <Link
+              className="text-sm text-primary hover:underline"
+              to="/forgot-password"
+            >
+              نسيت كلمة السر؟
+            </Link>
           </div>
         </form>
       </Card>

@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import { lazy } from "react"
 import NotFoundPage from "@/pages/NotFoundPage";
-import RegisterPage from "@/pages/auth/register";
 import ForgotPasswordPage from "@/pages/auth/forgot-password";
 
 
@@ -12,7 +11,6 @@ function AuthLayout() {
     <main>
         <Routes>
             <Route path="/" element={<LoginPage />}/>
-            <Route path="/register" element={<RegisterPage />}/>
             <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
             <Route path="/*" element={<NotFoundPage />}/>
         </Routes>  
