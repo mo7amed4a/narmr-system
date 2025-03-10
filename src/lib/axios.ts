@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const api = axios.create({
   baseURL: "https://bms-apps.com/api",

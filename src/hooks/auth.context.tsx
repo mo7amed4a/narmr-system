@@ -1,15 +1,15 @@
 import api from "@/lib/axios";
-import { role } from "@/utils/roleStatic";
+// import { role } from "@/utils/roleStatic";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+// import { useNavigate } from "react-router-dom";
+// import Cookies from "js-cookie";
 
 const UserContext = createContext<any>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
