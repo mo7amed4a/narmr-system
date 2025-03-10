@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const api = axios.create({
   baseURL: "https://bms-apps.com/api",
@@ -10,10 +11,16 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const session_id = localStorage.getItem("session_id");
+  const session_id = JSON.parse(localStorage.getItem("user") || "{}").session_id;
+  console.log(session_id);
+  
   if (session_id) {
-    config.headers.Authorization = `Bearer ${session_id}`;
+    config.headers["Cookie"] = `frontend_lang=en_US;session_id=${session_id}`;
   }
+  // const session_id = localStorage.getItem("session_id");
+  // if (session_id) {
+  //   config.headers.Authorization = `Bearer ${session_id}`;
+  // }
   return config;
 });
 

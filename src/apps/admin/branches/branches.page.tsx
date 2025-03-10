@@ -1,8 +1,10 @@
+import { getBranches } from "@/api/admin/branches";
 import { DataTable } from "@/components/clients/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, Eye } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 type ClientsDataTableType = {
@@ -26,6 +28,11 @@ export default function BranchesPage() {
   }
 
   const data = getData();
+
+  useEffect(() => {
+    getBranches()
+  }, [])
+  
 
   return (
     <Card className="p-4">
