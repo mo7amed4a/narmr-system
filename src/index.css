@@ -128,3 +128,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground));
 }
+
+
+[role="dialog"] button.absolute.right-4 {
+  display: none !important;
+}

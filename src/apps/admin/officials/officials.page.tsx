@@ -1,41 +1,48 @@
 import { DataTable } from "@/components/clients/table";
+import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent} from "@/components/ui/card";
+import { useUser } from "@/hooks/auth.context";
+import useFetch from "@/hooks/use-fetch";
+import api from "@/lib/axios";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Trash } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 type ClientsDataTableType = {
   id: number;
   name: string;
   phone: string;
-  role: string;
-  addedDate: string;
+  user_category: string;
+  create_date: string;
 };
 
 export default function OfficialsPage() {
-  function getData(): ClientsDataTableType[] {
-    // Fetch data from your API here.
-    return [
-      {
-        id: 1,
-        name: "هيا سلطان",
-        role: "مسؤول حجوزات",
-        phone: "(+33) 75 55 45 48",
-        addedDate: "11/03/2022",
-      },
-    ];
+  const [refresh, setRefresh] = useState(false);
+  const {data, loading, error} = useFetch("/users", refresh) 
+  const {user} = useUser()
+  const deleteBrach = (id: string) => {
+    api.post(`/user/delete/${id}`, {
+      user_id: user.user_id 
+    }).then(res => {
+      if (res.status === 200) {
+        toast.success("تم حذف المسئول بنجاح")
+        setRefresh(prev=> !prev)
+      }
+    })
   }
-
-  const data = getData();
 
   return (
       <Card className="p-4">
           <CardContent className="p-3 py-0">
             <DataTable
-            title="قائمة المسؤولين"
-              columns={columnsClientsDataTable}
-              data={data}
+              loading={loading}
+              error={error}
+              columns={columnsClientsDataTable(deleteBrach)}
+              title="قائمة المسؤولين"
+              data={data?.data}
               searchKey={["name"]}
               textKey="اسم المسؤول"
             >
@@ -48,7 +55,15 @@ export default function OfficialsPage() {
   );
 }
 
-const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
+const columnsClientsDataTable = (action: (id: string) => void):ColumnDef<ClientsDataTableType>[] => {
+  return [
+    {
+      accessorKey: "id",
+      header: "#",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("id")}</div>
+      ),
+    },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -70,10 +85,10 @@ const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
     ),
   },
   {
-    accessorKey: "role",
+    accessorKey: "user_category",
     header: "الدور",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("role")}</div>
+      <div className="capitalize">{row.getValue("user_category")}</div>
     ),
   },
   {
@@ -98,15 +113,18 @@ const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
     enableHiding: false,
     header: "اجراءات",
     //   cell: ({ row }) => {
-    cell: () => {
+    cell: ({row}) => {
       // const payment = row.original;
       return (
         <div className="flex gap-1">
-            <Button variant="ghost" size="icon">
-                <Trash className="size-5" />
-            </Button>
+            <DeleteDialog action={() => action(row.getValue("id"))} >
+              <Button variant="ghost" size="icon">
+                <Trash className="size-5 text-red-500" />
+              </Button>
+           </DeleteDialog>
         </div>
       );
     },
   },
-];
+]
+}

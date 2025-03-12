@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import toast from "react-hot-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import api from "@/lib/axios";
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required('الاسم بالكامل مطلوب'),
@@ -35,10 +36,27 @@ export default function AddClientPage() {
       clientType: 'ذكر',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // Handle form submission
-      console.log('Form data', values);
-      toast.success('تم الحفظ بنجاح ' + values.fullName);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await api.post(`/add_customer`, {
+          name: values.fullName,
+          phone: values.phoneNumber,
+          birth_date: values.birthDate,
+          city: values.city,
+          country: values.country,
+          gender: values.clientType === 'ذكر' ? 'male' : 'female',
+          ...(values.address && { address: values.address }), // Optional field
+          ...(values.bloodType && { blood_type: values.bloodType }) // Optional field
+        });
+
+        console.log('Client added:', response.data);
+        toast.success('تم الحفظ بنجاح ' + values.fullName);
+      } catch (error) {
+        console.error('Error adding client:', error);
+        toast.error('حدث خطأ أثناء الحفظ');
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -50,9 +68,10 @@ export default function AddClientPage() {
             <CardTitle>اضافة عميل جديد</CardTitle>
             <Button 
               type="submit"
-              className="bg-green-700 md:px-7 hover:bg-green-800" 
+              className="bg-green-700 md:px-7 hover:bg-green-800"
+              disabled={formik.isSubmitting}
             >
-              حفظ
+              {formik.isSubmitting ? "جاري الحفظ..." : "حفظ"}
             </Button>
           </CardHeader>
           <CardContent className="grid gap-4 text-right">
@@ -63,7 +82,7 @@ export default function AddClientPage() {
             <div>
               <div className="flex gap-4">
                 <span>نوع العميل </span>
-                  <RadioGroup
+                <RadioGroup
                   dir="rtl"
                   value={formik.values.clientType}
                   onValueChange={(value) => formik.setFieldValue("clientType", value)}
@@ -117,7 +136,7 @@ export default function AddClientPage() {
               <InputLabel 
                 label="فصيلة الدم (إختياري)" 
                 placeholder="فصيلة الدم" 
-                type="tel"
+                type="text" // Changed from tel to text as blood type isn't a phone number
                 name="bloodType"
                 value={formik.values.bloodType}
                 onChange={formik.handleChange}

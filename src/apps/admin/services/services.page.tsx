@@ -1,39 +1,47 @@
 import { DataTable } from "@/components/clients/table";
+import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent} from "@/components/ui/card";
+import { useUser } from "@/hooks/auth.context";
+import useFetch from "@/hooks/use-fetch";
+import api from "@/lib/axios";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit } from "lucide-react";
+import { ArrowUpDown, Edit, Trash } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 type ClientsDataTableType = {
   id: number;
   name: string;
   price: number;
-  addedDate: string;
+  create_date: string;
 };
 
 export default function ServicesPage() {
-  function getData(): ClientsDataTableType[] {
-    // Fetch data from your API here.
-    return [
-      {
-        id: 1,
-        name: "خدمة ",
-        price: 400,
-        addedDate: "11/03/2022",
-      },
-    ];
+  const [refresh, setRefresh] = useState(false);
+  const {data, loading, error} = useFetch("/services", refresh) 
+  const {user} = useUser()
+  const deleteBrach = (id: string) => {
+    api.post(`/delete_service/${id}`, {
+      user_id: user.user_id 
+    }).then(res => {
+      if (res.status === 200) {
+        toast.success("تم حذف الخدمة بنجاح")
+        setRefresh(prev=> !prev)
+      }
+    })
   }
-
-  const data = getData();
 
   return (
       <Card className="p-4">
           <CardContent className="p-3 py-0">
             <DataTable
-            title="قائمة الخدمات"
-              columns={columnsClientsDataTable}
-              data={data}
+              loading={loading}
+              error={error}
+              columns={columnsDataTable(deleteBrach)}
+              title="قائمة الخدمات"
+              data={data?.data}
               searchKey={["name"]}
               textKey="اسم الخدمة"
             >
@@ -46,8 +54,16 @@ export default function ServicesPage() {
   );
 }
 
-const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
-  {
+const columnsDataTable = (action: (id: string) => void):ColumnDef<ClientsDataTableType>[] => {
+  return [
+    {
+      accessorKey: "id",
+      header: "#",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("id")}</div>
+      ),
+    },
+    {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -71,7 +87,7 @@ const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
     accessorKey: "price",
     header: "سعر الخدمة",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("role")}</div>
+      <div className="capitalize">{row.getValue("price")}</div>
     ),
   },
   {
@@ -89,15 +105,21 @@ const columnsClientsDataTable: ColumnDef<ClientsDataTableType>[] = [
     enableHiding: false,
     header: "اجراءات",
     //   cell: ({ row }) => {
-    cell: () => {
+    cell: ({row}) => {
       // const payment = row.original;
       return (
         <div className="flex gap-1">
             <Button variant="ghost" size="icon">
                 <Edit className="size-5" />
             </Button>
+            <DeleteDialog action={() => action(row.getValue("id")+"")} >
+              <Button variant="ghost" size="icon">
+                <Trash className="size-5 text-red-500" />
+              </Button>
+           </DeleteDialog>
         </div>
       );
     },
   },
-];
+]
+}

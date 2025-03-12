@@ -1,101 +1,83 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/clients/table";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { DollarSign, Edit, Eye, Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import StateCard from "@/components/home/StateCard";
+import useFetch from "@/hooks/use-fetch";
+import Loading from "@/components/api/loading";
 
 export default function BranchesDetailsPage() {
+  const params = useParams()
+  const {data, loading} = useFetch(`/branch/${params.id}`)
+  const branch = data?.data
   return (
     <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
-      <Card className="w-full shadow-none">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>بيانات الفرع</CardTitle>
-          <Button variant="outline">تعديل</Button>
-        </CardHeader>
-        <CardContent className="grid gap-4 text-right">
-          <div className="border-s-2 ps-3">
-            <p className="text-gray-500">الاسم الفرع</p>
-            <p className="font-semibold">فرع القاهرة </p>
-          </div>
-          <div className="flex flex-wrap gap-4 justify-between">
-            <div className="border-s-2 ps-3 ">
-              <p className="text-gray-500">عدد الموظفين</p>
-              <p className="font-semibold">10</p>
+      {data && branch && <>
+        <Card className="w-full shadow-none">
+          <CardHeader className="flex justify-between flex-row items-center">
+            <CardTitle>بيانات الفرع</CardTitle>
+            <Button variant="outline">تعديل</Button>
+          </CardHeader>
+          <CardContent className="grid gap-4 text-right">
+            <div className="border-s-2 ps-3">
+              <p className="text-gray-500">الاسم الفرع</p>
+              <p className="font-semibold">{branch.name}</p>
             </div>
-            <div className="border-s-2 ps-3 ">
-              <p className="text-gray-500">تاريخ الاضافة</p>
-              <p className="font-semibold">20 Dec, 2021, 02:21 AM</p>
+            <div className="flex flex-wrap gap-4 justify-between">
+              <div className="border-s-2 ps-3 ">
+                <p className="text-gray-500">عدد الموظفين</p>
+                <p className="font-semibold">{branch.employee_count}</p>
+              </div>
+              <div className="border-s-2 ps-3 ">
+                <p className="text-gray-500">تاريخ الاضافة</p>
+                <p className="font-semibold">{branch.create_date}</p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-      <div className="grid lg:grid-cols-3 gap-4">
-      <StateCard
-            title="اجمالي العائد"
-            value="1,245"
-            Icon={DollarSign}
-            className="bg-gray-400"
-          />
-      <StateCard
-            title="الصرفيات (فواتير ورواتب)"
-            value="1,245"
-            Icon={DollarSign}
-            className="bg-gray-400"
-          />
-      <StateCard
-            title="صافي الربح"
-            value="1,245"
-            Icon={DollarSign}
-            className="bg-gray-400"
-          />
-      </div>
-      <Card className="shadow-none">
-        <CardContent>
-          <DataTable
-            title="قائمة الموظفين"
-            columns={columnsUpcomingReservations}
-            data={data}
-            searchKey={["name"]}
-            textKey="الاسم"
-          />
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <div className="grid lg:grid-cols-3 gap-4">
+        <StateCard
+              title="اجمالي العائد"
+              value="1,245"
+              Icon={DollarSign}
+              className="bg-gray-400"
+            />
+        <StateCard
+              title="الصرفيات (فواتير ورواتب)"
+              value="1,245"
+              Icon={DollarSign}
+              className="bg-gray-400"
+            />
+        <StateCard
+              title="صافي الربح"
+              value="1,245"
+              Icon={DollarSign}
+              className="bg-gray-400"
+            />
+        </div>
+        <Card className="shadow-none">
+          <CardContent>
+            <DataTable
+              title="قائمة الموظفين"
+              columns={columnsUpcomingReservations}
+              data={data}
+              searchKey={["name"]}
+              textKey="الاسم"
+            />
+          </CardContent>
+        </Card>
+      </>}
+      {
+        loading && <Loading />
+      }
     </Card>
   );
 }
 
-const data = [
-  {
-    name: "Ahmed",
-    phone: "8178451",
-    role: "طبيب جلدية",
-    salary: 10000,
-    date: "الأربعاء 01 يناير 2025 - الساعه 03:30 م",
-  },
-];
 
 const columnsUpcomingReservations: ColumnDef<any>[] = [
-  // {
-  //   accessorKey: "date",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         className="text-current font-bold"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         التاريخ والوقت <ArrowUpDown />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => (
-  //     <>
-  //       <div className="capitalize text-red-900">{row.getValue("date")}</div>
-  //     </>
-  //   ),
-  // },
   {
     accessorKey: "name",
     header: "اسم الموظف",

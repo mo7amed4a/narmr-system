@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 type ProtectedRouteProps = {
     children: React.ReactNode;
     route: string;
   };
   const ProtectedRoute = ({ children, route}: ProtectedRouteProps) => {
-    const type = JSON.parse(localStorage.getItem("user") || "{}").user_category as "admin" | "accounting" | "booking" | null;
+    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting" | "booking" | null;
     if (type) {
         if (type === "admin" && route === "admin") {
           return children;

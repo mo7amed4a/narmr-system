@@ -1,77 +1,71 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/clients/table";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import useFetch from "@/hooks/use-fetch";
+import Loading from "@/components/api/loading";
 
 export default function ShowClientPage() {
+  const params = useParams()
+  const {data, loading} = useFetch(`/customer/${params.id}`)
+  const client = data?.data
   return (
     <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
-       <Card className="w-full shadow-none">
-        <CardHeader className="flex justify-between flex-row items-center">
-          <CardTitle>بيانات العميل</CardTitle>
-          <Button variant="outline">تعديل</Button>
-        </CardHeader>
-        <CardContent className="grid gap-4 text-right">
-          <div className="border-s-2 ps-3">
-            <p className="text-gray-500">الاسم بالكامل</p>
-            <p className="font-semibold">هيا سلطان</p>
-          </div>
-          <div className="flex flex-wrap gap-4 justify-between">
-            <div className="border-s-2 ps-3 ">
-              <p className="text-gray-500">تاريخ الميلاد</p>
-              <p className="font-semibold">٢٨ يونيو ١٩٩٦ (٢٨ عام)</p>
+      {data&& client && <>
+        <Card className="w-full shadow-none">
+          <CardHeader className="flex justify-between flex-row items-center">
+            <CardTitle>بيانات العميل</CardTitle>
+            <Button variant="outline">تعديل</Button>
+          </CardHeader>
+          <CardContent className="grid gap-4 text-right">
+            <div className="border-s-2 ps-3">
+              <p className="text-gray-500">الاسم بالكامل</p>
+              <p className="font-semibold">{client.name}</p>
             </div>
-            <div className="border-s-2 ps-3 ">
-              <p className="text-gray-500">رقم الجوال</p>
-              <p className="font-semibold">+٩٦٤ ٧٣٤٥٠٦٠٦</p>
-            </div >
-            <div className="border-s-2 ps-3 ">
-              <p className="text-gray-500">النوع</p>
-              <p className="font-semibold">أنثى</p>
+            <div className="flex flex-wrap gap-4 justify-between">
+              <div className="border-s-2 ps-3 ">
+                <p className="text-gray-500">تاريخ الميلاد</p>
+                <p className="font-semibold">{client.birth_date}</p>
+              </div>
+              <div className="border-s-2 ps-3 ">
+                <p className="text-gray-500">رقم الجوال</p>
+                <p className="font-semibold">{client.phone}</p>
+              </div >
+              <div className="border-s-2 ps-3 ">
+                <p className="text-gray-500">النوع</p>
+                <p className="font-semibold">{client.gender}</p>
+              </div>
+              <div className="col-span-2 border-s-2 ps-3">
+                <p className="text-gray-500">العنوان</p>
+                <p className="font-semibold">{`${client.country}, ${client.city}`}</p>
+              </div>
             </div>
-            <div className="col-span-2 border-s-2 ps-3">
-              <p className="text-gray-500">العنوان</p>
-              <p className="font-semibold">العراق، بغداد</p>
-            </div>
-          </div>
-        </CardContent>
-       </Card>
-      <Card className="shadow-none">
-        <CardContent>
-          <div className="flex justify-center">
-            <p className="text-gray-500">لا توجد زيارات</p>
-          </div>
-          <DataTable
-            title="تاريخ الزيارات السابقة"
-            columns={columnsUpcomingReservations}
-            data={data}
-            searchKey={["name"]}
-            textKey="الاسم"
-          />
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <Card className="shadow-none">
+          <CardContent>
+            {client.visit_history.length > 0 ? <div className="flex justify-center">
+              <p className="text-gray-500">لا توجد زيارات</p>
+            </div> : <DataTable
+              title="تاريخ الزيارات السابقة"
+              columns={columnsUpcomingReservations}
+              data={data}
+              searchKey={["name"]}
+              textKey="الاسم"
+            /> }
+           
+          </CardContent>
+        </Card>
+      </>}
+      {
+        loading && <Loading />
+      }
     </Card>
   )
 }
 
-
-
-const data = [
-  {
-    date: "الأربعاء 01 يناير 2025 - الساعه 03:30 م",
-    doctor: "Hebah Abdullah",
-    service_type: "فحص بشري",
-    booking_value: "100000$",
-  },
-  {
-    date: "الاحد 01 يناير 2025 - الساعه 03:31 م",
-    doctor: "Hebah Abdullah",
-    service_type: "فحص بشري",
-    booking_value: "100000$",
-  },
-];
 
 const columnsUpcomingReservations: ColumnDef<any>[] = [
   {
