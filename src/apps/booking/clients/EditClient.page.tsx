@@ -6,7 +6,9 @@ import * as Yup from 'yup';
 import toast from "react-hot-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useEffect } from "react";
+import api from "@/lib/axios";
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required('الاسم بالكامل مطلوب'),
@@ -17,23 +19,15 @@ const validationSchema = Yup.object({
     .max(15, 'رقم الجوال يجب أن يكون على الأكثر 15 أرقام'),
   birthDate: Yup.date().required('تاريخ الميلاد مطلوب'),
   city: Yup.string().required('المدينة مطلوبة'),
-  bloodType: Yup.string(),
   country: Yup.string().required('الدولة مطلوبة'),
-  address: Yup.string(),
   clientType: Yup.string().required('نوع العميل مطلوب'),
 });
 
 export default function EditClientPage() {
-  const initialValues = {
-    fullName: 'محمد',
-    phoneNumber: '01212154949',
-    birthDate: '2000-01-01',
-    city: 'المنيا',
-    country: 'مصر',
-    address: 'ملوي',
-    bloodType: 'B+',
-    clientType: 'ذكر',
-  }
+  const {id}  = useParams();
+  console.log(id);
+  
+
   const formik = useFormik({
     initialValues: {
       fullName: '',
@@ -41,21 +35,55 @@ export default function EditClientPage() {
       birthDate: '',
       city: '',
       country: '',
-      address: '',
-      bloodType: '',
-      clientType: 'ذكر',
+      clientType: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // Handle form submission
-      console.log('Form data', values);
-      toast.success('تم تحديث بيانات العميل بنجاح');
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await api.post(`/customer/update/${id}`, {
+          name: values.fullName,
+          phone: values.phoneNumber,
+          birth_date: values.birthDate,
+          city: values.city,
+          country: values.country,
+          gender: values.clientType === 'ذكر' ? 'male' : 'female',
+        });
+
+        console.log('Client updated:', response.data);
+        toast.success('تم تحديث بيانات العميل بنجاح');
+      } catch (error) {
+        console.error('Error updating client:', error);
+        toast.error('حدث خطأ أثناء تحديث البيانات');
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
+  // Fetch customer data when component mounts
   useEffect(() => {
-    formik.setValues(initialValues)
-  }, [])
+    const fetchCustomerData = async () => {
+      try {
+        const response = await api.get(`/customer/${id}`);
+        const customerData = response.data.data;
+        
+        formik.setValues({
+          fullName: customerData.name || '',
+          phoneNumber: customerData.phone || '',
+          birthDate: customerData.birth_date || '',
+          city: customerData.city || '',
+          country: customerData.country || '',
+          clientType: customerData.gender === 'male' ? 'ذكر' : 'أنثى',
+        });
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+        toast.error('حدث خطأ أثناء جلب بيانات العميل');
+      }
+    };
+
+    fetchCustomerData();
+  }, [id]);
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
@@ -64,9 +92,10 @@ export default function EditClientPage() {
             <CardTitle>تعديل بيانات العميل</CardTitle>
             <Button 
               type="submit"
-              className="bg-green-700 md:px-7 hover:bg-green-800" 
+              className="bg-green-700 md:px-7 hover:bg-green-800"
+              disabled={formik.isSubmitting}
             >
-              حفظ
+              {formik.isSubmitting ? "جاري التحديث..." : "تحديث"}
             </Button>
           </CardHeader>
           <CardContent className="grid gap-4 text-right">
@@ -77,7 +106,7 @@ export default function EditClientPage() {
             <div>
               <div className="flex gap-4">
                 <span>نوع العميل </span>
-                  <RadioGroup
+                <RadioGroup
                   dir="rtl"
                   value={formik.values.clientType}
                   onValueChange={(value) => formik.setFieldValue("clientType", value)}
@@ -128,21 +157,12 @@ export default function EditClientPage() {
                 onChange={formik.handleChange}
                 error={formik.touched.birthDate && formik.errors.birthDate}
               />
-              <InputLabel 
-                label="فصيلة الدم (إختياري)" 
-                placeholder="فصيلة الدم" 
-                type="tel"
-                name="bloodType"
-                value={formik.values.bloodType}
-                onChange={formik.handleChange}
-                error={formik.touched.bloodType && formik.errors.bloodType}
-              />
             </div>
             <div className="grid md:grid-cols-3 gap-4 text-start">
               <InputLabel 
                 label="المدينة" 
                 required 
-                placeholder="بغداد" 
+                placeholder="المدينة" 
                 type="text"
                 name="city"
                 value={formik.values.city}
@@ -152,7 +172,7 @@ export default function EditClientPage() {
               <InputLabel 
                 label="الدولة" 
                 required 
-                placeholder="العراق" 
+                placeholder="الدولة" 
                 type="text"
                 name="country"
                 value={formik.values.country}
@@ -160,15 +180,6 @@ export default function EditClientPage() {
                 error={formik.touched.country && formik.errors.country}
               />
             </div>
-            <InputLabel 
-              label="عنوان المنزل (أختياري)" 
-              placeholder="عنوان العميل" 
-              type="text"
-              name="address"
-              value={formik.values.address}
-              onChange={formik.handleChange}
-              error={formik.touched.address && formik.errors.address}
-            />
           </CardContent>
         </Card>
       </Card>

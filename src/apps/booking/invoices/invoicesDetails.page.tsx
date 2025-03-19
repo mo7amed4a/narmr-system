@@ -1,19 +1,38 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import LogoAndInfo from "@/components/global/LogoAndInfo"
+import { useParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import LogoAndInfo from "@/components/global/LogoAndInfo";
+import useFetch from "@/hooks/use-fetch";
 
 export default function InvoiceDetailsPage() {
+  const { id } = useParams(); // جلب الـ invoice_id من الـ URL
+  const { data, loading, error } = useFetch(`/invoice?invoice_id=${id}`);
+
+  if (loading) return <div>جاري التحميل...</div>;
+  if (error) return <div>خطأ: {error.message}</div>;
+
+  const invoice = data?.data; // البيانات جاية داخل "data" في الـ response
+
+  // حساب الإجمالي من الخدمات
+  const totalAmount = invoice?.services.reduce((sum: number, service: any) => sum + service.price, 0) || 0;
+
   return (
     <div className="space-y-5">
       <Card className="w-full border-none shadow-none">
         <CardHeader className="space-y-6 border-b">
           <div className="flex justify-between items-center md:p-8 bg-[#F9FAFC] rounded-xl">
             <div className="text-sm text-right space-y-1">
-              <h2 className="text-xl font-bold">مها عبدالرحمن</h2>
-              <p>يناير ٢، ٢٠٢٤ الساعة ١:٣٥ م</p>
-              <p dir="ltr">+960025425256</p>
-              <p>address City, Country - 00000</p>
+              <h2 className="text-xl font-bold">{invoice?.customer_name}</h2>
+              <p>{new Date(invoice?.invoice_date).toLocaleString("ar-EG", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+              })}</p>
+              <p dir="ltr">{invoice?.customer_phone}</p>
+              <p>address City, Country - 00000</p> {/* افتراضي، ممكن تضيفي حقل في الـ API لو موجود */}
             </div>
             <LogoAndInfo />
           </div>
@@ -26,21 +45,31 @@ export default function InvoiceDetailsPage() {
                 <TableHead className="text-right">العميل</TableHead>
                 <TableHead className="text-right">الطبيب</TableHead>
                 <TableHead className="text-right">أنشئت بواسطة</TableHead>
-                <TableHead className="text-right">تاريخ الاضافة</TableHead>
+                <TableHead className="text-right">تاريخ الإضافة</TableHead>
                 <TableHead className="text-right">قيمة الفاتورة</TableHead>
                 <TableHead className="text-right">حالة الفاتورة</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>S0000030</TableCell>
-                <TableCell>مها عبد الرحمن</TableCell>
-                <TableCell>د/ عبد الرحمن وجيه</TableCell>
-                <TableCell>Administrator</TableCell>
-                <TableCell dir="ltr">20 Dec, 2021, 9:21 AM</TableCell>
-                <TableCell>$240</TableCell>
+                <TableCell>{invoice?.invoice_code}</TableCell>
+                <TableCell>{invoice?.customer_name}</TableCell>
+                <TableCell>{invoice?.doctor_name}</TableCell>
+                <TableCell>{invoice?.created_by}</TableCell>
+                <TableCell dir="ltr">
+                  {new Date(invoice?.invoice_date).toLocaleString("ar-EG", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}
+                </TableCell>
+                <TableCell>{invoice?.invoice_amount} جنيه</TableCell>
                 <TableCell>
-                  <Badge variant="green">مؤكدة</Badge>
+                  <Badge variant={invoice?.invoice_status === "confirmed" ? "green" : "ghost"}>
+                    {invoice?.invoice_status === "confirmed" ? "مؤكدة" : "غير مؤكدة"}
+                  </Badge>
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -49,7 +78,7 @@ export default function InvoiceDetailsPage() {
       </Card>
       <Card className="w-full border-none shadow-none">
         <CardHeader className="space-y-6 border-b">
-         <CardTitle>الخدمات</CardTitle>
+          <CardTitle>الخدمات</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <Table dir="rtl">
@@ -60,22 +89,19 @@ export default function InvoiceDetailsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>فحص بشرة</TableCell>
-                <TableCell>750$</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>فحص بشرة</TableCell>
-                <TableCell>750$</TableCell>
-              </TableRow>
+              {invoice?.services.map((service: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell>{service.service_name}</TableCell>
+                  <TableCell>{service.price} جنيه</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
           <div className="flex justify-end py-4">
-            <span className="">الاجمالي 1500</span>
+            <span className="">الإجمالي: {totalAmount} جنيه</span>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

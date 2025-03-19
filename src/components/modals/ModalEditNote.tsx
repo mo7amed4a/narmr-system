@@ -1,25 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
+import { Note } from "@/apps/booking/reservations/ShowReservationsDetails.page";
 
-export default function ModalAddNote({ 
+export default function ModalEditNote({ 
   isOpen, 
   onClose, 
   setRefresh,
-  reservationCode 
+  note 
 }: {
   isOpen: boolean;
   onClose: () => void;
-  setRefresh:React.Dispatch<React.SetStateAction<boolean>>
-  reservationCode: string;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  note: Note;
 }) {
   const [description, setDescription] = useState("");
   const [noteText, setNoteText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Populate form with existing note data when component mounts or note changes
+  useEffect(() => {
+    if (note && isOpen) {
+      setDescription(note.description || "");
+      setNoteText(note.note_text || "");
+      // If there's an existing file, you might want to handle it differently
+      // For now, we'll reset file-related states
+      setFile(null);
+      setImageUrl(null);
+    }
+  }, [note, isOpen]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -30,8 +43,8 @@ export default function ModalAddNote({
   };
 
   const handleSubmit = async () => {
-    if (!noteText || !reservationCode) {
-      toast.error("يرجى ملء جميع الحقول المطلوبة");
+    if (!noteText) {
+      toast.error("نص الملاحظة مطلوب");
       return;
     }
 
@@ -50,7 +63,7 @@ export default function ModalAddNote({
       }
 
       const payload = {
-        reservation_code: reservationCode,
+        note_id: note.note_id,
         description: description || "No description provided",
         note_text: noteText,
         ...(file && {
@@ -59,24 +72,26 @@ export default function ModalAddNote({
         })
       };
 
-      await api.post("/reservation/note/add", payload);
-      toast.success("تم إضافة الملاحظة بنجاح");
-      // Reset form
+      await api.post("/reservation/note/update", payload);
+      toast.success("تم تحديث الملاحظة بنجاح");
+      
+      // Trigger refresh of parent component
       setRefresh((prev) => !prev);
+      
+      // Reset form
       setDescription("");
       setNoteText("");
       setFile(null);
       setImageUrl(null);
       onClose();
     } catch (error) {
-      console.error("Error adding note:", error);
-      toast.error("حدث خطأ أثناء إضافة الملاحظة");
+      console.error("Error updating note:", error);
+      toast.error("حدث خطأ أثناء تحديث الملاحظة");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Reset form when dialog is closed
   const handleClose = () => {
     setDescription("");
     setNoteText("");
@@ -89,18 +104,18 @@ export default function ModalAddNote({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>إضافة ملاحظة جديدة</DialogTitle>
+          <DialogTitle>تعديل الملاحظة</DialogTitle>
           <DialogDescription>
-            من فضلك املأ التفاصيل المطلوبة للملاحظة الجديدة
+            قم بتعديل تفاصيل الملاحظة الحالية
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="block mb-1">كود الحجز</label>
+            <label className="block mb-1">كود الملاحظة</label>
             <input
               type="text"
               className="w-full p-2 border rounded-md"
-              value={reservationCode}
+              value={note.note_id}
               disabled
             />
           </div>
@@ -124,18 +139,23 @@ export default function ModalAddNote({
             />
           </div>
           <div>
-            <label className="block mb-1">رفع الملف (اختياري)</label>
+            <label className="block mb-1">رفع ملف جديد (اختياري)</label>
             <input
               type="file"
               className="w-full p-2 border rounded-md"
               onChange={handleFileChange}
               accept=".pdf,.doc,.docx,.jpg,.png"
             />
+            {note.attached_file && !file && (
+              <p className="text-sm text-gray-500 mt-1">
+                الملف الحالي: {note.file_name}
+              </p>
+            )}
           </div>
 
           {imageUrl && (
             <div className="mt-4">
-              <p className="font-semibold">الملف المحدد:</p>
+              <p className="font-semibold">الملف الجديد المحدد:</p>
               {file?.type.startsWith('image/') ? (
                 <img 
                   src={imageUrl} 
@@ -161,7 +181,7 @@ export default function ModalAddNote({
               className="bg-green-700"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "جاري الإضافة..." : "إضافة"}
+              {isSubmitting ? "جاري التحديث..." : "تحديث"}
             </Button>
           </div>
         </div>

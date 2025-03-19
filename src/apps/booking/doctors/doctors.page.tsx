@@ -1,57 +1,90 @@
-
 import { DataTable } from "@/components/clients/table";
+import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useUser } from "@/hooks/auth.context";
+import useFetch from "@/hooks/use-fetch";
+import api from "@/lib/axios";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
-type UpcomingReservationsType = {
-  doctor_name: string
-  phone: string
-  specialization: string
-  workplace: string
-  time: string
-  addition_date: string
+export interface Doctor {
+  id: number;
+  name: string;
+  phone: string;
+  specialization: string;
+  branch_ids: number[];
+  branch_names: string[];
+  available_schedule: AvailableSchedule[];
+  create_date: string;
+}
+
+export interface AvailableSchedule {
+  day: string;
+  from: string;
+  to: string;
 }
 
 export default function DoctorsPage() {
+  const [refresh, setRefresh] = useState(false);
+  const { data, loading, error } = useFetch("/doctors", refresh);
+  const { user } = useUser();
+  const deleteDoctor = (id: string) => {
+    api
+      .post(`/doctor/delete/`, {
+        doctor_id: id,
+        user_id: user.user_id,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("تم حذف العميل بنجاح");
+          setRefresh((prev) => !prev);
+        }
+      });
+  };
   return (
     <Card className="p-4">
       <CardContent className="p-3 py-0">
         <DataTable
-            title="قائمة الأطباء"
-            columns={columnsUpcomingReservations}
-            data={data}
-            searchKey={["doctor_name"]}
-            textKey="اسم الطبيب"
-        />
+          title="قائمة الأطباء"
+          searchKey={["name"]} // Adjusted to match accessorKey
+          textKey="اسم الطبيب"
+          loading={loading}
+          error={error}
+          columns={columnsUpcomingReservations(deleteDoctor)}
+          data={data?.data}
+        >
+          <Link to={"add"}>
+            <Button className="bg-green-700 md:px-7 hover:bg-green-800">
+              اضافة جديد
+            </Button>
+          </Link>
+        </DataTable>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-
-const data = [
-  {
-    doctor_name: "أسو الطبيب",
-    phone: "(+33) 75 55 45 48",
-    specialization: "باطنة",
-    workplace: "طبيب",
-    time: "ميزة بيوتي",
-    addition_date: "11/03/2022",
-  },
-];
-  
-  const columnsUpcomingReservations: ColumnDef<UpcomingReservationsType>[] = [
+const columnsUpcomingReservations = (
+  action: (id: string) => void
+): ColumnDef<Doctor>[] => {
+  return [
+    {accessorKey: "id"
+      
+    },
     {
-      accessorKey: "doctor_name",
+      accessorKey: "name",
       header: "اسم الطبيب",
-      cell: ({ row }) => <div className="text-right">{row.getValue("doctor_name")}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">{row.getValue("name")}</div>
+      ),
     },
     {
       accessorKey: "phone",
-      header: "رقم اجوال",
+      header: "رقم الجوال",
       cell: ({ row }) => <div>{row.getValue("phone")}</div>,
     },
     {
@@ -60,37 +93,69 @@ const data = [
       cell: ({ row }) => <div>{row.getValue("specialization")}</div>,
     },
     {
-      accessorKey: "workplace",
+      accessorKey: "branch_names",
       header: "جهة العمل",
-      cell: ({ row }) => <div>{row.getValue("workplace")}</div>,
+      cell: ({ row }) => (
+        <div>{(row.getValue("branch_names") as string[]).join(", ")}</div>
+      ),
     },
     {
-      accessorKey: "time",
+      accessorKey: "available_schedule",
       header: "مواعيد",
-      cell: ({ row }) => <div>{row.getValue("time")}</div>,
+      cell: ({ row }) => {
+        const schedule = row.getValue(
+          "available_schedule"
+        ) as AvailableSchedule[];
+        return (
+          <div className="text-right">
+            {schedule && schedule.length > 0 ? (
+              <ul className="list-none p-0">
+                {schedule.map((slot, index) => (
+                  <li key={index} className="text-sm">
+                    {slot.day}: {slot.from} - {slot.to}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span>غير متوفر</span>
+            )}
+          </div>
+        );
+      },
     },
     {
-      accessorKey: "addition_date",
+      accessorKey: "create_date",
       header: "تاريخ الإضافة",
-      cell: ({ row }) => <div>{row.getValue("addition_date")}</div>,
+      cell: ({ row }) => (
+        <div>
+          {new Date(row.getValue("create_date")).toLocaleDateString("ar-EG")}
+        </div>
+      ),
     },
     {
       id: "actions",
       enableHiding: false,
       header: "اجراءات",
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex gap-1">
-          <Link to={`1`}>
+          <Link to={`${row.original.id}`}>
             <Button variant="ghost" size="icon">
               <Eye className="size-5" />
             </Button>
           </Link>
-          {/* <Link to={`/booking/doctors/1/edit`}>
+          <Link to={`${row.getValue("id")}/edit`}>
             <Button variant="ghost" size="icon">
               <Edit className="size-5" />
             </Button>
-          </Link> */}
+          </Link>
+
+          <DeleteDialog action={() => action(row.getValue("id"))}>
+            <Button variant="ghost" size="icon">
+              <Trash className="size-5 text-red-500" />
+            </Button>
+          </DeleteDialog>
         </div>
       ),
     },
   ];
+};

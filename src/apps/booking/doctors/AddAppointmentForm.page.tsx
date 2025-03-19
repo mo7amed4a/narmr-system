@@ -1,42 +1,143 @@
-
-
-import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { useParams } from "react-router-dom";
+import useFetch from "@/hooks/use-fetch";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
+import CustomerSelect from "@/components/selects/CustomerSelect";
+import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
 
 export default function AddAppointmentFormPage() {
-  const timeSlots = Array.from({ length: 9 }, (_, i) => {
-    const hour = i + 7
-    return `${hour.toString().padStart(2, "0")}:00`
-  })
+  const { id } = useParams();
+  const { data: doctorData, loading: doctorLoading, error: doctorError } = useFetch(`/doctor/${id}`);
+
+  const [formData, setFormData] = useState({
+    customer_id: "",
+    branch_id: 0,
+    doctor_id: parseInt(id || "0"),
+    service_id: 4,
+    reservation_day: "",
+    reservation_time: "",
+    reservation_type: "new",
+    service_type: "consultation",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const dayMap: { [key: string]: string } = {
+    Monday: "الإثنين",
+    Tuesday: "الثلاثاء",
+    Wednesday: "الأربعاء",
+    Thursday: "الخميس",
+    Friday: "الجمعة",
+    Saturday: "السبت",
+    Sunday: "الأحد",
+  };
+
+  const convertTo24Hour = (time: string) => {
+    const [hourMinute, period] = time.split(" ");
+    let [hour, minute] = hourMinute.split(":");
+    let hourNum = parseInt(hour);
+    if (period === "PM" && hourNum !== 12) hourNum += 12;
+    if (period === "AM" && hourNum === 12) hourNum = 0;
+    return `${hourNum.toString().padStart(2, "0")}:${minute}`;
+  };
+
+  const formatTimeTo12Hour = (time: string): string => {
+    const [hour, minute] = time.split(":");
+    const hourNum = parseInt(hour);
+    const period = hourNum >= 12 ? "PM" : "AM";
+    const formattedHour = hourNum % 12 || 12; // 0 يتحول لـ 12
+    return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
+  };
+
+  const timeSlots = doctorData?.data?.available_schedule
+    ? Array.from(new Set(doctorData.data.available_schedule.map((s: any) => convertTo24Hour(s.from))))
+    : [];
 
   const weekDays = [
-    { name: "السبت", date: "4 يناير" },
-    { name: "الأحد", date: "5 يناير" },
-    { name: "الإثنين", date: "6 يناير" },
-    { name: "الثلاثاء", date: "7 يناير" },
-    { name: "الأربعاء", date: "8 يناير" },
-    { name: "الخميس", date: "9 يناير" },
-    { name: "الجمعة", date: "10 يناير" },
-  ]
+    { name: "السبت", date: "4 يناير", enName: "Saturday" },
+    { name: "الأحد", date: "5 يناير", enName: "Sunday" },
+    { name: "الإثنين", date: "6 يناير", enName: "Monday" },
+    { name: "الثلاثاء", date: "7 يناير", enName: "Tuesday" },
+    { name: "الأربعاء", date: "8 يناير", enName: "Wednesday" },
+    { name: "الخميس", date: "9 يناير", enName: "Thursday" },
+    { name: "الجمعة", date: "10 يناير", enName: "Friday" },
+  ];
 
   const reservedSlots = [
     { day: "السبت", time: "08:00" },
     { day: "السبت", time: "13:00" },
     { day: "الأحد", time: "09:00" },
     { day: "الثلاثاء", time: "09:00" },
-  ]
+  ];
+
+  const handleSlotClick = (day: string, time: string) => {
+    if (!reservedSlots.some((slot) => slot.day === day && slot.time === time)) {
+      setFormData({
+        ...formData,
+        reservation_day: weekDays.find((d) => d.name === day)?.enName || "",
+        reservation_time: time,
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.customer_id || !formData.reservation_day || !formData.reservation_time) {
+      toast.error("يرجى ملء جميع الحقول المطلوبة");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // تحويل الوقت من 24 ساعة لـ 12 ساعة مع AM/PM
+      const formattedTime = formatTimeTo12Hour(formData.reservation_time);
+
+      const payload = {
+        customer_id: parseInt(formData.customer_id),
+        branch_id: doctorData.data.branch_ids[0],
+        doctor_id: formData.doctor_id,
+        service_id: formData.service_id,
+        reservation_day: formData.reservation_day,
+        reservation_time: formattedTime,
+        reservation_type: formData.reservation_type,
+        service_type: formData.service_type,
+      };
+      await api.post("/reservation/add", payload);
+      toast.success("تم إضافة الحجز بنجاح");
+      setFormData({
+        customer_id: "",
+        branch_id: 0,
+        doctor_id: parseInt(id || "0"),
+        service_id: 4,
+        reservation_day: "",
+        reservation_time: "",
+        reservation_type: "new",
+        service_type: "consultation",
+      });
+    } catch (error) {
+      console.error("Error adding reservation:", error);
+      toast.error("حدث خطأ أثناء إضافة الحجز");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (doctorLoading) return <div>جاري التحميل...</div>;
+  if (doctorError) return <div>خطأ: {doctorError.message}</div>;
 
   return (
     <Card className="w-full" dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-        <h2 className="text-xl font-bold">حجز جديد د. عبدالرحمن السلطان</h2>
-        <div className="gap-x-2">
-          <Button variant="green">حفظ</Button>
+        <h2 className="text-xl font-bold">حجز جديد - {doctorData?.data?.name}</h2>
+        <div className="gap-x-2 flex">
+          <Button variant="green" onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "جاري الحفظ..." : "حفظ"}
+          </Button>
           <Button variant="ghost" className="text-primary">
             إلغاء
           </Button>
@@ -46,24 +147,21 @@ export default function AddAppointmentFormPage() {
         <div className="mb-8">
           <h3 className="mb-4 text-lg font-semibold">بيانات الحجز</h3>
           <div className="grid gap-6 lg:grid-cols-4">
-            <div className="space-y-2">
-              <Label>اختر العميل</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="ريم فهد" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="reem">ريم فهد</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <CustomerSelect
+              value={formData.customer_id}
+              onValueChange={(value) => setFormData({ ...formData, customer_id: value })}
+            />
           </div>
         </div>
 
         <div className="mb-8 space-y-6">
-          <div className="gap-4 flex items-center ">
+          <div className="gap-4 flex items-center">
             <Label>نوع الحجز</Label>
-            <RadioGroup defaultValue="new" className="flex gap-4">
+            <RadioGroup
+              value={formData.reservation_type}
+              onValueChange={(value) => setFormData({ ...formData, reservation_type: value })}
+              className="flex gap-4"
+            >
               <div className="flex items-center gap-x-2">
                 <RadioGroupItem value="new" id="new" />
                 <Label htmlFor="new">حجز جديد</Label>
@@ -75,31 +173,10 @@ export default function AddAppointmentFormPage() {
             </RadioGroup>
           </div>
 
-          <div className="gap-4 flex items-center">
-            <Label>نوع الخدمة</Label>
-            <RadioGroup defaultValue="examination" className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="consultation" id="consultation" />
-                <Label htmlFor="consultation">استشارة</Label>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="examination" id="examination" />
-                <Label htmlFor="examination">فحص البشرة</Label>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="surgery" id="surgery" />
-                <Label htmlFor="surgery">جراحة تجميلية</Label>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="skin" id="skin" />
-                <Label htmlFor="skin">كشف جلدية</Label>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="pigmentation" id="pigmentation" />
-                <Label htmlFor="pigmentation">معالجة التصبغات</Label>
-              </div>
-            </RadioGroup>
-          </div>
+          <ServiceTypeSelect
+            value={formData.service_type}
+            onValueChange={(value) => setFormData({ ...formData, service_type: value })}
+          />
         </div>
 
         <div>
@@ -116,24 +193,42 @@ export default function AddAppointmentFormPage() {
                     <div className="text-sm text-gray-500">{day.date}</div>
                   </div>
                 ))}
-                {timeSlots.map((time) => (
+                {timeSlots.map((time: any) => (
                   <React.Fragment key={time}>
                     <div className="border-t bg-white p-2 text-center">{time}</div>
-                    {weekDays.map((day) => (
-                      <div
-                        key={`${day.name}-${time}`}
-                        className={cn(
-                          "border-t bg-white p-2 text-center",
-                          reservedSlots.some((slot) => slot.day === day.name && slot.time === time) && "bg-orange-50",
-                        )}
-                      >
-                        {reservedSlots.some((slot) => slot.day === day.name && slot.time === time) && (
-                          <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">
-                            محجوز
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                    {weekDays.map((day) => {
+                      const isReserved = reservedSlots.some(
+                        (slot) => slot.day === day.name && slot.time === time
+                      );
+                      const isAvailable = doctorData?.data?.available_schedule.some(
+                        (s: any) => dayMap[s.day] === day.name && convertTo24Hour(s.from) <= time && convertTo24Hour(s.to) >= time
+                      );
+                      const isSelected = formData.reservation_day === day.enName && formData.reservation_time === time;
+
+                      return (
+                        <div
+                          key={`${day.name}-${time}`}
+                          className={cn(
+                            "border-t bg-white p-2 text-center cursor-pointer",
+                            isReserved && "bg-orange-50 cursor-not-allowed",
+                            !isAvailable && !isReserved && "bg-gray-100 cursor-not-allowed",
+                            isSelected && "bg-green-100"
+                          )}
+                          onClick={() => isAvailable && !isReserved && handleSlotClick(day.name, time)}
+                        >
+                          {isReserved && (
+                            <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">
+                              محجوز
+                            </span>
+                          )}
+                          {isSelected && (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs text-green-700">
+                              محدد
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </React.Fragment>
                 ))}
               </div>
@@ -142,6 +237,5 @@ export default function AddAppointmentFormPage() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

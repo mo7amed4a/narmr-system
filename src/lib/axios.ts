@@ -21,7 +21,7 @@ api.interceptors.request.use((config) => {
   // }
   // const session_id = localStorage.getItem("session_id");
   // if (session_id) {
-    config.headers.Authorization = `Bearer 2f0e3c7443c20e0697df09b11273bfbc2c3dde6`;
+    // config.headers.Authorization = `Bearer 2f0e3c7443c20e0697df09b11273bfbc2c3dde6`;
   // }
   return config;
 });

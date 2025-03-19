@@ -15,14 +15,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const t = JSON.parse(Cookies.get("user") || "{}");
-        const response = await api.get(`/user_info/${t.user_id}`);
-        if (response?.data?.data) {
-          setUser(response?.data?.data);
-          Cookies.set("user", JSON.stringify(response?.data?.data));
-        } else {
-          Cookies.remove("user");
-          location.reload()
+        if (Cookies.get("user")) {
+          const t = JSON.parse(Cookies.get("user") || "{}");
+          const response = await api.get(`/user_info/${t.user_id}`);
+          if (response?.data?.data) {
+            setUser(response?.data?.data);
+            Cookies.set("user", JSON.stringify(response?.data?.data));
+          } else {
+            Cookies.remove("user");
+            location.reload()
+          }
         }
       } catch (error) {
         console.error("Error fetching user: ", error);
@@ -52,7 +54,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      const response = await api.post("/logout",{}, {
+      const response = await api.post("/logout",{
+        // @ts-ignore
+        user_id: user?.user_id
+      }, {
         withCredentials: true
       });
       
