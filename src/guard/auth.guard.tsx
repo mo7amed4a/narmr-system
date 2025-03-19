@@ -6,7 +6,7 @@ type ProtectedRouteProps = {
     route: string;
   };
   const ProtectedRoute = ({ children, route}: ProtectedRouteProps) => {
-    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting" | "booking" | null;
+    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting" | "transformer_employee" | null;
     if (type) {
         if (type === "admin" && route === "admin") {
           return children;
@@ -14,7 +14,7 @@ type ProtectedRouteProps = {
         if (type === "accounting" && route === "accounting") {
           return children;
         }
-        if (type === "booking" && route === "booking") {
+        if (type === "transformer_employee" && route === "booking") {
           return children;
         }
     }
