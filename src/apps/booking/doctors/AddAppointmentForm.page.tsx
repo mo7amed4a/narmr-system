@@ -104,7 +104,6 @@ export default function AddAppointmentFormPage() {
       });
     } catch (error) {
       console.error("Error adding reservation:", error);
-      toast.error("حدث خطأ أثناء إضافة الحجز");
     } finally {
       setIsSubmitting(false);
     }
