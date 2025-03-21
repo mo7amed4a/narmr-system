@@ -1,42 +1,32 @@
-import * as React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { useParams } from "react-router-dom";
 import useFetch from "@/hooks/use-fetch";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
+import TimeSlotSelector from "@/components/Appointment/TimeSlotSelector";
+import ServiceSelect from "@/components/selects/ServiceSelect";
 
 export default function AddAppointmentFormPage() {
   const { id } = useParams();
   const { data: doctorData, loading: doctorLoading, error: doctorError } = useFetch(`/doctor/${id}`);
 
   const [formData, setFormData] = useState({
-    customer_id: "",
+    customer_id: 0,
     branch_id: 0,
     doctor_id: parseInt(id || "0"),
-    service_id: 4,
+    service_id: 0,
     reservation_day: "",
     reservation_time: "",
     reservation_type: "new",
     service_type: "consultation",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const dayMap: { [key: string]: string } = {
-    Monday: "الإثنين",
-    Tuesday: "الثلاثاء",
-    Wednesday: "الأربعاء",
-    Thursday: "الخميس",
-    Friday: "الجمعة",
-    Saturday: "السبت",
-    Sunday: "الأحد",
-  };
 
   const convertTo24Hour = (time: string) => {
     const [hourMinute, period] = time.split(" ");
@@ -51,7 +41,7 @@ export default function AddAppointmentFormPage() {
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
     const period = hourNum >= 12 ? "PM" : "AM";
-    const formattedHour = hourNum % 12 || 12; // 0 يتحول لـ 12
+    const formattedHour = hourNum % 12 || 12;
     return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
   };
 
@@ -70,20 +60,15 @@ export default function AddAppointmentFormPage() {
   ];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" },
-    { day: "السبت", time: "13:00" },
-    { day: "الأحد", time: "09:00" },
-    { day: "الثلاثاء", time: "09:00" },
+    { day: "jndnnj", time: "08:00" },
   ];
 
-  const handleSlotClick = (day: string, time: string) => {
-    if (!reservedSlots.some((slot) => slot.day === day && slot.time === time)) {
-      setFormData({
-        ...formData,
-        reservation_day: weekDays.find((d) => d.name === day)?.enName || "",
-        reservation_time: time,
-      });
-    }
+  const handleSlotSelect = (day: string, time: string) => {
+    setFormData({
+      ...formData,
+      reservation_day: day,
+      reservation_time: time,
+    });
   };
 
   const handleSubmit = async () => {
@@ -94,11 +79,9 @@ export default function AddAppointmentFormPage() {
 
     setIsSubmitting(true);
     try {
-      // تحويل الوقت من 24 ساعة لـ 12 ساعة مع AM/PM
       const formattedTime = formatTimeTo12Hour(formData.reservation_time);
-
       const payload = {
-        customer_id: parseInt(formData.customer_id),
+        customer_id: formData.customer_id,
         branch_id: doctorData.data.branch_ids[0],
         doctor_id: formData.doctor_id,
         service_id: formData.service_id,
@@ -110,10 +93,10 @@ export default function AddAppointmentFormPage() {
       await api.post("/reservation/add", payload);
       toast.success("تم إضافة الحجز بنجاح");
       setFormData({
-        customer_id: "",
+        customer_id: 0,
         branch_id: 0,
         doctor_id: parseInt(id || "0"),
-        service_id: 4,
+        service_id: 0,
         reservation_day: "",
         reservation_time: "",
         reservation_type: "new",
@@ -133,7 +116,7 @@ export default function AddAppointmentFormPage() {
   return (
     <Card className="w-full" dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-        <h2 className="text-xl font-bold">حجز جديد - {doctorData?.data?.name}</h2>
+        <h2 className="text-lg md:text-xl font-bold">حجز جديد - {doctorData?.data?.name}</h2>
         <div className="gap-x-2 flex">
           <Button variant="green" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "جاري الحفظ..." : "حفظ"}
@@ -148,8 +131,12 @@ export default function AddAppointmentFormPage() {
           <h3 className="mb-4 text-lg font-semibold">بيانات الحجز</h3>
           <div className="grid gap-6 lg:grid-cols-4">
             <CustomerSelect
-              value={formData.customer_id}
-              onValueChange={(value) => setFormData({ ...formData, customer_id: value })}
+              value={formData.customer_id.toString()}
+              onValueChange={(value) => setFormData({ ...formData, customer_id: parseInt(value) })}
+            />
+            <ServiceSelect
+              value={formData?.service_id?.toString()}
+              onValueChange={(value) => setFormData({ ...formData, service_id: parseInt(value) })}
             />
           </div>
         </div>
@@ -167,8 +154,8 @@ export default function AddAppointmentFormPage() {
                 <Label htmlFor="new">حجز جديد</Label>
               </div>
               <div className="flex items-center gap-x-2">
-                <RadioGroupItem value="followup" id="followup" />
-                <Label htmlFor="followup">متابعة</Label>
+                <RadioGroupItem value="follow_up" id="follow_up" />
+                <Label htmlFor="follow_up">متابعة</Label>
               </div>
             </RadioGroup>
           </div>
@@ -179,62 +166,15 @@ export default function AddAppointmentFormPage() {
           />
         </div>
 
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-semibold">الوقت والتاريخ</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <div className="min-w-[800px]">
-              <div className="grid grid-cols-8 gap-px bg-gray-200">
-                <div className="bg-gray-50 p-2 text-center font-medium">الوقت</div>
-                {weekDays.map((day) => (
-                  <div key={day.name} className="space-y-1 bg-gray-50 p-2 text-center">
-                    <div className="font-medium">{day.name}</div>
-                    <div className="text-sm text-gray-500">{day.date}</div>
-                  </div>
-                ))}
-                {timeSlots.map((time: any) => (
-                  <React.Fragment key={time}>
-                    <div className="border-t bg-white p-2 text-center">{time}</div>
-                    {weekDays.map((day) => {
-                      const isReserved = reservedSlots.some(
-                        (slot) => slot.day === day.name && slot.time === time
-                      );
-                      const isAvailable = doctorData?.data?.available_schedule.some(
-                        (s: any) => dayMap[s.day] === day.name && convertTo24Hour(s.from) <= time && convertTo24Hour(s.to) >= time
-                      );
-                      const isSelected = formData.reservation_day === day.enName && formData.reservation_time === time;
-
-                      return (
-                        <div
-                          key={`${day.name}-${time}`}
-                          className={cn(
-                            "border-t bg-white p-2 text-center cursor-pointer",
-                            isReserved && "bg-orange-50 cursor-not-allowed",
-                            !isAvailable && !isReserved && "bg-gray-100 cursor-not-allowed",
-                            isSelected && "bg-green-100"
-                          )}
-                          onClick={() => isAvailable && !isReserved && handleSlotClick(day.name, time)}
-                        >
-                          {isReserved && (
-                            <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">
-                              محجوز
-                            </span>
-                          )}
-                          {isSelected && (
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs text-green-700">
-                              محدد
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <TimeSlotSelector
+          weekDays={weekDays}
+          timeSlots={timeSlots}
+          reservedSlots={reservedSlots}
+          availableSchedule={doctorData?.data?.available_schedule || []}
+          selectedDay={formData.reservation_day}
+          selectedTime={formData.reservation_time}
+          onSlotSelect={handleSlotSelect}
+        />
       </CardContent>
     </Card>
   );

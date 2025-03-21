@@ -41,7 +41,7 @@ export default function ClientsPage() {
   };
 
   return (
-    <Card className="p-4">
+    <Card className="replaceAll">
       <CardContent className="p-3 py-0">
         <DataTable
           loading={loading}

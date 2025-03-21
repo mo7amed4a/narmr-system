@@ -6,7 +6,6 @@ import LoadingSmall from "../api/loadingSmall";
 interface ServiceSelectProps {
   value: string;
   onValueChange: (value: string) => void;
-//   onPriceChange: (price: number) => void; // لإرجاع السعر للصفحة
 }
 
 export default function ServiceSelect({ value, onValueChange }: ServiceSelectProps) {
@@ -20,20 +19,19 @@ export default function ServiceSelect({ value, onValueChange }: ServiceSelectPro
   const handleChange = (serviceId: string) => {
     services.find((service: any) => service.id === parseInt(serviceId));
     onValueChange(serviceId);
-    // if (selectedService) onPriceChange(selectedService.price);
   };
 
   return (
     <div className="space-y-2">
       <Label>اختر الخدمة</Label>
-      <Select value={value} onValueChange={handleChange}>
+      <Select value={value ==="0" ? "" : value} onValueChange={handleChange}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="اختر الخدمة" />
         </SelectTrigger>
         <SelectContent>
           {services.map((service: any) => (
             <SelectItem key={service.id} value={service.id.toString()}>
-              {service.service_name} {service.price} جنيه
+              {service.name}
             </SelectItem>
           ))}
         </SelectContent>

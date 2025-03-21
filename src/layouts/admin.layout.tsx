@@ -82,7 +82,7 @@ function AccountingLayout() {
             <AdminHeader pagination={true}>
               <SidebarTrigger />
             </AdminHeader>
-            <main className="w-full p-4">
+            <main className="w-full p-2.5 md:p-4">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/profile" element={<ProfilePage />} />

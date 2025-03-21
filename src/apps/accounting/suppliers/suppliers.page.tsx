@@ -122,7 +122,7 @@ export default function SuppliersPage() {
   ];
 
   return (
-    <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
+    <Card className="w-full flex flex-col gap-4 shadow-none border-none">
       <CardContent>
         <DataTable
           title="بيانات الموردين"

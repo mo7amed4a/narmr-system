@@ -114,7 +114,7 @@ export default function InvoicesEditPage() {
 
   return (
     <div className="space-y-4">
-      <Card className="p-4">
+      <Card className="replaceAll">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>تعديل فاتورة - {invoiceData?.data?.invoice_code || "جاري التحميل"}</CardTitle>
         </CardHeader>
@@ -129,13 +129,13 @@ export default function InvoicesEditPage() {
             <DoctorSelect
               value={formData.doctor_id}
               onValueChange={(value) =>
-                setFormData({ ...formData, doctor_id: value })
+                setFormData({ ...formData, doctor_id: typeof value === "string" && value || ""})
               }
             />
           </div>
         </CardContent>
       </Card>
-      <Card className="p-4">
+      <Card className="replaceAll">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>الخدمات</CardTitle>
         </CardHeader>

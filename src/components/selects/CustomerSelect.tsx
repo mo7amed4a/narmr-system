@@ -19,7 +19,7 @@ export default function CustomerSelect({ value, onValueChange }: CustomerSelectP
   return (
     <div className="space-y-2">
       <Label>اختر العميل</Label>
-      <Select value={value} onValueChange={onValueChange}>
+      <Select value={value==="0" ? "" : value} onValueChange={onValueChange}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="اختر العميل" />
         </SelectTrigger>

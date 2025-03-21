@@ -14,7 +14,7 @@ import { Eye } from "lucide-react";
 
 export default function SuppliersDetailsPage() {
   return (
-    <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
+    <Card className="w-full flex flex-col gap-4 shadow-none border-none">
       <Card className="w-full shadow-none">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>بيانات المورد</CardTitle>

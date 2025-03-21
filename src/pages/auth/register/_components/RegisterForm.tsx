@@ -65,7 +65,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
+    <Card className="w-full replaceAll flex flex-col gap-4 shadow-none border-none">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

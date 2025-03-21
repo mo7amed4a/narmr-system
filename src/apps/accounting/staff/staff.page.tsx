@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export default function StaffPage() {
   return (
-    <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
+    <Card className="w-full flex flex-col gap-4 shadow-none border-none">
         <CardContent className="p-2">
           <DataTable
             title="قائمة الموظفين"

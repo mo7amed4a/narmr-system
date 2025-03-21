@@ -16,8 +16,8 @@ const serviceTypes = [
 
 export default function ServiceTypeSelect({ value, onValueChange }: ServiceTypeSelectProps) {
   return (
-    <div className="gap-4 flex items-center">
-      <Label>نوع الخدمة</Label>
+    <div className="gap-4 flex items-start md:items-center">
+      <Label className="text-nowrap">نوع الخدمة</Label>
       <RadioGroup
         value={value}
         onValueChange={onValueChange}

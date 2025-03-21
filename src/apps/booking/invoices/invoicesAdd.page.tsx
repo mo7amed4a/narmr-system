@@ -100,7 +100,7 @@ export default function InvoicesAddPage() {
 
   return (
     <div className="space-y-4">
-      <Card className="p-4">
+      <Card className="replaceAll">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>فاتورة جديدة</CardTitle>
         </CardHeader>
@@ -115,13 +115,13 @@ export default function InvoicesAddPage() {
             <DoctorSelect
               value={formData.doctor_id}
               onValueChange={(value) =>
-                setFormData({ ...formData, doctor_id: value })
+                setFormData({ ...formData, doctor_id: typeof value === "string" ? value : ""  })
               }
             />
           </div>
         </CardContent>
       </Card>
-      <Card className="p-4">
+      <Card className="replaceAll">
         <CardHeader className="flex justify-between flex-row items-center">
           <CardTitle>الخدمات</CardTitle>
         </CardHeader>

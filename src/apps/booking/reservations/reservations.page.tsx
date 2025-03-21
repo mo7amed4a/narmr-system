@@ -23,7 +23,7 @@ export default function ReservationsPage() {
   const { data, loading, error } = useFetch("/reservations", refresh);
 
   return (
-    <Card className="p-4">
+    <Card>
       <CardContent className="p-3 py-0">
         <DataTable
           loading={loading}

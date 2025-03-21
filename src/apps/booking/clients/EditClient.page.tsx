@@ -86,7 +86,7 @@ export default function EditClientPage() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="w-full p-4 flex flex-col gap-4 shadow-none border-none">
+      <Card className="w-full replaceAll flex flex-col gap-4 shadow-none border-none">
         <Card className="w-full shadow-none">
           <CardHeader className="flex justify-between flex-row items-center">
             <CardTitle>تعديل بيانات العميل</CardTitle>

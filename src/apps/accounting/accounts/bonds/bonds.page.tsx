@@ -21,7 +21,7 @@ type DocumentType = {
 
 export default function BandsAccountingPage() {
   return (
-    <Card className="p-4">
+    <Card className="replaceAll">
         <CardHeader className="flex justify-end flex-row items-center">
           <div className="flex gap-2">
             <Button variant={"outline"}>

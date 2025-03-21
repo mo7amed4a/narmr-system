@@ -34,7 +34,7 @@ export default function BranchesPage() {
     })
   } 
   return (
-    <Card className="p-4">
+    <Card>
       <CardContent className="p-3 py-0">
         <DataTable
           loading={loading}

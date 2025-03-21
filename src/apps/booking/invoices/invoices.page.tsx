@@ -66,7 +66,7 @@ export default function InvoicesPage() {
   const columns = columnsInvoices(updateInvoiceStatus, deleteFun);
 
   return (
-    <Card className="p-4">
+    <Card className="p-0">
       <CardContent className="p-3 py-0">
         <DataTable
           title="قائمة فواتير الحجوزات"

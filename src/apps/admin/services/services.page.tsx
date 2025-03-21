@@ -11,7 +11,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
-type ClientsDataTableType = {
+export interface ServicesType {
   id: number;
   name: string;
   price: number;
@@ -34,7 +34,7 @@ export default function ServicesPage() {
   }
 
   return (
-      <Card className="p-4">
+      <Card>
           <CardContent className="p-3 py-0">
             <DataTable
               loading={loading}
@@ -54,7 +54,7 @@ export default function ServicesPage() {
   );
 }
 
-const columnsDataTable = (action: (id: string) => void):ColumnDef<ClientsDataTableType>[] => {
+const columnsDataTable = (action: (id: string) => void):ColumnDef<ServicesType>[] => {
   return [
     {
       accessorKey: "id",
