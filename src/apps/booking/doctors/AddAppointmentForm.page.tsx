@@ -9,7 +9,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
-import TimeSlotSelector from "@/components/Appointment/TimeSlotSelector";
+import TimeSlotSelector, { days } from "@/components/Appointment/TimeSlotSelector";
 import ServiceSelect from "@/components/selects/ServiceSelect";
 
 export default function AddAppointmentFormPage() {
@@ -21,8 +21,7 @@ export default function AddAppointmentFormPage() {
     branch_id: 0,
     doctor_id: parseInt(id || "0"),
     service_id: 0,
-    reservation_day: "",
-    reservation_time: "",
+    reservation_date: "", // استبدلنا reservation_day و reservation_time
     reservation_type: "new",
     service_type: "consultation",
   });
@@ -45,47 +44,53 @@ export default function AddAppointmentFormPage() {
     return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
   };
 
+  const parseReservationDate = (date: string) => {
+    if (!date) return { day: "", time: "" };
+    const [datePart, timePart] = date.split(" ");
+    const reservationDate = new Date(datePart);
+    const dayName = reservationDate.toLocaleString("en-US", { weekday: "long" });
+    return { day: dayName, time: timePart.slice(0, 5) };
+  };
+
+  const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
+
   const timeSlots = doctorData?.data?.available_schedule
     ? Array.from(new Set(doctorData.data.available_schedule.map((s: any) => convertTo24Hour(s.from))))
     : [];
 
-  const weekDays = [
-    { name: "السبت", date: "4 يناير", enName: "Saturday" },
-    { name: "الأحد", date: "5 يناير", enName: "Sunday" },
-    { name: "الإثنين", date: "6 يناير", enName: "Monday" },
-    { name: "الثلاثاء", date: "7 يناير", enName: "Tuesday" },
-    { name: "الأربعاء", date: "8 يناير", enName: "Wednesday" },
-    { name: "الخميس", date: "9 يناير", enName: "Thursday" },
-    { name: "الجمعة", date: "10 يناير", enName: "Friday" },
-  ];
-
   const reservedSlots = [
-    { day: "jndnnj", time: "08:00" },
+    { day: "السبت", time: "08:00" }, // إصلاح jndnnj
   ];
 
-  const handleSlotSelect = (day: string, time: string) => {
+  const handleSlotSelect = (fullDate: string) => {
     setFormData({
       ...formData,
-      reservation_day: day,
-      reservation_time: time,
+      reservation_date: fullDate, // استخدام التاريخ الكامل
     });
   };
 
   const handleSubmit = async () => {
-    if (!formData.customer_id || !formData.reservation_day || !formData.reservation_time) {
+    if (
+      !formData.customer_id ||
+      !formData.reservation_date ||
+      !formData.service_id ||
+      !formData.doctor_id
+    ) {
       toast.error("يرجى ملء جميع الحقول المطلوبة");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const formattedTime = formatTimeTo12Hour(formData.reservation_time);
+      const [datePart, timePart] = formData.reservation_date.split(" ");
+      const formattedTime = formatTimeTo12Hour(timePart);
       const payload = {
         customer_id: formData.customer_id,
         branch_id: doctorData.data.branch_ids[0],
         doctor_id: formData.doctor_id,
         service_id: formData.service_id,
-        reservation_day: formData.reservation_day,
+        reservation_day: days[new Date(datePart).getDay()], // YYYY-MM-DD
+        reservation_date: datePart, // YYYY-MM-DD
         reservation_time: formattedTime,
         reservation_type: formData.reservation_type,
         service_type: formData.service_type,
@@ -97,13 +102,13 @@ export default function AddAppointmentFormPage() {
         branch_id: 0,
         doctor_id: parseInt(id || "0"),
         service_id: 0,
-        reservation_day: "",
-        reservation_time: "",
+        reservation_date: "",
         reservation_type: "new",
         service_type: "consultation",
       });
     } catch (error) {
       console.error("Error adding reservation:", error);
+      toast.error("حدث خطأ أثناء إضافة الحجز");
     } finally {
       setIsSubmitting(false);
     }
@@ -134,7 +139,7 @@ export default function AddAppointmentFormPage() {
               onValueChange={(value) => setFormData({ ...formData, customer_id: parseInt(value) })}
             />
             <ServiceSelect
-              value={formData?.service_id?.toString()}
+              value={formData.service_id.toString()}
               onValueChange={(value) => setFormData({ ...formData, service_id: parseInt(value) })}
             />
           </div>
@@ -166,12 +171,11 @@ export default function AddAppointmentFormPage() {
         </div>
 
         <TimeSlotSelector
-          weekDays={weekDays}
           timeSlots={timeSlots}
           reservedSlots={reservedSlots}
           availableSchedule={doctorData?.data?.available_schedule || []}
-          selectedDay={formData.reservation_day}
-          selectedTime={formData.reservation_time}
+          selectedDay={selectedDay}
+          selectedTime={selectedTime}
           onSlotSelect={handleSlotSelect}
         />
       </CardContent>

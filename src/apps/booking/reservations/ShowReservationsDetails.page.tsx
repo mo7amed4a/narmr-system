@@ -4,6 +4,7 @@ import CardPdfNote from "@/components/reservations/CardPdfNote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useFetch from "@/hooks/use-fetch";
+import NotFoundPage from "@/pages/NotFoundPage";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -28,7 +29,7 @@ export default function ShowReservationsDetailsPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
+  return myData ? (
     <>
       {<div className="w-full p-4 grid lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-4">
@@ -129,6 +130,6 @@ export default function ShowReservationsDetailsPage() {
         {myData && <ModalAddNote reservationCode={myData.reservation_code} setRefresh={setRefresh} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
       </div>}
     </>
-  ) 
+  ) : <NotFoundPage title="عذرًا، لا يمكننا العثور على  هذا الحجز" description="" btn={false} />
   
 }

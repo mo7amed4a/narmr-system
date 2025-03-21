@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useParams } from "react-router-dom";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
@@ -11,24 +12,39 @@ import TimeSlotSelector, { days } from "@/components/Appointment/TimeSlotSelecto
 import DoctorSelect from "@/components/selects/DoctorSelect";
 import BranchSelect from "@/components/selects/BranchSelect";
 import ServiceSelect from "@/components/selects/ServiceSelect";
+import useFetch from "@/hooks/use-fetch";
+import Loading from "@/components/api/loading";
 import { Doctor } from "../doctors/doctors.page";
 
-export default function AddReservationsPage() {
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
+export default function EditReservationPage() {
+  const { id: reservation_code } = useParams(); // جلب كود الحجز من الـ URL
 
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [formData, setFormData] = useState({
+    reservation_code: reservation_code || "",
     customer_id: 0,
     branch_id: 0,
+    doctor_id: 0,
     service_id: 0,
     reservation_day: "",
     reservation_time: "",
-    reservation_date: "", // غيرنا reservation_day و reservation_time لـ reservation_date
+    reservation_date: "",
+    status: "confirmed",
     reservation_type: "new",
     service_type: "consultation",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // جلب بيانات الحجز
+  const { data, loading, error } = useFetch(`/reservation/details?reservation_code=${reservation_code}`);
+
+  const { data: doctorData, loading: doctorLoading } = useFetch(
+    formData.doctor_id ? `/doctor/${formData.doctor_id}` : "/doctor/not-found"
+  );
+
+  // تحويل الوقت لصيغة 24 ساعة
   const convertTo24Hour = (time: string) => {
+    if (!time) return "";
     const [hourMinute, period] = time.split(" ");
     let [hour, minute] = hourMinute.split(":");
     let hourNum = parseInt(hour);
@@ -37,7 +53,9 @@ export default function AddReservationsPage() {
     return `${hourNum.toString().padStart(2, "0")}:${minute}`;
   };
 
+  // تحويل الوقت لصيغة 12 ساعة مع AM/PM
   const formatTimeTo12Hour = (time: string): string => {
+    if (!time) return "";
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
     const period = hourNum >= 12 ? "PM" : "AM";
@@ -45,14 +63,44 @@ export default function AddReservationsPage() {
     return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
   };
 
-  // استخراج اليوم والوقت من reservation_date لعرضهم في TimeSlotSelector
+  // استخراج اليوم والوقت من reservation_date
   const parseReservationDate = (date: string) => {
     if (!date) return { day: "", time: "" };
     const [datePart, timePart] = date.split(" ");
     const reservationDate = new Date(datePart);
     const dayName = reservationDate.toLocaleString("en-US", { weekday: "long" });
-    return { day: dayName, time: timePart.slice(0, 5) }; // "HH:MM"
+    return { day: dayName, time: timePart ? timePart.slice(0, 5) : "" }; // "HH:MM"
   };
+
+  // تعبئة formData و doctor لما البيانات تتحمل
+  useEffect(() => {
+    if (data?.data) {
+      const reservation = data.data;
+      setFormData({
+        reservation_code: reservation.reservation_code || reservation_code,
+        customer_id: reservation.customer_id || 0,
+        branch_id: reservation.branch_id || 0,
+        doctor_id: reservation.doctor_id || 0,
+        service_id: reservation.service_id || 0,
+        reservation_day: days[new Date(reservation.reservation_date).getDay()], // YYYY-MM-DD HH:MM:SS
+        reservation_time: reservation.reservation_time || "",
+        reservation_date: reservation.reservation_date || "", // YYYY-MM-DD HH:MM:SS
+        status: reservation.status || "confirmed",
+        reservation_type: reservation.reservation_type || "new",
+        service_type: reservation.service_type || "consultation",
+      });
+    }
+  }, [data, reservation_code]);
+
+  useEffect(() => {
+    if (doctorData?.data) {
+      // @ts-ignore
+      setDoctor({
+        id: doctorData.data.id,
+        available_schedule: doctorData.data.available_schedule || [],
+      });
+    }
+  }, [doctorData]);
 
   const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
 
@@ -61,15 +109,19 @@ export default function AddReservationsPage() {
     : [];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" }, // عدلت "jndnnj" لـ "السبت" عشان يشتغل صح
+    { day: "السبت", time: "08:00" },
+    { day: "السبت", time: "13:00" },
+    { day: "الأحد", time: "09:00" },
+    { day: "الثلاثاء", time: "09:00" },
   ];
 
-  const handleSlotSelect = (time: string, fullDate: string) => {    
+  const handleSlotSelect = (day: string, time: string, fullDate: string) => {
+    console.log(day, time);
     setFormData({
       ...formData,
       reservation_day: days[new Date(fullDate).getDay()],
       reservation_time: formatTimeTo12Hour(time), // بنستخدم التاريخ الكامل هنا
-      reservation_date: fullDate, // بنستخدم التاريخ الكامل هنا
+      reservation_date: fullDate, // التاريخ الكامل YYYY-MM-DD HH:MM:SS
     });
   };
 
@@ -77,54 +129,49 @@ export default function AddReservationsPage() {
     if (
       !formData.customer_id ||
       !formData.branch_id ||
-      !formData.reservation_date ||
-      !doctor?.id ||
-      !formData.service_id
+      !formData.doctor_id ||
+      !formData.service_id ||
+      !formData.reservation_date
     ) {
       toast.error("يرجى ملء جميع الحقول المطلوبة");
       return;
     }
+
     setIsSubmitting(true);
     try {
       const payload = {
+        reservation_code: formData.reservation_code,
         customer_id: formData.customer_id,
         branch_id: formData.branch_id,
-        doctor_id: doctor.id,
+        doctor_id: formData.doctor_id,
         service_id: formData.service_id,
         reservation_day: formData.reservation_day, // YYYY-MM-DD HH:MM:SS
-        reservation_time: formData.reservation_time, // YYYY-MM-DD HH:MM:SS
-        reservation_date: formData.reservation_date.split(" ")[0], // YYYY-MM-DD HH:MM:SS
+        reservation_time: formData.reservation_time,
+        reservation_date: formData.reservation_date, // YYYY-MM-DD HH:MM:SS
+        status: formData.status,
         reservation_type: formData.reservation_type,
         service_type: formData.service_type,
       };
-      await api.post("/reservation/add", payload);
-      toast.success("تم إضافة الحجز بنجاح");
-      setFormData({
-        customer_id: 0,
-        branch_id: 0,
-        service_id: 0,
-        reservation_day: "",
-        reservation_time:"",
-        reservation_date: "",
-        reservation_type: "new",
-        service_type: "consultation",
-      });
-      setDoctor(null);
+      await api.post("/reservation/update", payload); // أو PUT لو API بيدعم
+      toast.success("تم تعديل الحجز بنجاح");
     } catch (error) {
-      console.error("Error adding reservation:", error);
-      toast.error("حدث خطأ أثناء إضافة الحجز");
+      console.error("Error updating reservation:", error);
+      toast.error("حدث خطأ أثناء تعديل الحجز");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (loading || doctorLoading) return <Loading />;
+  if (error) return <div>خطأ: {error.message}</div>;
+
   return (
     <Card className="w-full" dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-        <h2 className="text-lg md:text-xl font-bold">حجز جديد</h2>
+        <h2 className="text-lg md:text-xl font-bold">تعديل الحجز - {formData.reservation_code}</h2>
         <div className="gap-x-2 flex">
           <Button variant="green" onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "جاري الحفظ..." : "حفظ"}
+            {isSubmitting ? "جاري الحفظ..." : "حفظ التعديلات"}
           </Button>
           <Button variant="ghost" className="text-primary">
             إلغاء
@@ -148,11 +195,12 @@ export default function AddReservationsPage() {
               onValueChange={(value) => setFormData({ ...formData, service_id: parseInt(value) })}
             />
             <DoctorSelect
-              value={doctor?.id?.toString() || ""}
+              value={formData.doctor_id.toString()}
               allData
               onValueChange={(value) => {
                 if (typeof value === "object") {
                   setDoctor(value);
+                  setFormData({ ...formData, doctor_id: value.id });
                 }
               }}
             />

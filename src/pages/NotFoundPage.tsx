@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
 
-export default function NotFoundPage() {
+export default function NotFoundPage({
+  title=" الصفحة غير موجودة",
+  description=`عذرًا، لا يمكننا العثور على تلك الصفحة. ستجد الكثير لاستكشافه على الصفحة الرئيسية`,
+  btn=true
+}: {
+  title?:string
+  description?:string
+  btn?:boolean
+}) {
   return (
     <section className=" w-full h-screen min-h-screen flex items-center">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -9,18 +17,17 @@ export default function NotFoundPage() {
             404
           </h1>
           <p className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
-            الصفحة غير موجودة
+           {title}
           </p>
           <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-          عذرًا، لا يمكننا العثور على تلك الصفحة. ستجد الكثير لاستكشافه على
-          الصفحة الرئيسية
+{description}
           </p>
-          <Link
+          {btn && <Link
             to="/"
             className="inline-flex text-white bg-primary hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-900 my-4"
           >
             الرجوع للصفحة الرئيسية
-          </Link>
+          </Link>}
         </div>
       </div>
     </section>

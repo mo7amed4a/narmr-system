@@ -1,10 +1,14 @@
 import { DataTable } from "@/components/clients/table";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useUser } from "@/hooks/auth.context";
 import useFetch from "@/hooks/use-fetch";
+import api from "@/lib/axios";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Eye } from "lucide-react";
+import { ArrowLeftRight, ArrowUpDown, Edit, Eye } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 type UpcomingReservationsType = {
@@ -19,8 +23,25 @@ type UpcomingReservationsType = {
 };
 
 export default function ReservationsPage() {
-  const [refresh] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const { data, loading, error } = useFetch("/reservations", refresh);
+  const {user} = useUser()
+  const updateReservationStatus = async (id: string, newStatus: string) => {
+    try {
+      const response = await api.post(`/reservation/status`, {
+        user_id: user.user_id,
+        reservation_code: id,
+        status: newStatus,
+      });
+      if (response.status === 200) {
+        toast.success("تم تحديث حالة الفاتورة بنجاح");
+        setRefresh((prev) => !prev); // إعادة جلب البيانات بعد التحديث
+      }
+    } catch (err) {
+      console.error("Error updating invoice status:", err);
+    }
+  };
+
 
   return (
     <Card>
@@ -28,7 +49,7 @@ export default function ReservationsPage() {
         <DataTable
           loading={loading}
           error={error}
-          columns={columnsDataTable()}
+          columns={columnsDataTable(updateReservationStatus)}
           data={data?.data}
           title="قائمة الحجوزات"
           searchKey={["client_name"]}
@@ -47,7 +68,7 @@ export default function ReservationsPage() {
 
 
 const columnsDataTable = (
-  // action: (id: string) => void
+  updateReservationStatus: (id: string, newStatus: string) => void,
 ): ColumnDef<UpcomingReservationsType>[] => {
   return [{
     accessorKey: "reservation_code",
@@ -123,25 +144,26 @@ const columnsDataTable = (
     cell: ({ row }) => (
       <>
         <div className="lowercase line-clamp-1">
-          <span className="bg-blue-100 rounded-full p-2 text-blue-600">
+          {row.getValue("status") === "confirmed" ? <Badge variant={"green"}>مؤكد</Badge>: <Badge variant={"yellow"}>غير مؤكد</Badge>}
+          {/* <span className="bg-blue-100 rounded-full p-2 text-blue-600">
             {row.getValue("status")}
-          </span>
+          </span> */}
         </div>
       </>
     ),
   },
-  {
-    accessorKey: "reservation_date",
+  // {
+  //   accessorKey: "reservation_date",
 
-    header: "انشئ بواسطة",
-    cell: ({ row }) => (
-      <>
-        <div className="lowercase line-clamp-1">
-          <span>{row.getValue("reservation_date")}</span>
-        </div>
-      </>
-    ),
-  },
+  //   header: "انشئ بواسطة",
+  //   cell: ({ row }) => (
+  //     <>
+  //       <div className="lowercase line-clamp-1">
+  //         <span>{row.getValue("reservation_date")}</span>
+  //       </div>
+  //     </>
+  //   ),
+  // },
   {
     accessorKey: "reservation_type",
     header: "نوع الحجز",
@@ -160,6 +182,17 @@ const columnsDataTable = (
     cell: ({ row }) => {
       return (
         <div className="flex gap-1">
+          {row.getValue("invoice_status") !== "confirmed" && (
+            <Button
+              onClick={() =>
+                updateReservationStatus(row?.original?.reservation_code, "confirmed")
+              }
+              variant="ghost"
+              size="icon"
+            >
+              <ArrowLeftRight className="size-5" />
+            </Button>
+          )}
           <Link to={`${row.getValue("reservation_code")}`}>
             <Button variant="ghost" size="icon">
               <Eye className="size-5" />

@@ -17,6 +17,7 @@ import BranchStaffDetailsPage from "@/apps/admin/branches/staff/BranchStaffDetai
 import ProfilePage from "@/apps/profile/profile";
 import DoctorAddPage from "@/apps/booking/doctors/doctorAdd.page";
 import DoctorEditPage from "@/apps/booking/doctors/doctorEdit.page";
+import EditReservationPage from "@/apps/booking/reservations/EditReservation.page";
 
 const Home = lazy(() => import("../apps/admin/home/Home"));
 
@@ -112,6 +113,7 @@ function AccountingLayout() {
                   <Route path="reservations" element={<ReservationsPage />} />
                   <Route path="reservations/add" element={<AddReservationsPage />} />
                   <Route path="reservations/:id" element={<ShowReservationsDetailsPage />} />
+                  <Route path="reservations/:id/edit" element={<EditReservationPage />} />
                   <Route path="doctors" element={<DoctorsPage />} />
                   <Route path="doctors/add" element={<DoctorAddPage />} />
                   <Route path="doctors/:id" element={<DoctorDetailsPage />} />

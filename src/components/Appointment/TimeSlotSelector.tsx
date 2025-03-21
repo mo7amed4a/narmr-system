@@ -1,15 +1,15 @@
-// TimeSlotSelector.tsx
 import * as React from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Label } from "../ui/label";
 
 interface TimeSlotSelectorProps {
-  weekDays: { name: string; date: string; enName: string }[];
   timeSlots: any[];
   reservedSlots: { day: string; time: string }[];
   availableSchedule: { day: string; from: string; to: string }[];
   selectedDay: string;
   selectedTime: string;
-  onSlotSelect: (day: string, time: string) => void;
+  onSlotSelect: (day: string, time: string, fullDate: string) => void; // عدلنا onSlotSelect عشان يرجع التاريخ الكامل
 }
 
 const dayMap: { [key: string]: string } = {
@@ -31,8 +31,27 @@ const convertTo24Hour = (time: string) => {
   return `${hourNum.toString().padStart(2, "0")}:${minute}`;
 };
 
+// دالة لتوليد أيام الأسبوع بناءً على تاريخ محدد
+const getWeekDays = (startDate: string) => {
+  const date = new Date(startDate);
+  const weekDays = [];
+  for (let i = 0; i < 7; i++) {
+    const currentDate = new Date(date);
+    currentDate.setDate(date.getDate() + i);
+    const enName = currentDate.toLocaleString("en-US", { weekday: "long" });
+    const arName = dayMap[enName];
+    const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    weekDays.push({
+      name: arName,
+      date: formattedDate,
+      enName: enName,
+    });
+  }
+  return weekDays;
+};
+export const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 export default function TimeSlotSelector({
-  weekDays,
   timeSlots,
   reservedSlots,
   availableSchedule,
@@ -40,10 +59,16 @@ export default function TimeSlotSelector({
   selectedTime,
   onSlotSelect,
 }: TimeSlotSelectorProps) {
-  const handleSlotClick = (day: string, time: string) => {
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]); // التاريخ الافتراضي النهاردة
+  const weekDays = getWeekDays(selectedDate); // توليد الأيام بناءً على التاريخ
+
+  const handleSlotClick = (day: string, time: string) => {    
     if (!reservedSlots.some((slot) => slot.day === day && slot.time === time)) {
-      const selectedDayEn = weekDays.find((d) => d.name === day)?.enName || "";
-      onSlotSelect(selectedDayEn, time);
+      const selectedDayObj = weekDays.find((d) => d.name === day);
+      if (selectedDayObj) {
+        const fullDate = `${selectedDayObj.date} ${time}:00`; // YYYY-MM-DD HH:MM:SS
+        onSlotSelect(selectedDayObj.enName, time, fullDate);
+      }
     }
   };
 
@@ -51,6 +76,16 @@ export default function TimeSlotSelector({
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="md:text-lg font-semibold">الوقت والتاريخ</h3>
+        <div>
+          <Label htmlFor="date-picker">اختر التاريخ</Label>
+          <input
+            id="date-picker"
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="mr-2 p-2 border rounded"
+          />
+        </div>
       </div>
       <div className="overflow-x-auto">
         <div className="min-w-[800px]">
@@ -59,7 +94,7 @@ export default function TimeSlotSelector({
             {weekDays.map((day) => (
               <div key={day.name} className="space-y-1 bg-gray-50 md:p-2 text-center">
                 <div className="text-xs md:text-base font-medium py-2">{day.name}</div>
-                {/* <div className="text-sm text-gray-500">{day.date}</div> */}
+                <div className="text-sm text-gray-500">{day.date}</div> {/* عرض التاريخ */}
               </div>
             ))}
             {timeSlots.map((time) => (

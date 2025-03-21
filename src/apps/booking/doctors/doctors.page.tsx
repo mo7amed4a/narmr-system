@@ -2,6 +2,7 @@ import { DataTable } from "@/components/clients/table";
 import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/hooks/auth.context";
 import useFetch from "@/hooks/use-fetch";
 import api from "@/lib/axios";
@@ -101,7 +102,7 @@ const columnsUpcomingReservations = (
     },
     {
       accessorKey: "available_schedule",
-      header: "مواعيد",
+      header: "المواعيد",
       cell: ({ row }) => {
         const schedule = row.getValue(
           "available_schedule"
@@ -109,13 +110,25 @@ const columnsUpcomingReservations = (
         return (
           <div className="text-right">
             {schedule && schedule.length > 0 ? (
-              <ul className="list-none p-0">
-                {schedule.map((slot, index) => (
-                  <li key={index} className="text-sm">
-                    {slot.day}: {slot.from} - {slot.to}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant="ghost" size="icon">
+                      <Eye className="size-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <ul className="list-none p-0 divide-y" dir="ltr">
+                    {schedule.map((slot, index) => (
+                      <li key={index} className="text-sm grid grid-cols-4 gap-3">
+                        <span className="p-2 border-e">{slot.day}</span>
+                        <span className="p-2 col-span-3 text-center">{slot.from} - {slot.to}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  </DialogContent>
+                </Dialog>
+              </>
             ) : (
               <span>غير متوفر</span>
             )}
