@@ -7,7 +7,7 @@ import { ArrowUpDown, Edit, Eye, Plus, Scroll } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import useFetch from "@/hooks/use-fetch";
 
-export type SupplierType = {
+type SupplierType = {
   supplier_id: number;
   name: string;
   phone: string;

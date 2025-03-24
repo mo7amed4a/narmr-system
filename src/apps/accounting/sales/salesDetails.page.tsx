@@ -33,9 +33,9 @@ export default function SalesDetailsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-right">كود الفاتورة</TableHead>
-                <TableHead className="text-right">العميل</TableHead>
+                <TableHead className="text-right">اسم المورد</TableHead>
+                <TableHead className="text-right">اسم الشركة</TableHead>
                 <TableHead className="text-right">قيمة الفاتورة</TableHead>
-                <TableHead className="text-right">تاريخ الاضافة</TableHead>
                 <TableHead className="text-right">حالة الفاتورة</TableHead>
               </TableRow>
             </TableHeader>
@@ -43,8 +43,8 @@ export default function SalesDetailsPage() {
               <TableRow>
                 <TableCell>S0000030</TableCell>
                 <TableCell>مها عبد الرحمن</TableCell>
+                <TableCell>شركة الوايلي</TableCell>
                 <TableCell>$240</TableCell>
-                <TableCell>4-7-2025</TableCell>
                 <TableCell>
                   {status ? (
                     <Badge variant="green">مؤكدة</Badge>

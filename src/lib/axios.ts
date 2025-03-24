@@ -28,8 +28,15 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
+
   (error) => {
     let message = "حدث خطأ ما، حاول مرة أخرى";
+    if (error.response.status === 404) {
+      // const pathname = location.pathname.split('/')
+      // location.href= `/${pathname[1]}/not-found`
+      message="غير موجود"
+    }
+    
     if (error.response) {
       message = error.response.data.message || message;
     } else if (error.request) {

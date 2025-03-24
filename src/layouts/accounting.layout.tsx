@@ -6,6 +6,10 @@ import AccountingHeader from "@/components/header/accounting.header";
 import { AccountingSidebar } from "@/components/sidebar/accounting-sidebar";
 import LoadingPage from "@/pages/LoadingPage";
 import ProfilePage from "@/apps/profile/profile";
+import ProductsPage from "@/apps/accounting/products/products.page";
+import ProductsAddPage from "@/apps/accounting/products/products-add.page";
+import ProductsDetailsPage from "@/apps/accounting/products/products-details.page";
+import ProductsEditPage from "@/apps/accounting/products/products-edit.page";
 
 const Home = lazy(() => import("../apps/accounting/home/Home"));
 const SuppliersPage = lazy(() => import("../apps/accounting/suppliers/suppliers.page"));
@@ -62,6 +66,10 @@ function AccountingLayout() {
                 <Route path="/sales/:id" element={<SalesDetailsPage />} />
                 <Route path="/staff" element={<StaffPage />} />
                 <Route path="/staff/:id" element={<StaffDetails />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/add" element={<ProductsAddPage />} />
+                <Route path="/products/:id" element={<ProductsDetailsPage />} />
+                <Route path="/products/:id/edit" element={<ProductsEditPage />} />
                 <Route path="/accounts/*" >
                     <Route index element={<BandsAccountingPage />} />
                     <Route path="bonds" element={<BandsAccountingPage />} />

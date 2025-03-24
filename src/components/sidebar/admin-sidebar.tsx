@@ -10,7 +10,7 @@ import {
 import SearchInput from "./SearchInput";
 import LinkActive from "./LinkActive";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, SquareMenu } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 
@@ -90,6 +90,10 @@ export function AdminSidebar() {
             <div>
                 <SidebarGroup className="py-4 space-y-2">
                     <h2 className="text-sm font-bold">أدوات مسؤل الحسابات</h2>
+                <LinkActive href="/admin/accounting/products" >
+                    <SquareMenu />
+                    المنتجات
+               </LinkActive>
                 <LinkActive href="/admin/accounting/suppliers" >
                     <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.6998 22.7497H9.29977C4.35977 22.7497 2.25977 20.6397 2.25977 15.7097V11.2197C2.25977 10.8097 2.59977 10.4697 3.00977 10.4697C3.41977 10.4697 3.75977 10.8097 3.75977 11.2197V15.7097C3.75977 19.7997 5.20977 21.2497 9.29977 21.2497H14.6898C18.7798 21.2497 20.2298 19.7997 20.2298 15.7097V11.2197C20.2298 10.8097 20.5698 10.4697 20.9798 10.4697C21.3898 10.4697 21.7298 10.8097 21.7298 11.2197V15.7097C21.7398 20.6397 19.6298 22.7497 14.6998 22.7497Z" fill="currentColor" />

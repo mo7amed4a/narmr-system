@@ -35,6 +35,7 @@ export const breadcrumbMapApp: Record<string, string> = {
   edit: "تعديل",
   add: "اضافة",
   profile: "الصفحة الشخصية",
+  "not-found": "غير موجود",
 
   // booking
   clients: "قائمة العملاء",
@@ -52,7 +53,8 @@ export const breadcrumbMapApp: Record<string, string> = {
   sales: "قائمة المبيعات",
   staff: "قائمة الموظفين",
   reports: "التقارير",
-  financial: "التقارير المالية"
+  financial: "التقارير المالية",
+  products: "المنتجات"
 };
 
 

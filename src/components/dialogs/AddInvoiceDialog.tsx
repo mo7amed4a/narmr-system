@@ -1,26 +1,31 @@
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import ProductsSelect from "@/components/selects/ProductsSelect"; // Adjust path as needed
 import { Plus, Trash } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import SuppliersSelect from "@/components/selects/SuppliersSelect";
+import ProductsSelect from "../selects/ProductsSelect";
 import api from "@/lib/axios";
+import toast from "react-hot-toast";
 
-interface InvoiceFormProps {
-  invoiceType?: "purchase" | "sale"; // Optional prop to set default invoice type
+interface AddInvoiceDialogProps {
+  supplierId: number;
+  onInvoiceAdded?: () => void; // Callback to refresh data after adding
 }
 
-export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProps) {
-  const navigate = useNavigate();
-  const [supplierId, setSupplierId] = useState<string|null>(null);
+export default function AddInvoiceDialog({ supplierId, onInvoiceAdded }: AddInvoiceDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [invoiceType, setInvoiceType] = useState<"purchase" | "sale">("purchase");
   const [products, setProducts] = useState<{ product_id: string; quantity: string }[]>([
     { product_id: "", quantity: "" },
   ]);
-  const [selectedInvoiceType] = useState<"purchase" | "sale">(invoiceType);
 
   // Handle adding a new product row
   const handleAddProduct = () => {
@@ -49,14 +54,6 @@ export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProp
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate supplier
-    if (!supplierId) {
-      toast.error("يرجى اختيار مورد");
-      return;
-    }
-
-    // Validate products
     const formattedProducts = products
       .filter((p) => p.product_id && p.quantity) // Filter out incomplete entries
       .map((p) => ({
@@ -65,51 +62,63 @@ export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProp
       }));
 
     if (formattedProducts.length === 0) {
-      toast.error("يرجى إضافة منتج واحد على الأقل مع كمية صحيحة");
+      alert("يرجى إضافة منتج واحد على الأقل مع كمية صحيحة");
       return;
     }
 
     const payload = {
       supplier_id: parseInt(supplierId as any),
       products: formattedProducts,
-      invoice_type: selectedInvoiceType,
+      invoice_type: invoiceType,
     };
 
     try {
-      const response = await api.post("/invoice1/add", {
-        ...payload,
-        supplier_id: parseInt(supplierId as any),  
-      });
-
+      const response = await api.post("/invoice1/add", payload);
       if (response.status === 200) {
-        toast.success("تم إضافة الفاتورة بنجاح");
-        navigate(-1); // Navigate back on success
+        setOpen(false); // Close dialog
+        setProducts([{ product_id: "", quantity: "" }]); // Reset form
+        if (onInvoiceAdded) onInvoiceAdded(); // Trigger refresh
+        toast.success("تم اضافة الفاتورة بنجاح");
       } else {
         toast.error("فشل في إضافة الفاتورة");
       }
     } catch (err) {
       console.error("Error adding invoice:", err);
-      toast.error("حدث خطأ أثناء إضافة الفاتورة");
     }
   };
 
   return (
-    <Card className="w-full border-none shadow-none">
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Invoice Type Selection */}
-          <SuppliersSelect
-            value={supplierId?.toString() as string}
-            onValueChange={(value) => setSupplierId(value)} />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="green">فاتورة جديدة</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] text-right">
+        <DialogHeader>
+          <DialogTitle>إضافة فاتورة جديدة</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            {/* Invoice Type Selection */}
+            <div className="grid gap-2">
+              <Label htmlFor="invoiceType">نوع الفاتورة</Label>
+              <select
+                id="invoiceType"
+                value={invoiceType}
+                onChange={(e) => setInvoiceType(e.target.value as "purchase" | "sale")}
+                className="w-full border rounded-md p-2"
+              >
+                <option value="purchase">شراء</option>
+                <option value="sale">بيع</option>
+              </select>
+            </div>
 
-          {/* Products List */}
-          <div className="space-y-4">
+            {/* Products List */}
             {products.map((product, index) => (
               <div key={index} className="flex gap-3 items-end">
                 <div className="flex-1">
                   <ProductsSelect
                     value={product.product_id}
-                    onValueChange={(value) => handleProductChange(index, value as string)}
+                    onValueChange={(value) => handleProductChange(index, value as any)}
                   />
                 </div>
                 <div className="flex-1">
@@ -136,34 +145,27 @@ export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProp
                 )}
               </div>
             ))}
-          </div>
 
-          {/* Add Product Button */}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAddProduct}
-            className="w-fit"
-          >
-            إضافة منتج <Plus className="mr-2" />
-          </Button>
-
-          {/* Form Actions */}
-          <div className="flex gap-3 justify-end">
+            {/* Add Product Button */}
             <Button
               type="button"
               variant="outline"
-              className="text-red-500"
-              onClick={() => navigate(-1)}
+              onClick={handleAddProduct}
+              className="w-fit"
             >
+              إضافة منتج <Plus className="mr-2" />
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               إلغاء
             </Button>
             <Button type="submit" variant="green">
               حفظ
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }

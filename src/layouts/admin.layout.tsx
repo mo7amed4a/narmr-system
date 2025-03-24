@@ -18,6 +18,10 @@ import ProfilePage from "@/apps/profile/profile";
 import DoctorAddPage from "@/apps/booking/doctors/doctorAdd.page";
 import DoctorEditPage from "@/apps/booking/doctors/doctorEdit.page";
 import EditReservationPage from "@/apps/booking/reservations/EditReservation.page";
+import ProductsPage from "@/apps/accounting/products/products.page";
+import ProductsDetailsPage from "@/apps/accounting/products/products-details.page";
+import ProductsAddPage from "@/apps/accounting/products/products-add.page";
+import ProductsEditPage from "@/apps/accounting/products/products-edit.page";
 
 const Home = lazy(() => import("../apps/admin/home/Home"));
 
@@ -139,6 +143,10 @@ function AccountingLayout() {
                   <Route path="staff" element={<StaffPage />} />
                   <Route path="staff/:id" element={<StaffDetails />} />
                   <Route path="staff/:id/edit" element={<StaffEditPage />} />
+                  <Route path="products" element={<ProductsPage />} />
+                  <Route path="products/add" element={<ProductsAddPage />} />
+                  <Route path="products/:id" element={<ProductsDetailsPage />} />
+                  <Route path="products/:id/edit" element={<ProductsEditPage />} />
                   <Route path="accounts/*" >
                       <Route index element={<BandsAccountingPage />} />
                       <Route path="bonds" element={<BandsAccountingPage />} />
