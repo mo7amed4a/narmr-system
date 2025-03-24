@@ -6,12 +6,12 @@ type ProtectedRouteProps = {
     route: string;
   };
   const ProtectedRoute = ({ children, route}: ProtectedRouteProps) => {
-    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting" | "transformer_employee" | null;
+    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting_employee" | "transformer_employee" | null;
     if (type) {
         if (type === "admin" && route === "admin") {
           return children;
         }
-        if (type === "accounting" && route === "accounting") {
+        if (type === "accounting_employee" && route === "accounting") {
           return children;
         }
         if (type === "transformer_employee" && route === "booking") {
@@ -25,14 +25,14 @@ type ProtectedRouteProps = {
     children: React.ReactNode;
   };
   const NotProtectedRoute = ({ children }: NotProtectedRouteProps) => {
-    const type = localStorage.getItem("userType");
+    const type = JSON.parse(Cookies.get("user") || "{}").user_category as "admin" | "accounting_employee" | "transformer_employee" | null;
     if (type === "admin") {
       return <Navigate to="/admin" replace />;
     }
-    if (type === "accounting") {
+    if (type === "accounting_employee") {
       return <Navigate to="/accounting" replace />;
     }
-    if (type === "booking") {
+    if (type === "transformer_employee") {
       return <Navigate to="/booking" replace />;
     }
     return children;

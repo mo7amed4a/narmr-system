@@ -43,7 +43,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.status === 200) {
         setUser(response.data);
         Cookies.set("user", JSON.stringify(response.data));
-        navigate(`/${role(response?.data?.user_category)}`);
+        setTimeout(() => {
+          navigate(`/${role(response?.data?.user_category)}`);
+          location.reload()
+        }, 200)
       }
     } catch (error) {
       console.error("Login failed: ", error);

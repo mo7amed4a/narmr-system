@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import BookingBondOne from "@/components/bonds-add/bond-one"
+// import BookingBondOne from "@/components/bonds-add/bond-one"
 import React from "react"
-import BookingBondTwo from "@/components/bonds-add/bond-two"
+// import BookingBondTwo from "@/components/bonds-add/bond-two"
 import BookingBondThree from "@/components/bonds-add/bond-three"
 
 export default function AddBondsPage() {
@@ -44,8 +44,8 @@ export default function AddBondsPage() {
               </RadioGroup>
             </div>
           </div>
-          {bondValue === "one" && <BookingBondOne />}
-          {bondValue === "two" && <BookingBondTwo />}
+          {/* {bondValue === "one" && <BookingBondOne />}
+          {bondValue === "two" && <BookingBondTwo />} */}
           {bondValue === "three" && <BookingBondThree />}
           
         </CardContent>

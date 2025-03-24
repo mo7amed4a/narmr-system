@@ -10,16 +10,16 @@ export default function User({
 }:{
     link: string
 }) {
-  const {logout} = useUser()
+  const {user,logout} = useUser()
   return (
     <DropdownMenu dir="rtl">
     <DropdownMenuTrigger asChild>
       <Button className="h-12 px-1 md:px-2 flex items-center md:gap-2" variant={"ghost"}>
         <ChevronDown />
-        <span>Mohamed</span>
+        <span>{user?.name?.split(" ")[0]}</span>
         <Avatar>
           <AvatarImage src="/placeholder.svg" alt="" />
-          <AvatarFallback>MO</AvatarFallback>
+          <AvatarFallback className="capitalize">{user?.name?.slice(0, 2)}</AvatarFallback>
         </Avatar>
       </Button>
     </DropdownMenuTrigger>
