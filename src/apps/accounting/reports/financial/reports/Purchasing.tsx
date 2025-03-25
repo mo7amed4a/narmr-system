@@ -1,6 +1,4 @@
 import InputLabel from "@/components/form/InputLabel";
-import { SelectItem } from "@/components/ui/select";
-import SelectCustom from "@/components/ui/selectCustom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -9,116 +7,160 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import AccountsSelect from "@/components/selects/AccountsSelect";
+import { useState } from "react";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
+import BranchSelect from "@/components/selects/BranchSelect";
+import { Button } from "@/components/ui/button";
 
 export default function Purchasing() {
+  const [account, setAccount] = useState<string | null>(null);
+  const [branch, setBranch] = useState("");
+  const [data, setData] = useState<any | null>(null); // API response: { status, data, summary }
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const handleSubmit = async () => {
+    if (account && branch) {
+      try {
+        const res = await api.post(`/reports/purchases`, {
+          account_id: account,
+          branch_id: branch,
+          date_from: fromDate,
+          date_to: toDate,
+        });
+        setData(res.data);
+      } catch (error) {
+        console.error("Error fetching purchases report:", error);
+        toast.error("حدث خطأ أثناء جلب تقرير المشتريات");
+      }
+    } else {
+      toast.error("يرجى اختيار حساب وفرع");
+    }
+  };
+
   return (
-    <>
-         <CardHeader>
-            <Card className="border shadow-none">
-              <CardHeader className="p-4">
-                <CardTitle className="py-2">تقارير المشتريات</CardTitle>
-                <div className="grid md:grid-cols-3 gap-4 pt-4">
-                  <SelectCustom label="اختر الحساب">
-                    <SelectItem value="erj">حساب 1</SelectItem>
-                    <SelectItem value="xyz">حساب 2</SelectItem>
-                  </SelectCustom>
-                  <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
-                    <InputLabel
-                      type="date"
-                      label="المدة الزمنية من"
-                      className="w-full"
-                      placeholder=" "
-                      classNameInput="!h-9"
-                    />
-                    <span className="text-xs md:text-base">الى</span>
-                    <InputLabel
-                      type="date"
-                      label="المدة الزمنية الى"
-                      className="w-full"
-                      placeholder=" "
-                      classNameInput="!h-9"
-                    />
-                  </div>
-                  <SelectCustom label="اختر الفرع">
-                    <SelectItem value="erj">فرع 1</SelectItem>
-                    <SelectItem value="xyz">فرع 2</SelectItem>
-                  </SelectCustom>
-                </div>
-              </CardHeader>
-            </Card>
-          </CardHeader>
-          <CardContent className="pt-4 space-y-4">
-          
-            <Table>
-              <TableHeader className="bg-gray-100">
-                <TableRow className="border [&>*]:border bg-[#F1F1F1]">
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    الوقت والتاريخ
+    <div dir="rtl">
+      <Card className="border shadow-none">
+        <CardHeader className="p-4">
+          <CardTitle className="py-2">تقارير المشتريات</CardTitle>
+          <div className="grid md:grid-cols-3 gap-4 pt-4 items-end">
+            <AccountsSelect
+              value={account || ""}
+              onValueChange={(value) => setAccount(value)}
+            />
+            <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
+              <InputLabel
+                type="date"
+                label="المدة الزمنية من"
+                className="w-full"
+                placeholder=" "
+                classNameInput="!h-9"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+              <span className="text-xs md:text-base">إلى</span>
+              <InputLabel
+                type="date"
+                label="المدة الزمنية إلى"
+                className="w-full"
+                placeholder=" "
+                classNameInput="!h-9"
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
+            <BranchSelect
+              value={branch || ""}
+              onValueChange={(value) => setBranch(value)}
+            />
+          </div>
+          <div className="flex justify-end py-4">
+            <Button variant={"green"} onClick={handleSubmit}>
+              إجراء الخزينة
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {data?.data && (
+        <CardContent className="pt-4 space-y-4">
+          <Table>
+            <TableHeader className="bg-gray-100">
+              <TableRow className="border [&>*]:border bg-[#F1F1F1]">
+                <TableCell className="text-right font-semibold text-gray-700">
+                  الوقت والتاريخ
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  المنتج
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  المورد
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  الكمية المشتراة
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  سعر الوحدة
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  إجمالي المشتريات
+                </TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.data.map((transaction: any, index: number) => (
+                <TableRow
+                  key={index}
+                  className={
+                    "border [&>*]:border " +
+                    (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")
+                  }
+                >
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.datetime}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    المنتج
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.product_name || "غير محدد"}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    المورد
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.supplier_name}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    الكمية المشتراة
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.quantity}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    سعر الوحدة
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.unit_price}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    اجمالي المشتريات
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.total_purchase}
                   </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {transactions.map((transaction, index) => (
-                  <TableRow
-                    key={index}
-                    className={
-                      "border [&>*]:border " +
-                      (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")
-                    }
-                  >
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.date}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.product}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.supplier}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.count}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.price}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction.purchasing_total}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-    </>
-  )
+              ))}
+            </TableBody>
+          </Table>
+
+          <Table className="md:w-2/4 lg:w-1/4">
+            <TableHeader className="bg-gray-100">
+              <TableRow className="border [&>*]:border bg-[#F1F1F1]">
+                <TableCell className="text-right font-semibold text-gray-700">
+                  العملة
+                </TableCell>
+                <TableCell className="text-right font-semibold text-gray-700">
+                  {data.summary.currency}
+                </TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="border [&>*]:border bg-green-700 text-white">
+                <TableCell className="text-sm">إجمالي المشتريات</TableCell>
+                <TableCell className="text-sm">
+                  {data.summary.total_purchases}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      )}
+    </div>
+  );
 }
-
-
-
-
-const transactions = [
-    {
-      date: "20 Dec, 2021, 02:21 AM",
-      product: "كريم مرطب",
-      supplier: "علي",
-      count: 4,
-      price: 400,
-      purchasing_total: "-"
-    },
-  ];
-  

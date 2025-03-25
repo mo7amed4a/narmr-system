@@ -9,7 +9,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
-import TimeSlotSelector, { days } from "@/components/Appointment/TimeSlotSelector";
+import TimeSlotSelector, { days, getKeyByValue } from "@/components/Appointment/TimeSlotSelector";
 import ServiceSelect from "@/components/selects/ServiceSelect";
 
 export default function AddAppointmentFormPage() {
@@ -21,7 +21,7 @@ export default function AddAppointmentFormPage() {
     branch_id: 0,
     doctor_id: parseInt(id || "0"),
     service_id: 0,
-    reservation_date: "", // استبدلنا reservation_day و reservation_time
+    reservation_date: "", // Expected format: "YYYY-MM-DD HH:mm"
     reservation_type: "new",
     service_type: "consultation",
   });
@@ -37,6 +37,7 @@ export default function AddAppointmentFormPage() {
   };
 
   const formatTimeTo12Hour = (time: string): string => {
+    if (!time) return ""; // Prevent split error
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
     const period = hourNum >= 12 ? "PM" : "AM";
@@ -48,8 +49,8 @@ export default function AddAppointmentFormPage() {
     if (!date) return { day: "", time: "" };
     const [datePart, timePart] = date.split(" ");
     const reservationDate = new Date(datePart);
-    const dayName = reservationDate.toLocaleString("en-US", { weekday: "long" });
-    return { day: dayName, time: timePart.slice(0, 5) };
+    const dayName = days[reservationDate.getDay()]; // Arabic day name
+    return { day: dayName, time: timePart || "" }; // HH:mm
   };
 
   const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
@@ -59,13 +60,14 @@ export default function AddAppointmentFormPage() {
     : [];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" }, // إصلاح jndnnj
+    { day: "السبت", time: "08:00" }, // Arabic day name
   ];
 
   const handleSlotSelect = (fullDate: string) => {
+    console.log("Selected slot:", fullDate); // Debug
     setFormData({
       ...formData,
-      reservation_date: fullDate, // استخدام التاريخ الكامل
+      reservation_date: fullDate, // "YYYY-MM-DD HH:mm"
     });
   };
 
@@ -83,14 +85,15 @@ export default function AddAppointmentFormPage() {
     setIsSubmitting(true);
     try {
       const [datePart, timePart] = formData.reservation_date.split(" ");
+      if (!timePart) throw new Error("Invalid reservation_date format");
       const formattedTime = formatTimeTo12Hour(timePart);
       const payload = {
         customer_id: formData.customer_id,
         branch_id: doctorData.data.branch_ids[0],
         doctor_id: formData.doctor_id,
         service_id: formData.service_id,
-        reservation_day: days[new Date(datePart).getDay()], // YYYY-MM-DD
-        reservation_date: datePart, // YYYY-MM-DD
+        reservation_day: getKeyByValue(days[new Date(datePart).getDay()]),
+        reservation_date: datePart,
         reservation_time: formattedTime,
         reservation_type: formData.reservation_type,
         service_type: formData.service_type,
@@ -171,7 +174,7 @@ export default function AddAppointmentFormPage() {
         </div>
 
         <TimeSlotSelector
-          timeSlots={timeSlots}
+          timeSlots={timeSlots as string[]}
           reservedSlots={reservedSlots}
           availableSchedule={doctorData?.data?.available_schedule || []}
           selectedDay={selectedDay}

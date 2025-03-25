@@ -7,6 +7,8 @@ import BondAddInStaff from "./components/bond-add";
 import { useParams } from "react-router-dom";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@/hooks/auth.context";
+import Loading from "@/components/api/loading";
+import NotFoundPage from "@/pages/NotFoundPage";
 
 export default function StaffDetails() {
   const { id } = useParams(); // Get employee_id from URL
@@ -29,10 +31,10 @@ export default function StaffDetails() {
     }) + ", " + date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
 
-  return (
+  return employee?.name ? (
     <Card>
       <CardHeader>
         <Card className="border">
@@ -65,5 +67,5 @@ export default function StaffDetails() {
             <BondsHistory />
         </CardContent>}
     </Card>
-  );
+  ): <NotFoundPage />;
 }

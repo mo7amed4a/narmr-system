@@ -28,5 +28,5 @@
       ]
     }
   },
-  "include": ["src", "src/apps/accounting/purchases/purchases.page.tsx"],
+  "include": ["src", "src/apps/accounting/purchases/purchases.page.tsx", "src/components/selects/CashboxesSelect.tsx"],
 }

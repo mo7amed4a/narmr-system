@@ -7,7 +7,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
-import TimeSlotSelector, { days } from "@/components/Appointment/TimeSlotSelector";
+import TimeSlotSelector, { days, getKeyByValue } from "@/components/Appointment/TimeSlotSelector";
 import DoctorSelect from "@/components/selects/DoctorSelect";
 import BranchSelect from "@/components/selects/BranchSelect";
 import ServiceSelect from "@/components/selects/ServiceSelect";
@@ -22,7 +22,7 @@ export default function AddReservationsPage() {
     service_id: 0,
     reservation_day: "",
     reservation_time: "",
-    reservation_date: "", // غيرنا reservation_day و reservation_time لـ reservation_date
+    reservation_date: "", // "YYYY-MM-DD HH:mm"
     reservation_type: "new",
     service_type: "consultation",
   });
@@ -38,6 +38,7 @@ export default function AddReservationsPage() {
   };
 
   const formatTimeTo12Hour = (time: string): string => {
+    if (!time) return "";
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
     const period = hourNum >= 12 ? "PM" : "AM";
@@ -45,13 +46,12 @@ export default function AddReservationsPage() {
     return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
   };
 
-  // استخراج اليوم والوقت من reservation_date لعرضهم في TimeSlotSelector
   const parseReservationDate = (date: string) => {
     if (!date) return { day: "", time: "" };
     const [datePart, timePart] = date.split(" ");
     const reservationDate = new Date(datePart);
-    const dayName = reservationDate.toLocaleString("en-US", { weekday: "long" });
-    return { day: dayName, time: timePart.slice(0, 5) }; // "HH:MM"
+    const dayName = days[reservationDate.getDay()]; // Arabic day name
+    return { day: dayName, time: timePart || "" }; // HH:mm
   };
 
   const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
@@ -61,15 +61,16 @@ export default function AddReservationsPage() {
     : [];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" }, // عدلت "jndnnj" لـ "السبت" عشان يشتغل صح
+    { day: "السبت", time: "08:00" },
   ];
 
-  const handleSlotSelect = (time: string, fullDate: string) => {    
+
+  const handleSlotSelect = (fullDate: string) => {
     setFormData({
       ...formData,
-      reservation_day: days[new Date(fullDate).getDay()],
-      reservation_time: formatTimeTo12Hour(time), // بنستخدم التاريخ الكامل هنا
-      reservation_date: fullDate, // بنستخدم التاريخ الكامل هنا
+      reservation_day: getKeyByValue(days[new Date(fullDate.split(" ")[0]).getDay()]) as string,
+      reservation_time: formatTimeTo12Hour(fullDate.split(" ")[1]),
+      reservation_date: fullDate,
     });
   };
 
@@ -86,14 +87,16 @@ export default function AddReservationsPage() {
     }
     setIsSubmitting(true);
     try {
+      const [datePart, timePart] = formData.reservation_date.split(" ");
+      if (!timePart) throw new Error("Invalid reservation_date format");
       const payload = {
         customer_id: formData.customer_id,
         branch_id: formData.branch_id,
         doctor_id: doctor.id,
         service_id: formData.service_id,
-        reservation_day: formData.reservation_day, // YYYY-MM-DD HH:MM:SS
-        reservation_time: formData.reservation_time, // YYYY-MM-DD HH:MM:SS
-        reservation_date: formData.reservation_date.split(" ")[0], // YYYY-MM-DD HH:MM:SS
+        reservation_day: formData.reservation_day,
+        reservation_time: formData.reservation_time,
+        reservation_date: datePart, // YYYY-MM-DD
         reservation_type: formData.reservation_type,
         service_type: formData.service_type,
       };
@@ -104,7 +107,7 @@ export default function AddReservationsPage() {
         branch_id: 0,
         service_id: 0,
         reservation_day: "",
-        reservation_time:"",
+        reservation_time: "",
         reservation_date: "",
         reservation_type: "new",
         service_type: "consultation",

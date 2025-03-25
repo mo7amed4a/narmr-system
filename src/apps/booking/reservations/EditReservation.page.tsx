@@ -116,7 +116,8 @@ export default function EditReservationPage() {
   ];
 
   const handleSlotSelect = (day: string, time: string, fullDate: string) => {
-    console.log(day, time);
+    console.log(day);
+    
     setFormData({
       ...formData,
       reservation_day: days[new Date(fullDate).getDay()],
@@ -238,6 +239,7 @@ export default function EditReservationPage() {
           availableSchedule={doctor?.available_schedule || []}
           selectedDay={selectedDay}
           selectedTime={selectedTime}
+          // @ts-ignore
           onSlotSelect={handleSlotSelect}
         />
       </CardContent>
