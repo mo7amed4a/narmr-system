@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <Card className="w-full bg-transparent shadow-none border-none">
+    <Card className="w-full bg-transparent shadow-none border-none md:max-w-6xl 3xl:max-w-full">
       <CardHeader className="flex flex-col md:flex-row justify-between md:items-center gap-4 p-0 py-4">
         <div className={"font-semibold leading-none tracking-tight text-nowrap"}>{title}</div>
         <div className="flex flex-row justify-between flex-1 gap-4">
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
         </div>
       </CardHeader>
       <CardContent className="divide-y p-2 border rounded-xl">
-        <Table>
+        <Table className="">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
