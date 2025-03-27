@@ -16,7 +16,7 @@ export default function User({
     <DropdownMenuTrigger asChild>
       <Button className="h-12 px-1 md:px-2 flex items-center md:gap-2" variant={"ghost"}>
         <ChevronDown />
-        <span>{user?.name?.split(" ")[0]}</span>
+        <span>{user?.name?.split(" ")?.slice(0, 2).join(" ")}</span>
         <Avatar>
           <AvatarImage src="/placeholder.svg" alt="" />
           <AvatarFallback className="capitalize">{user?.name?.slice(0, 2)}</AvatarFallback>

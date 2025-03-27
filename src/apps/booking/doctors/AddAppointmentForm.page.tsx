@@ -3,25 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useParams } from "react-router-dom";
-import useFetch from "@/hooks/use-fetch";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import ServiceTypeSelect from "@/components/selects/ServicesTypeSelect";
 import TimeSlotSelector, { days, getKeyByValue } from "@/components/Appointment/TimeSlotSelector";
+import DoctorSelect from "@/components/selects/DoctorSelect";
+import BranchSelect from "@/components/selects/BranchSelect";
 import ServiceSelect from "@/components/selects/ServiceSelect";
+import { Doctor } from "../doctors/doctors.page";
 
-export default function AddAppointmentFormPage() {
-  const { id } = useParams();
-  const { data: doctorData, loading: doctorLoading, error: doctorError } = useFetch(`/doctor/${id}`);
+export default function AddReservationsPage() {
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
 
   const [formData, setFormData] = useState({
     customer_id: 0,
     branch_id: 0,
-    doctor_id: parseInt(id || "0"),
     service_id: 0,
-    reservation_date: "", // Expected format: "YYYY-MM-DD HH:mm"
+    reservation_day: "",
+    reservation_time: "",
+    reservation_date: "", // "YYYY-MM-DD HH:mm"
     reservation_type: "new",
     service_type: "consultation",
   });
@@ -37,7 +38,7 @@ export default function AddAppointmentFormPage() {
   };
 
   const formatTimeTo12Hour = (time: string): string => {
-    if (!time) return ""; // Prevent split error
+    if (!time) return "";
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
     const period = hourNum >= 12 ? "PM" : "AM";
@@ -53,20 +54,49 @@ export default function AddAppointmentFormPage() {
     return { day: dayName, time: timePart || "" }; // HH:mm
   };
 
+  const generateTimeSlots = (schedule: { day: string; from: string; to: string }[]) => {
+    const slots: string[] = [];
+    schedule.forEach((s) => {
+      const start = convertTo24Hour(s.from);
+      const end = convertTo24Hour(s.to);
+      const [startHour, startMinute] = start.split(":").map(Number);
+      const [endHour, endMinute] = end.split(":").map(Number);
+      let currentHour = startHour;
+      let currentMinute = startMinute;
+
+      while (
+        currentHour < endHour ||
+        (currentHour === endHour && currentMinute <= endMinute)
+      ) {
+        slots.push(
+          `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`
+        );
+        currentMinute += 30; // 30-minute intervals
+        if (currentMinute >= 60) {
+          currentMinute -= 60;
+          currentHour += 1;
+        }
+      }
+    });
+    return Array.from(new Set(slots)).sort();
+  };
+
   const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
 
-  const timeSlots = doctorData?.data?.available_schedule
-    ? Array.from(new Set(doctorData.data.available_schedule.map((s: any) => convertTo24Hour(s.from))))
+  const timeSlots = doctor?.available_schedule
+    ? generateTimeSlots(doctor.available_schedule)
     : [];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" }, // Arabic day name
+    { day: "jnjnjn", time: "08:00" },
   ];
 
   const handleSlotSelect = (fullDate: string) => {
-    console.log("Selected slot:", fullDate); // Debug
+    const time = fullDate.split(" ")[1];
     setFormData({
       ...formData,
+      reservation_day: getKeyByValue(days[new Date(fullDate.split(" ")[0]).getDay()]) as string,
+      reservation_time: formatTimeTo12Hour(time),
       reservation_date: fullDate, // "YYYY-MM-DD HH:mm"
     });
   };
@@ -74,27 +104,26 @@ export default function AddAppointmentFormPage() {
   const handleSubmit = async () => {
     if (
       !formData.customer_id ||
+      !formData.branch_id ||
       !formData.reservation_date ||
-      !formData.service_id ||
-      !formData.doctor_id
+      !doctor?.id ||
+      !formData.service_id
     ) {
       toast.error("يرجى ملء جميع الحقول المطلوبة");
       return;
     }
-
     setIsSubmitting(true);
     try {
       const [datePart, timePart] = formData.reservation_date.split(" ");
       if (!timePart) throw new Error("Invalid reservation_date format");
-      const formattedTime = formatTimeTo12Hour(timePart);
       const payload = {
         customer_id: formData.customer_id,
-        branch_id: doctorData.data.branch_ids[0],
-        doctor_id: formData.doctor_id,
+        branch_id: formData.branch_id,
+        doctor_id: doctor.id,
         service_id: formData.service_id,
-        reservation_day: getKeyByValue(days[new Date(datePart).getDay()]),
-        reservation_date: datePart,
-        reservation_time: formattedTime,
+        reservation_day: formData.reservation_day,
+        reservation_time: formData.reservation_time,
+        reservation_date: datePart, // YYYY-MM-DD
         reservation_type: formData.reservation_type,
         service_type: formData.service_type,
       };
@@ -103,12 +132,14 @@ export default function AddAppointmentFormPage() {
       setFormData({
         customer_id: 0,
         branch_id: 0,
-        doctor_id: parseInt(id || "0"),
         service_id: 0,
+        reservation_day: "",
+        reservation_time: "",
         reservation_date: "",
         reservation_type: "new",
         service_type: "consultation",
       });
+      setDoctor(null);
     } catch (error) {
       console.error("Error adding reservation:", error);
       toast.error("حدث خطأ أثناء إضافة الحجز");
@@ -117,13 +148,10 @@ export default function AddAppointmentFormPage() {
     }
   };
 
-  if (doctorLoading) return <div>جاري التحميل...</div>;
-  if (doctorError) return <div>خطأ: {doctorError.message}</div>;
-
   return (
     <Card className="w-full" dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-        <h2 className="text-lg md:text-xl font-bold">حجز جديد - {doctorData?.data?.name}</h2>
+        <h2 className="text-lg md:text-xl font-bold">حجز جديد</h2>
         <div className="gap-x-2 flex">
           <Button variant="green" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "جاري الحفظ..." : "حفظ"}
@@ -136,14 +164,27 @@ export default function AddAppointmentFormPage() {
       <CardContent className="pt-6">
         <div className="mb-8">
           <h3 className="mb-4 text-lg font-semibold">بيانات الحجز</h3>
-          <div className="grid gap-6 lg:grid-cols-4">
+          <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
             <CustomerSelect
               value={formData.customer_id.toString()}
               onValueChange={(value) => setFormData({ ...formData, customer_id: parseInt(value) })}
             />
+            <BranchSelect
+              value={formData.branch_id.toString()}
+              onValueChange={(value) => setFormData({ ...formData, branch_id: parseInt(value) })}
+            />
             <ServiceSelect
               value={formData.service_id.toString()}
               onValueChange={(value) => setFormData({ ...formData, service_id: parseInt(value) })}
+            />
+            <DoctorSelect
+              value={doctor?.id?.toString() || ""}
+              allData
+              onValueChange={(value) => {
+                if (typeof value === "object") {
+                  setDoctor(value);
+                }
+              }}
             />
           </div>
         </div>
@@ -174,9 +215,9 @@ export default function AddAppointmentFormPage() {
         </div>
 
         <TimeSlotSelector
-          timeSlots={timeSlots as string[]}
+          timeSlots={timeSlots}
           reservedSlots={reservedSlots}
-          availableSchedule={doctorData?.data?.available_schedule || []}
+          availableSchedule={doctor?.available_schedule || []}
           selectedDay={selectedDay}
           selectedTime={selectedTime}
           onSlotSelect={handleSlotSelect}

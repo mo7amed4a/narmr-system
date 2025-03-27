@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 
 export const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+
 export function getKeyByValue(value: string): string | undefined {
   return Object.keys(dayMap).find((key) => dayMap[key] === value);
 }
+
 
 interface TimeSlotSelectorProps {
   timeSlots: string[];
@@ -34,6 +36,15 @@ const convertTo24Hour = (time: string) => {
   if (period === "PM" && hourNum !== 12) hourNum += 12;
   if (period === "AM" && hourNum === 12) hourNum = 0;
   return `${hourNum.toString().padStart(2, "0")}:${minute}`;
+};
+
+const formatTimeTo12Hour = (time: string): string => {
+  if (!time) return "";
+  const [hour, minute] = time.split(":");
+  const hourNum = parseInt(hour);
+  const period = hourNum >= 12 ? "PM" : "AM";
+  const formattedHour = hourNum % 12 || 12;
+  return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
 };
 
 const getWeekDays = (startDate: string) => {
@@ -100,47 +111,52 @@ export default function TimeSlotSelector({
                 <div className="text-sm text-gray-500">{day.date}</div>
               </div>
             ))}
-            {timeSlots.map((time) => (
-              <React.Fragment key={time}>
-                <div className="border-t text-xs md:text-base bg-white p-2 text-center">{time}</div>
-                {weekDays.map((day) => {
-                  const isReserved = reservedSlots.some(
-                    (slot) => slot.day === day.name && slot.time === time
-                  );
-                  const isAvailable = availableSchedule.some(
-                    (s) =>
-                      dayMap[s.day] === day.name &&
-                      convertTo24Hour(s.from) <= time &&
-                      convertTo24Hour(s.to) >= time
-                  );
-                  const isSelected = selectedDay === day.name && selectedTime === time; // Arabic day name
+            {timeSlots.map((time) => {
+              const displayTime = formatTimeTo12Hour(time); // Convert to 12-hour format for display
+              return (
+                <React.Fragment key={time}>
+                  <div className="border-t text-xs md:text-base bg-white p-2 text-center">
+                    {displayTime}
+                  </div>
+                  {weekDays.map((day) => {
+                    const isReserved = reservedSlots.some(
+                      (slot) => slot.day === day.name && slot.time === time
+                    );
+                    const isAvailable = availableSchedule.some(
+                      (s) =>
+                        dayMap[s.day] === day.name &&
+                        convertTo24Hour(s.from) <= time &&
+                        convertTo24Hour(s.to) >= time
+                    );
+                    const isSelected = selectedDay === day.name && selectedTime === time;
 
-                  return (
-                    <div
-                      key={`${day.name}-${time}`}
-                      className={cn(
-                        "border-t bg-white p-2 text-center cursor-pointer",
-                        isReserved && "bg-orange-50 cursor-not-allowed",
-                        !isAvailable && !isReserved && "bg-gray-100 cursor-not-allowed",
-                        isSelected && "bg-green-100"
-                      )}
-                      onClick={() => isAvailable && !isReserved && handleSlotClick(day.name, time)}
-                    >
-                      {isReserved && (
-                        <span className="inline-flex items-center rounded-full bg-orange-100 px-2 md:py-1 text-xs text-orange-700">
-                          محجوز
-                        </span>
-                      )}
-                      {isSelected && (
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-2 md:py-1 text-xs text-green-700">
-                          محدد
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </React.Fragment>
-            ))}
+                    return (
+                      <div
+                        key={`${day.name}-${time}`}
+                        className={cn(
+                          "border-t bg-white p-2 text-center cursor-pointer",
+                          isReserved && "bg-orange-50 cursor-not-allowed",
+                          !isAvailable && !isReserved && "bg-gray-100 cursor-not-allowed",
+                          isSelected && "bg-green-100"
+                        )}
+                        onClick={() => isAvailable && !isReserved && handleSlotClick(day.name, time)}
+                      >
+                        {isReserved && (
+                          <span className="inline-flex items-center rounded-full bg-orange-100 px-2 md:py-1 text-xs text-orange-700">
+                            محجوز
+                          </span>
+                        )}
+                        {isSelected && (
+                          <span className="inline-flex items-center rounded-full bg-green-100 px-2 md:py-1 text-xs text-green-700">
+                            محدد
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       </div>

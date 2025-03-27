@@ -54,23 +54,50 @@ export default function AddReservationsPage() {
     return { day: dayName, time: timePart || "" }; // HH:mm
   };
 
+  const generateTimeSlots = (schedule: { day: string; from: string; to: string }[]) => {
+    const slots: string[] = [];
+    schedule.forEach((s) => {
+      const start = convertTo24Hour(s.from);
+      const end = convertTo24Hour(s.to);
+      const [startHour, startMinute] = start.split(":").map(Number);
+      const [endHour, endMinute] = end.split(":").map(Number);
+      let currentHour = startHour;
+      let currentMinute = startMinute;
+
+      while (
+        currentHour < endHour ||
+        (currentHour === endHour && currentMinute <= endMinute)
+      ) {
+        slots.push(
+          `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`
+        );
+        currentMinute += 30; // 30-minute intervals
+        if (currentMinute >= 60) {
+          currentMinute -= 60;
+          currentHour += 1;
+        }
+      }
+    });
+    return Array.from(new Set(slots)).sort();
+  };
+
   const { day: selectedDay, time: selectedTime } = parseReservationDate(formData.reservation_date);
 
   const timeSlots = doctor?.available_schedule
-    ? Array.from(new Set(doctor.available_schedule.map((s: any) => convertTo24Hour(s.from))))
+    ? generateTimeSlots(doctor.available_schedule)
     : [];
 
   const reservedSlots = [
-    { day: "السبت", time: "08:00" },
+    { day: "njnrjn", time: "08:00" },
   ];
 
-
   const handleSlotSelect = (fullDate: string) => {
+    const time = fullDate.split(" ")[1];
     setFormData({
       ...formData,
       reservation_day: getKeyByValue(days[new Date(fullDate.split(" ")[0]).getDay()]) as string,
-      reservation_time: formatTimeTo12Hour(fullDate.split(" ")[1]),
-      reservation_date: fullDate,
+      reservation_time: formatTimeTo12Hour(time),
+      reservation_date: fullDate, // "YYYY-MM-DD HH:mm"
     });
   };
 

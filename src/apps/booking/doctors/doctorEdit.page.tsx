@@ -9,6 +9,7 @@ import useFetch from "@/hooks/use-fetch";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import SpecializationSelect from "@/components/selects/SpecializationSelect";
+import BranchSelect from "@/components/selects/BranchSelect";
 
 interface Schedule {
   day: string;
@@ -36,11 +37,6 @@ export default function DoctorEditPage() {
     { value: "Friday", label: "الجمعة" },
     { value: "Saturday", label: "السبت" },
     { value: "Sunday", label: "الأحد" },
-  ];
-
-  const branches = [
-    { id: 2, name: "نيووو" },
-    // Add more branches as needed
   ];
 
   // تحويل الوقت من 12 ساعة AM/PM لـ 24 ساعة لعرضه في <Input type="time">
@@ -176,24 +172,10 @@ export default function DoctorEditPage() {
               onValueChange={(value) => setFormData({ ...formData, specialization: value })}
             />
             <div className="space-y-2">
-              <Label>اختر الفرع</Label>
-              <Select
+              <BranchSelect
                 value={formData.branch_ids[0]?.toString() || ""}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, branch_ids: [parseInt(value)] })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر الفرع" />
-                </SelectTrigger>
-                <SelectContent>
-                  {branches.map((branch) => (
-                    <SelectItem key={branch.id} value={branch.id.toString()}>
-                      {branch.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onValueChange={(value) => setFormData({ ...formData, branch_ids: [parseInt(value)] })}
+             />
             </div>
           </div>
         </div>

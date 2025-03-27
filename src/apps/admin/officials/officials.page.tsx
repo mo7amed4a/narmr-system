@@ -6,7 +6,7 @@ import { useUser } from "@/hooks/auth.context";
 import useFetch from "@/hooks/use-fetch";
 import api from "@/lib/axios";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash } from "lucide-react";
+import { ArrowUpDown, Edit, Eye, Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -117,6 +117,12 @@ const columnsClientsDataTable = (action: (id: string) => void):ColumnDef<Clients
       // const payment = row.original;
       return (
         <div className="flex gap-1">
+            <Link to={row.getValue("id")+""}>
+              <Button variant={"ghost"} size="icon"><Eye /></Button>
+            </Link>
+            <Link to={row.getValue("id")+"/edit"}>
+              <Button variant={"ghost"} size="icon"><Edit /></Button>
+            </Link>
             <DeleteDialog action={() => action(row.getValue("id"))} >
               <Button variant="ghost" size="icon">
                 <Trash className="size-5 text-red-500" />

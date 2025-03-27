@@ -29,7 +29,7 @@ export default function ShowReservationsDetailsPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return myData ? (
+  return loading || myData ? (
     <>
       {<div className="w-full p-4 grid lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-4">

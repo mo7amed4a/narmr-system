@@ -3,14 +3,14 @@ import { forwardRef } from "react";
 
 const SelectCustom = forwardRef<
   HTMLButtonElement, // نوع العنصر الذي سيتم تمرير `ref` إليه (زر التحديد)
-  { label: string } & React.ComponentProps<typeof Select> // دمج `label` مع جميع `props` المتاحة لـ Select
->(({ children, label, ...props }, ref) => {
+  { label: string, className?: string} & React.ComponentProps<typeof Select> // دمج `label` مع جميع `props` المتاحة لـ Select
+>(({ children, label, className, ...props}, ref) => {
   return (
     <div className="relative w-full">
       <Select {...props}>
         <SelectTrigger
           ref={ref}
-          className="w-full bg-white border-gray-200 text-right pt-2 text-xs text-gray-600"
+          className={`w-full bg-white border-gray-200 text-right pt-2 text-xs text-gray-600 ${className}`}
           {...props} // تمرير جميع `props` بما في ذلك `onChange` و `disabled` وغيره
         >
           <SelectValue className="!text-gray-400" placeholder={label || ""} />

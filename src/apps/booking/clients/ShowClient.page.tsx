@@ -17,7 +17,7 @@ export default function ShowClientPage() {
         <Card className="w-full shadow-none">
           <CardHeader className="flex justify-between flex-row items-center">
             <CardTitle>بيانات العميل</CardTitle>
-            <Button variant="outline">تعديل</Button>
+            <Link to="edit"><Button variant="outline">تعديل</Button></Link>
           </CardHeader>
           <CardContent className="grid gap-4 text-right">
             <div className="border-s-2 ps-3">

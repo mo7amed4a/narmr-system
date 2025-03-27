@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import SpecializationSelect from "@/components/selects/SpecializationSelect";
+import BranchSelect from "@/components/selects/BranchSelect";
 
 interface Schedule {
   day: string;
@@ -34,10 +35,6 @@ export default function AddDoctorPage() {
     { value: "Sunday", label: "الأحد" },
   ];
 
-  const branches = [
-    { id: 2, name: "نيووو" },
-    // Add more branches as needed
-  ];
 
   // دالة تحويل الوقت من 24 ساعة لـ 12 ساعة مع AM/PM
   const formatTimeTo12Hour = (time: string): string => {
@@ -153,23 +150,10 @@ export default function AddDoctorPage() {
               onValueChange={(value) => setFormData({ ...formData, specialization: value })}
             />
             <div className="space-y-2">
-              <Label>اختر الفرع</Label>
-              <Select
-                onValueChange={(value) =>
-                  setFormData({ ...formData, branch_ids: [parseInt(value)] })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر الفرع" />
-                </SelectTrigger>
-                <SelectContent>
-                  {branches.map((branch) => (
-                    <SelectItem key={branch.id} value={branch.id.toString()}>
-                      {branch.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+             <BranchSelect 
+                value={formData.branch_ids[0] as any}
+                onValueChange={(value) => setFormData({ ...formData, branch_ids: [parseInt(value)] })}
+             />
             </div>
           </div>
         </div>

@@ -152,7 +152,6 @@ export default function DoctorDetailsPage() {
           ))}
         </div>
       </CardContent>
-      <Button className="bg-green-700 mt-4 hover:bg-green-800">حجز موعد</Button>
     </Card>
   );
 }

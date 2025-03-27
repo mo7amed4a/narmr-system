@@ -37,7 +37,7 @@ export default function BranchesDetailsPage() {
             </div>
           </CardContent>
         </Card>
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-3 gap-4 px-3">
         <StateCard
               title="اجمالي العائد"
               value="1,245"
