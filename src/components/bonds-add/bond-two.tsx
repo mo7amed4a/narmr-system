@@ -149,7 +149,7 @@ export default function BookingBondTwo({ onSubmit }: BookingBondTwoProps) {
             <SelectCustom
               label="اختر الفرع"
               value={formData.branch_id}
-              onValueChange={(value) => handleSelectChange("branch_id", value)}
+              onValueChange={(value:any) => handleSelectChange("branch_id", value)}
             >
               <SelectItem value="2">ريم فهد</SelectItem>
               {/* Add more branches as needed */}
@@ -158,7 +158,7 @@ export default function BookingBondTwo({ onSubmit }: BookingBondTwoProps) {
               <SelectCustom
                 label="طريقة التحويل"
                 value={formData.payment_method}
-                onValueChange={(value) =>
+                onValueChange={(value:any) =>
                   handleSelectChange("payment_method", value)
                 }
               >

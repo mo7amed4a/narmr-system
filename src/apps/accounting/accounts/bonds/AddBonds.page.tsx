@@ -174,7 +174,7 @@ export default function AddBondsAccountingPage() {
                   <SelectCustom
                     label="طريقة الدفع"
                     value={formData.payment_method}
-                    onValueChange={(value) => handleSelectChange("payment_method", value)}
+                    onValueChange={(value:any) => handleSelectChange("payment_method", value)}
                   >
                     {paymentMethods.map((method) => (
                       <SelectItem key={method.value} value={method.value}>

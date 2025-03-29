@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./select";
-import { forwardRef, ChangeEvent } from "react";
+import { forwardRef } from "react";
 import { cn } from "@/lib/utils"; // Assuming this is available; if not, use the manual merge method
 
 const SelectCustom = forwardRef<
@@ -8,7 +8,7 @@ const SelectCustom = forwardRef<
     label: string;
     className?: string;
     required?: boolean;
-    onValueChange?: (e: ChangeEvent<HTMLSelectElement>) => void; // Added proper typing for onChange
+    onValueChange?: any; // Added proper typing for onChange
   } & React.ComponentProps<typeof Select> // Merge with Select props
 >(({ children, label, className, onValueChange, ...props }, ref) => {
   return (

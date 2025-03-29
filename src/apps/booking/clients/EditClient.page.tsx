@@ -169,7 +169,7 @@ export default function EditClientPage() {
                   label="الدولة"
                   required
                   value={formik.values.country}
-                  onValueChange={(value) => {
+                  onValueChange={(value:any) => {
                     formik.setFieldValue("country", value);
                     formik.setFieldValue("city", ""); // Reset city when country changes
                   }}
@@ -189,7 +189,7 @@ export default function EditClientPage() {
                   label="المدينة"
                   required
                   value={formik.values.city}
-                  onValueChange={(value) => formik.setFieldValue("city", value)}
+                  onValueChange={(value:any) => formik.setFieldValue("city", value)}
                   disabled={!formik.values.country} // Disable if no country selected
                 >
                   {availableCities.map((city) => (

@@ -58,7 +58,7 @@ const InvoiceForm = ({
                     className="h-12"
                     required
                     label="اختر المنتج"
-                    onChange={(e: any) => handleChange(index, "product", e.target.value)}
+                    onValueChange={(e: any) => handleChange(index, "product", e.target.value)}
                   >
                     <SelectItem value="1">منتج 1</SelectItem>
                     <SelectItem value="2">منتج 2</SelectItem>
