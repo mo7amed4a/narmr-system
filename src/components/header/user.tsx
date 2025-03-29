@@ -1,7 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
 import { useUser } from "@/hooks/auth.context";
 
@@ -17,10 +16,10 @@ export default function User({
       <Button className="h-12 px-1 md:px-2 flex items-center md:gap-2" variant={"ghost"}>
         <ChevronDown />
         <span>{user?.name?.split(" ")?.slice(0, 2).join(" ")}</span>
-        <Avatar>
+        {/* <Avatar>
           <AvatarImage src="/placeholder.svg" alt="" />
           <AvatarFallback className="capitalize">{user?.name?.slice(0, 2)}</AvatarFallback>
-        </Avatar>
+        </Avatar> */}
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">

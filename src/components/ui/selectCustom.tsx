@@ -8,20 +8,21 @@ const SelectCustom = forwardRef<
     label: string;
     className?: string;
     required?: boolean;
-    onChange?: (e: ChangeEvent<HTMLSelectElement>) => void; // Added proper typing for onChange
+    onValueChange?: (e: ChangeEvent<HTMLSelectElement>) => void; // Added proper typing for onChange
   } & React.ComponentProps<typeof Select> // Merge with Select props
->(({ children, label, className, onChange, ...props }, ref) => {
+>(({ children, label, className, onValueChange, ...props }, ref) => {
   return (
     <div className="relative w-full">
       <Select
         {...props}
+        value={props.value} // تأكد من تمرير value
         onValueChange={(value) => {
-          if (onChange) {
+          if (onValueChange) {
             // Simulate a ChangeEvent for compatibility with onChange
-            const syntheticEvent = {
-              target: { value },
-            } as ChangeEvent<HTMLSelectElement>;
-            onChange(syntheticEvent);
+            // const syntheticEvent = {
+            //   target: { value },
+            // } as ChangeEvent<HTMLSelectElement>;
+            onValueChange(value);
           }
         }}
       >
