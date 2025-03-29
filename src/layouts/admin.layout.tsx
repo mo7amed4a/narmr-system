@@ -24,6 +24,7 @@ import ProductsAddPage from "@/apps/accounting/products/products-add.page";
 import ProductsEditPage from "@/apps/accounting/products/products-edit.page";
 import OfficialsEditPage from "@/apps/admin/officials/officialsEdit.page";
 import OfficialsDetailsPage from "@/apps/admin/officials/officialsDetails.page";
+import ProfileEditPage from "@/apps/profile/profileEdit.page";
 
 const Home = lazy(() => import("../apps/admin/home/Home"));
 
@@ -93,6 +94,7 @@ function AccountingLayout() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/profile/edit" element={<ProfileEditPage />} />
                 
                 <Route path="/branches/*" >
                     <Route index element={<BranchesPage />} />

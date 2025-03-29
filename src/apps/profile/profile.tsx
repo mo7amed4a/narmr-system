@@ -11,6 +11,7 @@ import {
 import useFetch from "@/hooks/use-fetch";
 import Cookies from "js-cookie";
 import { CalendarDays, Mail, Phone, User, UserCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function ProfilePage() {
   const t = JSON.parse(Cookies.get("user") || "{}");
@@ -20,7 +21,9 @@ export default function ProfilePage() {
     <Card>
       <CardHeader className="flex justify-between flex-row">
         <CardTitle>الصفحة الشخصية</CardTitle>
-        <Button variant={"outline"}>تعديل</Button>
+        <Link to="edit">
+          <Button variant={"outline"}>تعديل</Button>
+        </Link>
       </CardHeader>
      {loading ? <Loading /> : <>
         <CardContent className="flex flex-col items-center space-y-2">

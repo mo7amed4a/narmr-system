@@ -1,9 +1,6 @@
-;
-
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { ChevronDown } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,38 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
 
-// Updated data with some values below thresholds
-const data2024 = [
-  { month: "يناير", value: 8000 },
-  { month: "فبراير", value: 85000 },
-  { month: "مارس", value: 62000 },
-  { month: "أبريل", value: 15000 },
-  { month: "مايو", value: 101000 },
-  { month: "يونيو", value: 53000 },
-  { month: "يوليو", value: 45000 },
-  { month: "أغسطس", value: 47000 },
-  { month: "سبتمبر", value: 46000 },
-  { month: "أكتوبر", value: 45000 },
-  { month: "نوفمبر", value: 45000 },
-  { month: "ديسمبر", value: 48000 },
+// Time period options
+const timeOptions = [
+  { value: "day", label: "يوم" },
+  { value: "month", label: "شهر" },
+  { value: "year", label: "سنة" },
 ];
 
-const data2025 = [
-  { month: "يناير", value: 5000 },
-  { month: "فبراير", value: 88000 },
-  { month: "مارس", value: 65000 },
-  { month: "أبريل", value: 15000 },
-  { month: "مايو", value: 1000 },
-  { month: "يونيو", value: 55000 },
-  { month: "يوليو", value: 47000 },
-  { month: "أغسطس", value: 48000 },
-  { month: "سبتمبر", value: 49000 },
-  { month: "أكتوبر", value: 47000 },
-  { month: "نوفمبر", value: 46000 },
-  { month: "ديسمبر", value: 50000 },
-];
-
+// Threshold-based color logic
 const getLevelColor = (value: number) => {
   if (value < 10000) {
     return "#E87171"; // Red for low
@@ -55,13 +31,39 @@ const getLevelColor = (value: number) => {
 };
 
 export default function ChartBarAccountingHome() {
-  const [year, setYear] = React.useState(2025);
-  const data = year === 2025 ? data2025 : data2024;
+  const [selectedType, setSelectedType] = React.useState("month"); // Default to "month"
+  const [chartData, setChartData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  // Fetch data based on selected type
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/financial-flow/summary?type=${selectedType}`);
+        const apiData = response.data.data;
+        // Map API data to chart format
+        const mappedData = apiData.map((item:any) => ({
+          month: item.label, // e.g., "January"
+          value: item.number, // e.g., 118169.0
+        }));
+        setChartData(mappedData);
+      } catch (error) {
+        console.error("Error fetching financial flow data:", error);
+        toast.error("حدث خطأ أثناء جلب بيانات التدفق المالي");
+        setChartData([]); // Empty chart on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedType]);
+  if (loading) return <div>جاري التحميل...</div>;
 
   return (
     <Card className="w-full border" dir="rtl">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between">
-        <CardTitle className="text-2xl">احصائيات التدفق المالي</CardTitle>
+        <CardTitle className="text-2xl">إحصائيات التدفق المالي</CardTitle>
         <div className="flex items-center flex-wrap gap-4">
           <div className="flex items-center gap-2">
             <span className="h-3 w-3 rounded-full bg-[#5EB18E]" />
@@ -74,30 +76,29 @@ export default function ChartBarAccountingHome() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-24">
-                {year}
+                {timeOptions.find((opt) => opt.value === selectedType)?.label || selectedType}
                 <ChevronDown className="mr-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setYear(2024)}>
-                2024
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setYear(2025)}>
-                2025
-              </DropdownMenuItem>
+              {timeOptions.map((option) => (
+                <DropdownMenuItem key={option.value} onClick={() => setSelectedType(option.value)}>
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent>
         <div className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%" >
-            <BarChart data={data}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
               <Bar
                 dataKey="value"
                 radius={[4, 4, 0, 0]}
                 barSize={10}
-                shape={(props: any) => {
+                shape={(props:any) => {
                   const { x, y, width, height, payload } = props;
                   return (
                     <rect
@@ -112,21 +113,21 @@ export default function ChartBarAccountingHome() {
                   );
                 }}
               />
-                <XAxis
-                    dataKey="month"
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                />
-                <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    width={5}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `${value / 1000}K`}
-                />
+              <XAxis
+                dataKey="month"
+                stroke="#888888"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="#888888"
+                fontSize={12}
+                width={40} // Adjusted for larger values
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>

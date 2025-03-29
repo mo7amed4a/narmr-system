@@ -9,6 +9,7 @@ import ProfilePage from "@/apps/profile/profile";
 import DoctorAddPage from "@/apps/booking/doctors/doctorAdd.page";
 import DoctorEditPage from "@/apps/booking/doctors/doctorEdit.page";
 import EditReservationPage from "@/apps/booking/reservations/EditReservation.page";
+import ProfileEditPage from "@/apps/profile/profileEdit.page";
 
 const ClientsPage = lazy(() => import("@/apps/booking/clients/clients.page"));
 const ShowClientPage = lazy(() => import("@/apps/booking/clients/ShowClient.page"));
@@ -51,6 +52,7 @@ function BookingLayout() {
               <Routes>
                 <Route path="/" element={<BookingHome />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/profile/edit" element={<ProfileEditPage />} />
                 <Route path="/clients" element={<ClientsPage />} />
                 <Route path="/clients/add" element={<AddClientPage />} />
                 <Route path="/clients/:id" element={<ShowClientPage />} />

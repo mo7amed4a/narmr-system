@@ -6,10 +6,11 @@ import LoadingSmall from "../api/loadingSmall";
 interface BranchSelectProps {
   value: string;
   onValueChange: (value: string) => void;
+  user_id?: number|string
 }
 
-export default function BranchSelect({ value, onValueChange }: BranchSelectProps) {
-  const { data, loading, error } = useFetch("/branches");
+export default function BranchSelect({ value, onValueChange, user_id }: BranchSelectProps) {
+  const { data, loading, error } = useFetch(user_id ? `/branchess?user_id=${user_id}` :"/branches");
 
   if (loading) return <LoadingSmall />;
   if (error) return <div>خطأ في تحميل العملاء: {error.message} {value}</div>;

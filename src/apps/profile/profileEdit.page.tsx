@@ -6,14 +6,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "@/lib/axios";
-import { useParams } from "react-router-dom";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useUser } from "@/hooks/auth.context";
 
 const validationSchema = Yup.object({
@@ -23,33 +15,20 @@ const validationSchema = Yup.object({
     .matches(/^[0-9]+$/, "يجب أن يحتوي على أرقام فقط")
     .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام")
     .max(15, "رقم الجوال يجب أن يكون على الأكثر 15 أرقام"),
-  user_category: Yup.string().required("فئة المستخدم مطلوبة"),
-  salary: Yup.number()
-    .min(0, "الراتب يجب أن يكون أكبر من أو يساوي 0")
-    .optional(),
   password: Yup.string()
     .min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل")
     .optional(),
 });
 
-// User category options
-const userCategories = [
-  { value: "admin", label: "مسؤول عام" },
-  { value: "accounting_employee", label: "موظف حسابات" },
-  { value: "transformer_employee", label: "موظف حجوزات" },
-];
-
-export default function EditAdminPage() {
-  const { id } = useParams();
-  const {user} = useUser()
+export default function ProfileEditPage() {
+  const { user, fetchUser } = useUser();
+  const id = user?.user_id;
   const [loading, setLoading] = useState(true);
 
   const formik = useFormik({
     initialValues: {
       name: "",
       phone: "",
-      user_category: "",
-      salary: "",
       password: "",
     },
     validationSchema: validationSchema,
@@ -58,24 +37,23 @@ export default function EditAdminPage() {
         // Split name into first_name and last_name
         const nameParts = values.name.trim().split(" ");
         const first_name = nameParts[0];
-        const last_name = nameParts.slice(1).join(" ") || ""; // Handle single-word names
+        const last_name = nameParts.slice(1).join(" ") || "";
 
         const payload = {
-          auth_user_id: user.user_id, // Use dynamic id instead of hardcoded 2
+          auth_user_id: user?.user_id, // Ensure user_id exists
           first_name,
           last_name,
           phone: values.phone,
-          user_category: values.user_category,
-          ...(values.salary && { salary: parseFloat(values.salary) }), // Include only if provided
           ...(values.password && { password: values.password }), // Include only if provided
         };
-        const response = await api.post(`/user/update-full/${id}`, payload);
-
-        console.log("User updated:", response.data);
+        await api.post(`/user/self-update/${id}`, payload);
         toast.success("تم تحديث بيانات المستخدم بنجاح");
-      } catch (error) {
-        console.error("Error updating user:", error);
-        toast.error("حدث خطأ أثناء تحديث البيانات");
+        fetchUser()
+      } catch (error:any) {
+        console.error("Error updating user:", error); // Debug: Log full error
+        toast.error(
+          error.response?.data?.message || "حدث خطأ أثناء تحديث البيانات"
+        );
       } finally {
         setSubmitting(false);
       }
@@ -85,26 +63,30 @@ export default function EditAdminPage() {
   // Fetch user data when component mounts
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await api.get(`/user_info/${id}`);
         const userData = response.data.data;
+        console.log("Fetched user data:", userData); // Debug: Check fetched data
         formik.setValues({
           name: userData.name || "",
           phone: userData.phone || "",
-          user_category: userData.user_category || "",
-          salary: "", // Leave empty
           password: "", // Leave empty
         });
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error); // Debug: Log full error
         toast.error("حدث خطأ أثناء جلب بيانات المستخدم");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchUserData();
-  }, [id]);
+    fetchUserData();
+  }, [id]); // Removed formik from dependencies to avoid unnecessary re-renders
 
   if (loading) return <div>جاري التحميل...</div>;
 
@@ -118,7 +100,7 @@ export default function EditAdminPage() {
               <Button
                 type="submit"
                 className="bg-green-700 md:px-7 hover:bg-green-800"
-                disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting || !formik.isValid} // Disable if invalid
               >
                 {formik.isSubmitting ? "جاري التحديث..." : "تحديث"}
               </Button>
@@ -132,17 +114,18 @@ export default function EditAdminPage() {
                   *مطلوب
                 </span>
               </CardTitle>
-              <InputLabel
-                label="الاسم بالكامل"
-                required
-                placeholder="أدخل الاسم بالكامل"
-                type="text"
-                name="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                error={formik.touched.name && formik.errors.name}
-              />
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid lg:grid-cols-3 gap-4">
+                <InputLabel
+                  label="الاسم بالكامل"
+                  required
+                  placeholder="أدخل الاسم بالكامل"
+                  type="text"
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} // Ensure touched state updates
+                  error={formik.touched.name && formik.errors.name}
+                />
                 <InputLabel
                   label="رقم الجوال"
                   required
@@ -151,44 +134,8 @@ export default function EditAdminPage() {
                   name="phone"
                   value={formik.values.phone}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   error={formik.touched.phone && formik.errors.phone}
-                />
-                <div>
-                  <Select
-                    required
-                    value={formik.values.user_category} // Controlled value from Formik
-                    onValueChange={(value) => {
-                      formik.setFieldValue("user_category", value)
-                    }}
-                  >
-                    <SelectTrigger className="w-full h-12 text-gray-700">
-                      <SelectValue placeholder="فئة المستخدم" />
-                    </SelectTrigger>{" "}
-                    <SelectContent>
-                      {userCategories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {formik.touched.user_category &&
-                    formik.errors.user_category && (
-                      <div className="text-red-500 text-xs mt-1">
-                        {formik.errors.user_category}
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <InputLabel
-                  label="الراتب (اختياري)"
-                  placeholder="أدخل الراتب"
-                  type="number"
-                  name="salary"
-                  value={formik.values.salary}
-                  onChange={formik.handleChange}
-                  error={formik.touched.salary && formik.errors.salary}
                 />
                 <InputLabel
                   label="كلمة المرور (اختياري)"
@@ -197,6 +144,7 @@ export default function EditAdminPage() {
                   name="password"
                   value={formik.values.password}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   error={formik.touched.password && formik.errors.password}
                 />
               </div>
