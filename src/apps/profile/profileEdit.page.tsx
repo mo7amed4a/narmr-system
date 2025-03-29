@@ -95,7 +95,7 @@ export default function ProfileEditPage() {
       <Card className="w-full flex flex-col gap-4 shadow-none border-none">
         <Card className="w-full shadow-none">
           <CardHeader className="flex justify-between flex-row items-center">
-            <CardTitle>تعديل بيانات المستخدم</CardTitle>
+            <CardTitle>تعديل الملف الشخصي</CardTitle>
             {formik.values.name && (
               <Button
                 type="submit"

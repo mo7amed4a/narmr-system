@@ -1,4 +1,5 @@
 import axios from "axios";
+// import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
 
 const api = axios.create({
@@ -11,12 +12,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // console.log(Cookies.get("session_id", { path: "/" }));
-
-  // const session_id = JSON.parse(localStorage.getItem("user") || "{}").session_id;
-  // console.log(session_id);
-  
-  // if (session_id) {
+  // const user = JSON.parse(Cookies.get("user") || "{}");
+  // console.log(user?.user_id);
+  // config.headers.body = user?.user_id || ""
+  // // if (session_id) {
     // config.headers["Set-Cookie"] = `frontend_lang=en_US;session_id=2f0e3c7443c20e0697df09b11273bfbc2c3dde60`;
   // }
   // const session_id = localStorage.getItem("session_id");

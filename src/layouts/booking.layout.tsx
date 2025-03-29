@@ -10,6 +10,11 @@ import DoctorAddPage from "@/apps/booking/doctors/doctorAdd.page";
 import DoctorEditPage from "@/apps/booking/doctors/doctorEdit.page";
 import EditReservationPage from "@/apps/booking/reservations/EditReservation.page";
 import ProfileEditPage from "@/apps/profile/profileEdit.page";
+import BandsAccountingPage from "@/apps/accounting/accounts/bonds/bonds.page";
+import AddBondsAccountingPage from "@/apps/accounting/accounts/bonds/AddBonds.page";
+import BondsDetailsAccountingPage from "@/apps/accounting/accounts/bonds/bondsDetails.page";
+import StatementAccountingPage from "@/apps/accounting/accounts/statement/statement.page";
+import TreasuryAccountingPage from "@/apps/accounting/accounts/treasury/treasury.page";
 
 const ClientsPage = lazy(() => import("@/apps/booking/clients/clients.page"));
 const ShowClientPage = lazy(() => import("@/apps/booking/clients/ShowClient.page"));
@@ -29,12 +34,12 @@ const InvoiceDetailsPage = lazy(() => import("@/apps/booking/invoices/invoicesDe
 const InvoicesEditPage = lazy(() => import("@/apps/booking/invoices/invoicesEdit.page"));
 const InvoicesAddPage = lazy(() => import("@/apps/booking/invoices/invoicesAdd.page"));
 
-const BondsPage = lazy(() => import("@/apps/booking/accounts/bonds/bonds.page"));
-const AddBondsPage = lazy(() => import("@/apps/booking/accounts/bonds/AddBonds.page"));
-const BondsDetailsPage = lazy(() => import("@/apps/booking/accounts/bonds/bondsDetails.page"));
+// const BondsPage = lazy(() => import("@/apps/booking/accounts/bonds/bonds.page"));
+// const AddBondsPage = lazy(() => import("@/apps/booking/accounts/bonds/AddBonds.page"));
+// const BondsDetailsPage = lazy(() => import("@/apps/booking/accounts/bonds/bondsDetails.page"));
 
-const StatementPage = lazy(() => import("@/apps/booking/accounts/statement/statement.page"));
-const TreasuryPage = lazy(() => import("@/apps/booking/accounts/treasury/treasury.page"));
+// const StatementPage = lazy(() => import("@/apps/booking/accounts/statement/statement.page"));
+// const TreasuryPage = lazy(() => import("@/apps/booking/accounts/treasury/treasury.page"));
 
 const BookingHome = lazy(() => import("@/apps/booking/home/Home"));
 
@@ -72,14 +77,22 @@ function BookingLayout() {
                 <Route path="/invoices/:id" element={<InvoiceDetailsPage />} />
                 <Route path="/invoices/add" element={<InvoicesAddPage />} />
                 <Route path="/invoices/:id/edit" element={<InvoicesEditPage />} />
-                <Route path="/accounts/*" >
+                {/* <Route path="/accounts/*" >
                     <Route index element={<BondsPage />} />
                     <Route path="bonds" element={<BondsPage />} />
                     <Route path="bonds/add" element={<AddBondsPage />} />
                     <Route path="bonds/:id" element={<BondsDetailsPage />} />
                     <Route path="statement" element={<StatementPage />} />
                     <Route path="treasury" element={<TreasuryPage />} />
-                </Route>
+                </Route> */}
+                 <Route path="/accounts/*" >
+                      <Route index element={<BandsAccountingPage />} />
+                      <Route path="bonds" element={<BandsAccountingPage />} />
+                      <Route path="bonds/add" element={<AddBondsAccountingPage />} />
+                      <Route path="bonds/:id" element={<BondsDetailsAccountingPage />} />
+                      <Route path="statement" element={<StatementAccountingPage />} />
+                      <Route path="treasury" element={<TreasuryAccountingPage />} />
+                  </Route>
                 <Route path="/*" element={<NotFoundPage />} />
               </Routes>
             </main>
