@@ -16,6 +16,7 @@ import CustomerSelect from "@/components/selects/CustomerSelect";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import BranchSelect from "@/components/selects/BranchSelect";
+import { exportReservations, printReservations } from "@/utils/prints/reservations";
 
 export default function TreasuryAccountingPage() {
   const [customer, setCustomer] = useState("");
@@ -88,12 +89,16 @@ export default function TreasuryAccountingPage() {
         <Card className="border-none shadow-none">
           <CardContent className="pt-4 space-y-4">
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"}>
+              <Button variant={"outline"} onClick={() => printReservations(data)}>
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <ButtonExcel />
-              <ButtonPDF />
+              <div onClick={() => exportReservations(data?.data)}>
+                <ButtonExcel />
+              </div>
+              <div onClick={() => printReservations(data)}>
+                <ButtonPDF />
+              </div>
             </div>
             <Table>
               <TableHeader className="bg-gray-100">
@@ -122,7 +127,7 @@ export default function TreasuryAccountingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.data.map((transaction: any, index: number) => (
+                {data?.data?.map((transaction: any, index: number) => (
                   <TableRow
                     key={index}
                     className={

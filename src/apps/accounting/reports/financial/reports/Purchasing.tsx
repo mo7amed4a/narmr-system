@@ -13,6 +13,10 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import BranchSelect from "@/components/selects/BranchSelect";
 import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
+import ButtonExcel from "@/components/buttons/ButtonExcel";
+import ButtonPDF from "@/components/buttons/ButtonPDF";
+import { exportPurchasing, printPurchasing } from "@/utils/prints/purchasing";
 
 export default function Purchasing() {
   const [account, setAccount] = useState<string | null>(null);
@@ -44,7 +48,23 @@ export default function Purchasing() {
     <div dir="rtl">
       <Card className="border shadow-none">
         <CardHeader className="p-4">
-          <CardTitle className="py-2">تقارير المشتريات</CardTitle>
+          <div className="flex w-full flex-col items-start lg:items-center justify-between lg:flex-row ">
+            <CardTitle className="py-2 w-full">تقارير المشتريات</CardTitle>
+
+            <div className="flex w-full gap-2 justify-end">
+              <Button variant={"outline"} onClick={() => printPurchasing(data)}>
+                <span className="hidden md:block">طباعة الملف</span>
+                <Printer />
+              </Button>
+              <div onClick={() => exportPurchasing(data?.data)}>
+                <ButtonExcel />
+              </div>
+              <div onClick={() => printPurchasing(data)}>
+                <ButtonPDF />
+              </div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-4 pt-4 items-end">
             <AccountsSelect
               value={account || ""}

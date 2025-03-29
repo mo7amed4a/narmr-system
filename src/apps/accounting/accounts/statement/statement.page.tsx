@@ -22,6 +22,7 @@ import ButtonPDF from "@/components/buttons/ButtonPDF";
 import AccountsSelect from "@/components/selects/AccountsSelect";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
+import { exportStatement, printStatement } from "@/utils/prints/statement";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
@@ -151,12 +152,16 @@ export default function StatementAccountingPage() {
             </div>
 
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"}>
+              <Button variant={"outline"} onClick={() => printStatement(data?.transactions)}>
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <ButtonExcel />
-              <ButtonPDF />
+              <div onClick={() => exportStatement(data?.transactions)}>
+                <ButtonExcel />
+              </div>
+              <div onClick={() => printStatement(data?.transactions)}>
+                <ButtonPDF />
+              </div>
             </div>
           </CardHeader>
           <CardContent>

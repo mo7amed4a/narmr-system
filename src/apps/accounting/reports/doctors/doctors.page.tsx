@@ -16,7 +16,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import BranchSelect from "@/components/selects/BranchSelect";
 import DoctorSelect from "@/components/selects/DoctorSelect";
-import { DownloadTableExcel } from 'react-export-table-to-excel';
+import { exportReservations, printReservations } from "@/utils/prints/reservations";
 
 
 export default function TreasuryAccountingPage() {
@@ -92,21 +92,16 @@ export default function TreasuryAccountingPage() {
         <Card className="border-none shadow-none">
           <CardContent className="pt-4 space-y-4">
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"} onClick={() => window.print()}>
+              <Button variant={"outline"} onClick={() => printReservations(data)}>
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <ButtonExcel />
-              <ButtonPDF />
-              <DownloadTableExcel
-                    filename="users table"
-                    sheet="users"
-                    currentTableRef={tableRef.current}
-                >
-
-                   <button> Export excel </button>
-
-                </DownloadTableExcel>
+              <div onClick={() => exportReservations(data?.data)}>
+                <ButtonExcel />
+              </div>
+              <div onClick={() => printReservations(data)}>
+                <ButtonPDF />
+              </div>
             </div>
             <Table ref={tableRef} id="print_doctors_99">
               <TableHeader className="bg-gray-100">
