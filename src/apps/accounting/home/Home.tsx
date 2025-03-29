@@ -1,15 +1,7 @@
 import ChartBarAccountingHome from "@/components/charts/ChartBarAccountingHome";
 import StateCard from "@/components/home/StateCard";
 import SuppliersTable from "@/components/home/SuppliersTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import useFetch from "@/hooks/use-fetch";
 import { DollarSign, Users } from "lucide-react";
 
