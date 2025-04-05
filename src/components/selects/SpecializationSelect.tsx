@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-const specializations = [
+export const specializations = [
   { key: "general", name: "طبيب عام" },
   { key: "dentist", name: "طبيب أسنان" },
   { key: "cardiologist", name: "طبيب قلب" },

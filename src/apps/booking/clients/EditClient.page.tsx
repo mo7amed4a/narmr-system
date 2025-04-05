@@ -169,12 +169,13 @@ export default function EditClientPage() {
                   label="الدولة"
                   required
                   value={formik.values.country}
-                  onValueChange={(value:any) => {
+                  onValueChange={(value:any
+                                      ) => {
                     formik.setFieldValue("country", value);
                     formik.setFieldValue("city", ""); // Reset city when country changes
                   }}
                 >
-                  {countries.map((country) => (
+                                    {countries.map((country) => (
                     <SelectItem key={country.value} value={country.value}>
                       {country.label}
                     </SelectItem>

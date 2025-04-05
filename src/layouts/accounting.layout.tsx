@@ -11,6 +11,7 @@ import ProductsAddPage from "@/apps/accounting/products/products-add.page";
 import ProductsDetailsPage from "@/apps/accounting/products/products-details.page";
 import ProductsEditPage from "@/apps/accounting/products/products-edit.page";
 import ProfileEditPage from "@/apps/profile/profileEdit.page";
+import StaffAddPage from "@/apps/accounting/staff/staffAdd.page";
 
 const Home = lazy(() => import("../apps/accounting/home/Home"));
 const SuppliersPage = lazy(() => import("../apps/accounting/suppliers/suppliers.page"));
@@ -68,6 +69,7 @@ function AccountingLayout() {
                 <Route path="/sales/add" element={<SalesAddPage />} />
                 <Route path="/sales/:id" element={<SalesDetailsPage />} />
                 <Route path="/staff" element={<StaffPage />} />
+                <Route path="staff/add" element={<StaffAddPage />} />
                 <Route path="/staff/:id" element={<StaffDetails />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/products/add" element={<ProductsAddPage />} />

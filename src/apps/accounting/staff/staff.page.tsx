@@ -7,10 +7,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import useFetch from "@/hooks/use-fetch";
 import UpdateSalaryDialog from "@/components/dialogs/UpdateSalaryDialog";
+import { AvailableSchedule } from "@/apps/booking/doctors/doctors.page";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { dayMap } from "@/components/Appointment/TimeSlotSelector";
 
 // Define the type for the employee data
 type EmployeeType = {
-  employee_id: number;
+  id: number;
   name: string;
   phone: string;
   role: string;
@@ -20,7 +23,7 @@ type EmployeeType = {
 
 export default function StaffPage() {
   const [refresh, setRefresh] = useState(false); // For refreshing data after updates
-  const { data, loading, error } = useFetch("/employees", refresh);
+  const { data, loading, error } = useFetch("/employees/work/schedule", refresh);
 
   const columnsSuppliers: ColumnDef<EmployeeType>[] = [
     {
@@ -55,6 +58,42 @@ export default function StaffPage() {
       },
     },
     {
+      accessorKey: "available_schedule",
+      header: "المواعيد",
+      cell: ({ row }) => {
+        const schedule = row.getValue(
+          "available_schedule"
+        ) as AvailableSchedule[];
+        return (
+          <div className="text-right">
+            {schedule && schedule.length > 0 ? (
+              <>
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant="ghost" size="icon">
+                      <Eye className="size-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <ul className="list-none p-0 divide-y" dir="rtl">
+                    {schedule.map((slot, index) => (
+                      <li key={index} className="text-sm grid grid-cols-4 gap-3">
+                        <span className="p-2 border-e">{dayMap[slot.day]}</span>
+                        <span className="p-2 col-span-3 text-center flex gap-3 justify-center " dir="rtl"><span>{slot.from}</span> -  <span>{slot.to}</span></span>
+                      </li>
+                    ))}
+                  </ul>
+                  </DialogContent>
+                </Dialog>
+              </>
+            ) : (
+              <span>غير متوفر</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "salary",
       header: "الراتب الشهري",
       cell: ({ row }) => <div>{row.getValue("salary")}</div>,
@@ -70,13 +109,13 @@ export default function StaffPage() {
               <Scroll />
             </Button>
           </Link> */}
-          <Link to={`${row.original.employee_id}`}>
+          <Link to={`${row.original.id}`}>
             <Button variant="ghost" size="icon">
               <Eye />
             </Button>
           </Link>
           <UpdateSalaryDialog
-            employeeId={row.original.employee_id}
+            employeeId={row.original.id}
             currentSalary={row.original.salary}
             onSalaryUpdated={() => setRefresh((prev) => !prev)}
           />

@@ -2,19 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import SpecializationSelect from "@/components/selects/SpecializationSelect";
 import BranchSelect from "@/components/selects/BranchSelect";
-import { useNavigate } from "react-router-dom";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface Schedule {
   day: string;
@@ -22,13 +16,13 @@ interface Schedule {
   to: string;
 }
 
-export default function AddDoctorPage() {
-  const navigate = useNavigate();
+export default function StaffAddPage() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    specialization: "",
-    branch_ids: [] as number[],
+    role: "" as "doctor" | "employee" | "",
+    branch_id: 0,
+    specialization_input: "",
     available_schedule: [] as Schedule[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,30 +37,22 @@ export default function AddDoctorPage() {
     { value: "Sunday", label: "الأحد" },
   ];
 
-  // دالة تحويل الوقت من 24 ساعة لـ 12 ساعة مع AM/PM
   const formatTimeTo12Hour = (time: string): string => {
     const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour, 10);
     const period = hourNum >= 12 ? "PM" : "AM";
-    const formattedHour = hourNum % 12 || 12; // تحويل 0 إلى 12 لمنتصف الليل أو الظهر
+    const formattedHour = hourNum % 12 || 12;
     return `${formattedHour.toString().padStart(2, "0")}:${minute} ${period}`;
   };
 
   const handleAddSchedule = () => {
     setFormData({
       ...formData,
-      available_schedule: [
-        ...formData.available_schedule,
-        { day: "", from: "", to: "" },
-      ],
+      available_schedule: [...formData.available_schedule, { day: "", from: "", to: "" }],
     });
   };
 
-  const handleScheduleChange = (
-    index: number,
-    field: keyof Schedule,
-    value: string
-  ) => {
+  const handleScheduleChange = (index: number, field: keyof Schedule, value: string) => {
     const updatedSchedule = formData.available_schedule.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
@@ -76,20 +62,19 @@ export default function AddDoctorPage() {
   const handleRemoveSchedule = (index: number) => {
     setFormData({
       ...formData,
-      available_schedule: formData.available_schedule.filter(
-        (_, i) => i !== index
-      ),
+      available_schedule: formData.available_schedule.filter((_, i) => i !== index),
     });
   };
 
   const handleSubmit = async () => {
-    if (
-      !formData.name ||
-      !formData.phone ||
-      !formData.specialization ||
-      formData.branch_ids.length === 0
-    ) {
+    if (!formData.name || !formData.phone || !formData.role || !formData.branch_id) {
       toast.error("يرجى ملء جميع الحقول المطلوبة");
+      return;
+    }
+
+    // Require specialization for doctors only
+    if (formData.role === "doctor" && !formData.specialization_input) {
+      toast.error("يرجى اختيار التخصص للطبيب");
       return;
     }
 
@@ -106,24 +91,25 @@ export default function AddDoctorPage() {
       const payload = {
         name: formData.name,
         phone: formData.phone,
-        specialization: formData.specialization,
-        branch_ids: formData.branch_ids,
+        role: formData.role,
+        branch_id: formData.branch_id,
+        specialization_input: formData.role === "doctor" ? formData.specialization_input : undefined,
         available_schedule: formattedSchedule,
       };
 
-      await api.post("/doctor/add", payload);
-      toast.success("تم إضافة الطبيب بنجاح");
+      await api.post("/employee/work/add", payload);
+      toast.success("تم إضافة الموظف بنجاح");
       setFormData({
         name: "",
         phone: "",
-        specialization: "",
-        branch_ids: [],
+        role: "",
+        branch_id: 0,
+        specialization_input: "",
         available_schedule: [],
       });
-      window.location.reload();
     } catch (error) {
-      console.error("Error adding doctor:", error);
-      toast.error("حدث خطأ أثناء إضافة الطبيب");
+      console.error("Error adding employee:", error);
+      toast.error("حدث خطأ أثناء إضافة الموظف");
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +118,7 @@ export default function AddDoctorPage() {
   return (
     <Card className="p-4 shadow-none border-none" dir="rtl">
       <CardHeader className="flex justify-between flex-row items-center border-b pb-4">
-        <CardTitle>إضافة طبيب جديد</CardTitle>
+        <CardTitle>إضافة موظف جديد</CardTitle>
         <div className="flex gap-2">
           <Button
             variant="green"
@@ -141,54 +127,73 @@ export default function AddDoctorPage() {
           >
             {isSubmitting ? "جاري الحفظ..." : "حفظ"}
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="text-primary"
-          >
+          <Button variant="ghost" className="text-primary">
             إلغاء
           </Button>
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div>
-          <h3 className="mb-4 text-lg font-semibold">بيانات الطبيب</h3>
-          <div className="grid gap-6 md:grid-cols-2">
+          <h3 className="mb-4 text-lg font-semibold">بيانات الموظف</h3>
+          <div className="gird gap-3 pb-4">
+            <div className="gap-4 flex items-center">
+              <Label>نوع الموظف</Label>
+              <RadioGroup
+                value={formData.role}
+                onValueChange={(value: "doctor" | "employee") =>
+                  setFormData({ ...formData, role: value })
+                }
+                className="flex gap-4"
+              >
+                <div className="flex items-center gap-x-2">
+                  <RadioGroupItem value="doctor" id="doctor" />
+                  <Label htmlFor="doctor">دكتور</Label>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <RadioGroupItem value="employee" id="employee" />
+                  <Label htmlFor="employee">موظف</Label>
+                </div>
+              </RadioGroup>
+            </div>
+              <div className="space-y-2">
+                <Label>جهة  العمل</Label>
+                <BranchSelect
+                  value={formData.branch_id as any}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, branch_id: parseInt(value) })
+                  }
+                />
+              </div>
+          </div>
+          <h3 className="mb-4 text-lg font-semibold">البيانات الاساسية</h3>
+          <div className="grid gap-6 md:grid-cols-3">
             <div className="space-y-2">
-              <Label>اسم الطبيب</Label>
+              <Label>اسم الموظف</Label>
               <Input
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                placeholder="أدخل اسم الطبيب"
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="أدخل اسم الموظف"
               />
             </div>
             <div className="space-y-2">
               <Label>رقم الجوال</Label>
               <Input
                 value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="أدخل رقم الجوال"
                 type="tel"
               />
             </div>
-            <SpecializationSelect
-              value={formData.specialization}
-              onValueChange={(value) =>
-                setFormData({ ...formData, specialization: value })
-              }
-            />
-            <div className="space-y-2">
-              <BranchSelect
-                value={formData.branch_ids[0] as any}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, branch_ids: [parseInt(value)] })
-                }
-              />
-            </div>
+            {formData.role === "doctor" && (
+              <div className="space-y-2">
+                <SpecializationSelect
+                  value={formData.specialization_input}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, specialization_input: value })
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -200,9 +205,7 @@ export default function AddDoctorPage() {
                 <div className="space-y-2">
                   <Label>اليوم</Label>
                   <Select
-                    onValueChange={(value) =>
-                      handleScheduleChange(index, "day", value)
-                    }
+                    onValueChange={(value) => handleScheduleChange(index, "day", value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="اختر اليوم" />
@@ -221,9 +224,7 @@ export default function AddDoctorPage() {
                   <Input
                     type="time"
                     value={schedule.from}
-                    onChange={(e) =>
-                      handleScheduleChange(index, "from", e.target.value)
-                    }
+                    onChange={(e) => handleScheduleChange(index, "from", e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -231,9 +232,7 @@ export default function AddDoctorPage() {
                   <Input
                     type="time"
                     value={schedule.to}
-                    onChange={(e) =>
-                      handleScheduleChange(index, "to", e.target.value)
-                    }
+                    onChange={(e) => handleScheduleChange(index, "to", e.target.value)}
                   />
                 </div>
                 <Button

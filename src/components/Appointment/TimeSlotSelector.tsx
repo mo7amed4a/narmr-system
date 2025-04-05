@@ -19,7 +19,7 @@ interface TimeSlotSelectorProps {
   onSlotSelect: (fullDate: string) => void; // Simplified to one argument
 }
 
-const dayMap: { [key: string]: string } = {
+export const dayMap: { [key: string]: string } = {
   Monday: "الإثنين",
   Tuesday: "الثلاثاء",
   Wednesday: "الأربعاء",

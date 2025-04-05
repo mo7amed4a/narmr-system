@@ -1,3 +1,4 @@
+import { dayMap } from "@/components/Appointment/TimeSlotSelector";
 import { DataTable } from "@/components/clients/table";
 import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
@@ -118,11 +119,11 @@ const columnsUpcomingReservations = (
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
-                    <ul className="list-none p-0 divide-y" dir="ltr">
+                    <ul className="list-none p-0 divide-y" dir="rtl">
                     {schedule.map((slot, index) => (
                       <li key={index} className="text-sm grid grid-cols-4 gap-3">
-                        <span className="p-2 border-e">{slot.day}</span>
-                        <span className="p-2 col-span-3 text-center">{slot.from} - {slot.to}</span>
+                        <span className="p-2 border-e">{dayMap[slot.day]}</span>
+                        <span className="p-2 col-span-3 text-center flex gap-3 justify-center " dir="rtl"><span>{slot.from}</span> -  <span>{slot.to}</span></span>
                       </li>
                     ))}
                   </ul>
