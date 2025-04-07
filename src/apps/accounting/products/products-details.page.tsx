@@ -31,7 +31,7 @@ export default function ProductDetailsPage() {
           <CardBorderStart title="اسم المنتج" value={product.name || "غير متوفر"} />
           <div className="flex gap-5 md:gap-20 lg:gap-32">
             <CardBorderStart title="رقم المنتج" value={product.product_id || "غير متوفر"} />
-            <CardBorderStart title="السعر" value={`${product.price || "0"} جنيه`} />
+            <CardBorderStart title="السعر" value={`${product.price || "0"} دينار عراقي`} />
             <CardBorderStart title="الكمية المتوفرة" value={product.stock_quantity || "0"} />
           </div>
         </CardContent>

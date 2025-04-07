@@ -136,7 +136,7 @@ export default function InvoicesAddPage() {
                 <label className="text-sm font-medium">سعر الخدمة</label>
                 <div className="flex items-center gap-2">
                   <span className="border px-2 py-[0.33rem] rounded-md w-24">
-                    {service.price} جنيه
+                    {service.price} دينار عراقي
                   </span>
                   <Button
                     variant={"ghost"}
@@ -153,7 +153,7 @@ export default function InvoicesAddPage() {
         </CardContent>
         <CardFooter className="flex flex-col py-5">
           <div className="flex justify-end py-4 ms-auto">
-            <span className="">الإجمالي: {totalAmount} جنيه</span>
+            <span className="">الإجمالي: {totalAmount} دينار عراقي</span>
           </div>
           <div className="flex justify-between w-full">
             <div>

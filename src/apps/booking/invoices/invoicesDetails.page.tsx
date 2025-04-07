@@ -65,7 +65,7 @@ export default function InvoiceDetailsPage() {
                     minute: "numeric",
                   })}
                 </TableCell>
-                <TableCell>{invoice?.invoice_amount} جنيه</TableCell>
+                <TableCell>{invoice?.invoice_amount} دينار عراقي</TableCell>
                 <TableCell>
                   <Badge variant={invoice?.invoice_status === "confirmed" ? "green" : "ghost"}>
                     {invoice?.invoice_status === "confirmed" ? "مؤكدة" : "غير مؤكدة"}
@@ -92,13 +92,13 @@ export default function InvoiceDetailsPage() {
               {invoice?.services.map((service: any, index: number) => (
                 <TableRow key={index}>
                   <TableCell>{service.service_name}</TableCell>
-                  <TableCell>{service.price} جنيه</TableCell>
+                  <TableCell>{service.price} دينار عراقي</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <div className="flex justify-end py-4">
-            <span className="">الإجمالي: {totalAmount} جنيه</span>
+            <span className="">الإجمالي: {totalAmount} دينار عراقي</span>
           </div>
         </CardContent>
       </Card>

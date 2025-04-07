@@ -121,7 +121,7 @@ const columnsInvoices = (
   {
     accessorKey: "invoice_amount",
     header: "قيمة الفاتورة",
-    cell: ({ row }) => `${row.getValue("invoice_amount")} جنيه`,
+    cell: ({ row }) => `${row.getValue("invoice_amount")} دينار عراقي`,
   },
   {
     accessorKey: "invoice_status",
