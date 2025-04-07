@@ -131,6 +131,7 @@ export default function AddReservationsPage() {
       };
       await api.post("/reservation/add", payload);
       toast.success("تم إضافة الحجز بنجاح");
+      navigate(-1);
       setFormData({
         customer_id: 0,
         branch_id: 0,

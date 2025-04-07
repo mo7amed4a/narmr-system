@@ -42,7 +42,9 @@ export default function ShowReservationsDetailsPage() {
                 <p className="text-gray-500">حالة الحجز</p>
                 <p className="font-semibold">
                   <div className="lowercase line-clamp-1">
-                    <span className="bg-blue-100 rounded-full p-2 text-blue-600">قيد الانتظار</span>
+                    <span className={`bg-blue-100 rounded-full p-2 text-blue-600 ${myData.status === "confirmed" ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600"}`}>
+                      {myData.status === "confirmed" ? "مؤكد" : "قيد الانتظار"}
+                    </span>
                   </div>
                 </p>
               </div>
@@ -89,13 +91,13 @@ export default function ShowReservationsDetailsPage() {
                 <p className="font-semibold">
                   <div className="lowercase line-clamp-1">
                     {/* <Link to={`${user.user_category === "admin" ? `/admin/booking/clients/${myData.user_id}` : `/booking/clients/${myData.user_id}`}`} className="bg-blue-100 rounded-full p-2 text-blue-600">{myData.customer_name}</Link> */}
-                    <span className="bg-blue-100 rounded-full p-2 text-blue-600">{customerData.full_name}</span>
+                    <span>{customerData.full_name}</span>
                   </div>
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 justify-between">
                 <div className="border-s-2 ps-3 ">
-                  <p className="text-gray-500">رقم الجوال</p>
+                  <p className="text-gray-500">رقم الموبايل</p>
                   <p className="font-semibold">{customerData.phone_number}</p>
                 </div>
                 <div className="border-s-2 ps-3 ">

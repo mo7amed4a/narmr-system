@@ -30,7 +30,7 @@ export default function ShowClientPage() {
                 <p className="font-semibold">{client.birth_date}</p>
               </div>
               <div className="border-s-2 ps-3 ">
-                <p className="text-gray-500">رقم الجوال</p>
+                <p className="text-gray-500">رقم الموبايل</p>
                 <p className="font-semibold">{client.phone}</p>
               </div >
               <div className="border-s-2 ps-3 ">

@@ -16,10 +16,10 @@ import { citiesByCountry, countries } from "@/static/countries";
 const validationSchema = Yup.object({
   fullName: Yup.string().required("الاسم بالكامل مطلوب"),
   phoneNumber: Yup.string()
-    .required("رقم الجوال مطلوب")
+    .required("رقم الموبايل مطلوب")
     .matches(/^[0-9]+$/, "يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام")
-    .max(15, "رقم الجوال يجب أن يكون على الأكثر 15 أرقام"),
+    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام")
+    .max(15, "رقم الموبايل يجب أن يكون على الأكثر 15 أرقام"),
   birthDate: Yup.date().required("تاريخ الميلاد مطلوب"),
   city: Yup.string().required("المدينة مطلوبة"),
   country: Yup.string().required("الدولة مطلوبة"),
@@ -143,9 +143,9 @@ export default function EditClientPage() {
             />
             <div className="grid md:grid-cols-3 gap-4 text-start">
               <InputLabel
-                label="رقم الجوال"
+                label="رقم الموبايل"
                 required
-                placeholder="أدخل رقم جوالك"
+                placeholder="أدخل رقم الموبايلك"
                 type="tel"
                 name="phoneNumber"
                 value={formik.values.phoneNumber}

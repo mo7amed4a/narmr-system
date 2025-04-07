@@ -11,10 +11,10 @@ import { useUser } from "@/hooks/auth.context";
 const validationSchema = Yup.object({
   name: Yup.string().required("الاسم بالكامل مطلوب"),
   phone: Yup.string()
-    .required("رقم الجوال مطلوب")
+    .required("رقم الموبايل مطلوب")
     .matches(/^[0-9]+$/, "يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام")
-    .max(15, "رقم الجوال يجب أن يكون على الأكثر 15 أرقام"),
+    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام")
+    .max(15, "رقم الموبايل يجب أن يكون على الأكثر 15 أرقام"),
   password: Yup.string()
     .min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل")
     .optional(),
@@ -127,9 +127,9 @@ export default function ProfileEditPage() {
                   error={formik.touched.name && formik.errors.name}
                 />
                 <InputLabel
-                  label="رقم الجوال"
+                  label="رقم الموبايل"
                   required
-                  placeholder="أدخل رقم الجوال"
+                  placeholder="أدخل رقم الموبايل"
                   type="tel"
                   name="phone"
                   value={formik.values.phone}

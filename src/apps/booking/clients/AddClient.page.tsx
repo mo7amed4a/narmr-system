@@ -15,10 +15,10 @@ import { useNavigate } from "react-router-dom";
 const validationSchema = Yup.object({
   fullName: Yup.string().required("الاسم بالكامل مطلوب"),
   phoneNumber: Yup.string()
-    .required("رقم الجوال مطلوب")
+    .required("رقم الموبايل مطلوب")
     .matches(/^[0-9]+$/, "يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام")
-    .max(15, "رقم الجوال يجب أن يكون على الأكثر 15 أرقام"),
+    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام")
+    .max(15, "رقم الموبايل يجب أن يكون على الأكثر 15 أرقام"),
   birthDate: Yup.date().required("تاريخ الميلاد مطلوب"),
   city: Yup.string().required("المدينة مطلوبة"),
   bloodType: Yup.string(),

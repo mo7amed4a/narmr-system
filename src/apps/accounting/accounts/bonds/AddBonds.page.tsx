@@ -10,7 +10,6 @@ import api from "@/lib/axios";
 import CustomerSelect from "@/components/selects/CustomerSelect";
 import BranchSelect from "@/components/selects/BranchSelect";
 import ServiceSelect from "@/components/selects/ServiceSelect";
-import AccountsSelect from "@/components/selects/AccountsSelect";
 import CashboxesSelect from "@/components/selects/CashboxesSelect";
 import SuppliersSelect from "@/components/selects/SuppliersSelect"; // New import
 import { useUser } from "@/hooks/auth.context";
@@ -27,7 +26,7 @@ export default function AddBondsAccountingPage() {
     document_date: "", // تاريخ السند
     branch_id: "", // الفرع (ID)
     payment_method: "cash", // طريقة الدفع
-    account_id: "", // الحساب (ID)
+    // account_id: "", // الحساب (ID)
     service_id: "", // الخدمة (ID)
     amount: "", // المبلغ
   });
@@ -66,10 +65,10 @@ export default function AddBondsAccountingPage() {
       document_type: bondValue,
       amount: Number(formData.amount),
       payment_method: formData.payment_method,
-      cashbox_id: Number(formData.cashbox_id), // Default if empty
+      cashbox_id: Number(formData.cashbox_id || user?.user_id), // Default if empty
       document_date: formData.document_date || new Date().toISOString(),
       branch_id: Number(formData.branch_id), // From BranchSelect
-      account_id: Number(formData.account_id), // From AccountsSelect
+      // account_id: Number(formData.account_id), // From AccountsSelect
       service_id: Number(formData.service_id), // From ServiceSelect
       notes: formData.notes || "",
       customer_id: Number(formData.customer_id),
@@ -94,7 +93,7 @@ export default function AddBondsAccountingPage() {
           document_date: "",
           branch_id: "",
           payment_method: "cash",
-          account_id: "",
+          // account_id: "",
           service_id: "",
           amount: "",
         });
@@ -147,11 +146,10 @@ export default function AddBondsAccountingPage() {
                     value={formData.customer_id}
                     onValueChange={(value) => handleSelectChange("customer_id", value)}
                   />
-                
-                <CashboxesSelect
+                {user?.user_category != "transformer_employee" && <CashboxesSelect
                   value={formData.cashbox_id}
                   onValueChange={(value) => handleSelectChange("cashbox_id", value)}
-                />
+                />}
               </div>
 
               <div className="grid lg:grid-cols-3 items-center gap-4">
@@ -159,10 +157,10 @@ export default function AddBondsAccountingPage() {
                   value={formData.branch_id}
                   onValueChange={(value) => handleSelectChange("branch_id", value)}
                 />
-                <AccountsSelect
+                {/* <AccountsSelect
                   value={formData.account_id}
                   onValueChange={(value) => handleSelectChange("account_id", value)}
-                />
+                /> */}
                 <ServiceSelect
                   value={formData.service_id}
                   onValueChange={(value) => handleSelectChange("service_id", value)}

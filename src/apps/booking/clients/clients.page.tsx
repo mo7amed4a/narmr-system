@@ -85,7 +85,7 @@ const columnsDataTable = (
     },
     {
       accessorKey: "phone",
-      header: "رقم جوال",
+      header: "رقم الموبايل",
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("phone")}</div>
       ),
@@ -119,7 +119,7 @@ const columnsDataTable = (
     },
     {
       accessorKey: "city",
-      header: "البلد",
+      header: "المدينة",
       cell: ({ row }) => (
         <>
           <div className="lowercase line-clamp-1">{row.getValue("city")}</div>

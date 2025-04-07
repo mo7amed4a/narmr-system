@@ -15,7 +15,7 @@ export default function BranchStaffDetailsPage() {
                 <CardBorderStart title="اسم الموظف" value="محمد علي" />
                 <div className="flex flex-wrap justify-between gap-4">
                     <CardBorderStart title="الدور الوظيفي" value="طبيب" />
-                    <CardBorderStart title="رقم الجوال" value="+252414" />
+                    <CardBorderStart title="رقم الموبايل" value="+252414" />
                     <CardBorderStart title="الراتب" value="1500 $" />
                     <CardBorderStart title="تاريخ الاضافة" value="20 Dec, 2021, 02:30 AM" />
                 </div>

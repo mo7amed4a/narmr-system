@@ -17,9 +17,9 @@ const validationSchema = Yup.object({
     .required("الاسم الثاني مطلوب")
     .min(2, "الاسم الثاني يجب أن يكون على الأقل 2 أحرف"),
   phone: Yup.string()
-    .required("رقم الجوال مطلوب")
-    .matches(/^[0-9]+$/, "رقم الجوال يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام"),
+    .required("رقم الموبايل مطلوب")
+    .matches(/^[0-9]+$/, "رقم الموبايل يجب أن يحتوي على أرقام فقط")
+    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام"),
   otp_code: Yup.string()
     .required("كود التحقق مطلوب")
     .matches(/^[0-9]+$/, "كود التحقق يجب أن يحتوي على أرقام فقط"),
@@ -147,7 +147,7 @@ export default function RegisterForm() {
                   error={touched.last_name && errors.last_name}
                 />
                 <InputLabel
-                  label="رقم الجوال"
+                  label="رقم الموبايل"
                   name="phone"
                   required
                   placeholder="+96650000000"

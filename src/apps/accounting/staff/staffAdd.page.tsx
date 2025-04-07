@@ -176,11 +176,11 @@ export default function StaffAddPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>رقم الجوال</Label>
+              <Label>رقم الموبايل</Label>
               <Input
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="أدخل رقم الجوال"
+                placeholder="أدخل رقم الموبايل"
                 type="tel"
               />
             </div>

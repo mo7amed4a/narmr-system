@@ -26,7 +26,7 @@ export default function SuppliersTable() {
                 اسم المورد
               </TableHead>
               <TableHead className="!text-gray-800 !font-bold">
-                رقم الجوال
+                رقم الموبايل
               </TableHead>
               <TableHead className="!text-gray-800 !font-bold">
                 اجمالي المبيعات

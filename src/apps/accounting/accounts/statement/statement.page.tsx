@@ -22,7 +22,7 @@ import ButtonPDF from "@/components/buttons/ButtonPDF";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import { exportStatement, printStatement } from "@/utils/prints/statement";
-import CustomerSelect from "@/components/selects/CustomerSelect";
+import AccountsSelect from "@/components/selects/AccountsSelect";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function StatementAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>كشف حساب</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-            <CustomerSelect
+            <AccountsSelect
               value={account || ""}
               onValueChange={(value) => setAccount(value)}
             />
@@ -97,60 +97,13 @@ export default function StatementAccountingPage() {
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4 lg:!-mt-5 bg-transparent lg:w-5/6">
-              <div className="space-y-2">
-                <CardBorderStart
-                  title="اسم العميل"
-                  value={data.transactions[0]?.party || "غير محدد"}
-                />
-                <CardBorderStart title="رقم الجوال" value="غير متوفر" /> {/* API doesn’t provide this */}
-              </div>
-              <div className="space-y-2">
-                <CardBorderStart title="التاريخ الكشف">
-                  <div className="flex font-bold gap-1">
-                    <span className="text-gray-500">من</span>
-                    <span>
-                      {data.transactions.length > 0
-                        ? new Date(
-                            Math.min(
-                              ...data.transactions.map((t: any) =>
-                                new Date(t.document_date).getTime()
-                              )
-                            )
-                          ).toLocaleString("en-US")
-                        : "غير محدد"}
-                    </span>
-                    <span className="text-gray-500">إلى</span>
-                    <span>
-                      {data.transactions.length > 0
-                        ? new Date(
-                            Math.max(
-                              ...data.transactions.map((t: any) =>
-                                new Date(t.document_date).getTime()
-                              )
-                            )
-                          ).toLocaleString("en-US")
-                        : "غير محدد"}
-                    </span>
-                  </div>
-                </CardBorderStart>
+                {Object.entries(data.summary).map(([key, value]) => (
+                  // @ts-ignore
+                  <CardBorderStart key={key} title={key} value={value} />
+                ))}
                 <CardBorderStart title="نوع الحساب" value="حساب عميل" /> {/* Static unless API provides */}
-              </div>
             </div>
-            <div className="flex justify-between gap-4 lg:w-2/3">
-              <CardBorderStart
-                title="الرصيد الافتتاحي"
-                value={totals?.openingBalance.toString() || "0"}
-              />
-              <CardBorderStart
-                title="إجمالي الدين"
-                value={totals?.totalDebit.toString() || "0"}
-              />
-              <CardBorderStart
-                title="إجمالي الائتمان"
-                value={totals?.totalCredit.toString() || "0"}
-              />
-            </div>
-
+            
             <div className="flex w-full gap-2 justify-end py-6">
               <Button variant={"outline"} onClick={() => printStatement(data?.transactions)}>
                 <span className="hidden md:block">طباعة الملف</span>
@@ -192,36 +145,41 @@ export default function StatementAccountingPage() {
                   <TableCell className="text-right font-semibold text-gray-700">دائن</TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">مدين</TableCell>
                 </TableRow>
-                {data.transactions.map((transaction: any, index: number) => {
-                  const isDebit = ["receipt", "loan"].includes(transaction.document_type);
-                  const isCredit = ["payment", "expenditure"].includes(transaction.document_type);
-                  return (
-                    <TableRow
-                      key={index}
-                      className={"border [&>*]:border " + (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")}
-                    >
-                      <TableCell className="text-sm text-gray-600">
-                        {new Date(transaction.document_date).toLocaleString("en-US")}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">{transaction.document_number}</TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {transaction.notes || transaction.document_type}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {isDebit ? transaction.amount : "0"}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {isCredit ? transaction.amount : "0"}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {isDebit ? totals?.totalDebit : "0"}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {isCredit ? totals?.totalCredit : "0"}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+               {data.transactions.map((transaction: any, index: number) => {
+        // تحديد ما إذا كانت المعاملة دائنة أو مدينة بناءً على القيم
+        const isDebit = transaction["مدين"] > 0;
+        const isCredit = transaction["دائن"] > 0;
+        
+        return (
+          <TableRow
+            key={index}
+            className={"border [&>*]:border " + (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")}
+          >
+            <TableCell className="text-sm text-gray-600">
+              {new Date(transaction["التاريخ"]).toLocaleString("en-US")}
+            </TableCell>
+            <TableCell className="text-sm text-gray-600">
+              {transaction["الرقم"]}
+            </TableCell>
+            <TableCell className="text-sm text-gray-600">
+              {transaction["الوصف"]}
+            </TableCell>
+            <TableCell className="text-sm text-gray-600">
+              {isDebit ? transaction["مدين"] : "0"}
+            </TableCell>
+            <TableCell className="text-sm text-gray-600">
+              {isCredit ? transaction["دائن"] : "0"}
+            </TableCell>
+            {/* إذا كنت تحتاج إلى إجماليات، ستحتاج إلى تمرير كائن totals كـ prop */}
+            <TableCell className="text-sm text-gray-600">
+              {isDebit ? transaction["مدين"] : "0"} {/* يمكن استبدالها بـ totals?.totalDebit إذا توفرت */}
+            </TableCell>
+            <TableCell className="text-sm text-gray-600">
+              {isCredit ? transaction["دائن"] : "0"} {/* يمكن استبدالها بـ totals?.totalCredit إذا توفرت */}
+            </TableCell>
+          </TableRow>
+        );
+      })}
               </TableBody>
               <TableFooter>
                 <TableRow className="border [&>*]:border">

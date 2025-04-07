@@ -93,12 +93,12 @@ export default function SuppliersEditPage() {
               placeholder="ادخل البريد الالكتروني (اختياري)"
             />
             <InputLabel
-              label="رقم الجوال"
+              label="رقم الموبايل"
               required
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="ادخل رقم الجوال"
+              placeholder="ادخل رقم الموبايل"
             />
             <InputLabel
               label="اسم الشركة"

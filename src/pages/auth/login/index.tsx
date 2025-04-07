@@ -102,7 +102,7 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="phone" className="text-right block">
-              رقم الجوال :
+              رقم الموبايل :
             </Label>
             <Input
               id="phone"

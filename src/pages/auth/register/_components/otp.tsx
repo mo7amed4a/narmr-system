@@ -39,7 +39,7 @@ export default function OtpForm({setSteps, page=false}:{setSteps:React.Dispatch<
         <form onSubmit={handleSubmit} className={`space-y-4 ${page && "flex w-full justify-between items-end gap-4"}`}>
           <div className={`space-y-2 ${page && "w-full"}`}>
             <Label htmlFor="phone" className="text-right block">
-              رقم الجوال :
+              رقم الموبايل :
             </Label>
             <Input
               id="phone"

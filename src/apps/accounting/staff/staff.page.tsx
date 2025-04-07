@@ -41,7 +41,7 @@ export default function StaffPage() {
     },
     {
       accessorKey: "phone",
-      header: "رقم الجوال",
+      header: "رقم الموبايل",
       cell: ({ row }) => <div className="line-clamp-1">{row.getValue("phone")}</div>,
     },
     {

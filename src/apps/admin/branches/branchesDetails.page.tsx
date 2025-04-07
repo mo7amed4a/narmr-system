@@ -89,7 +89,7 @@ const columnsUpcomingReservations: ColumnDef<any>[] = [
   },
   {
     accessorKey: "phone",
-    header: "رقم الجوال",
+    header: "رقم الموبايل",
     cell: ({ row }) => (
       <>
         <div className="lowercase line-clamp-1">{row.getValue("phone")}</div>

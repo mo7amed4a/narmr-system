@@ -19,10 +19,10 @@ import { useUser } from "@/hooks/auth.context";
 const validationSchema = Yup.object({
   name: Yup.string().required("الاسم بالكامل مطلوب"),
   phone: Yup.string()
-    .required("رقم الجوال مطلوب")
+    .required("رقم الموبايل مطلوب")
     .matches(/^[0-9]+$/, "يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الجوال يجب أن يكون على الأقل 10 أرقام")
-    .max(15, "رقم الجوال يجب أن يكون على الأكثر 15 أرقام"),
+    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام")
+    .max(15, "رقم الموبايل يجب أن يكون على الأكثر 15 أرقام"),
   user_category: Yup.string().required("فئة المستخدم مطلوبة"),
   salary: Yup.number()
     .min(0, "الراتب يجب أن يكون أكبر من أو يساوي 0")
@@ -144,9 +144,9 @@ export default function EditAdminPage() {
               />
               <div className="grid md:grid-cols-2 gap-4">
                 <InputLabel
-                  label="رقم الجوال"
+                  label="رقم الموبايل"
                   required
-                  placeholder="أدخل رقم الجوال"
+                  placeholder="أدخل رقم الموبايل"
                   type="tel"
                   name="phone"
                   value={formik.values.phone}

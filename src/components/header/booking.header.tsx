@@ -12,7 +12,7 @@ export default function BookingHeader({
   const location = useLocation();
   const titles: Record<string, string> = {
     ...titlesBooking,
-    "/booking": "لوحة التحكم (مسؤول الحجوزات)",
+    "/booking": "لوحة التحكم",
   }
 
   const breadcrumbMap: Record<string, string> = {

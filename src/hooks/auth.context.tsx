@@ -53,7 +53,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error:any) {
       if (error?.response?.data) {
         if (error?.response?.data?.message === "Invalid phone number or password") {
-          toast.error("رقم الجوال او كلمة المرور غير صحيحة")
+          toast.error("رقم الموبايل او كلمة المرور غير صحيحة")
+        }
+        else if (error?.response?.data?.message === "Phone and password are required") {
+          toast.error("رقم الموبايل او كلمة المرور مطلوبين")
         }
         else toast.error(error?.response?.data?.message)
       }

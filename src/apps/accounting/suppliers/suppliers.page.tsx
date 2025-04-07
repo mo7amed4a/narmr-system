@@ -47,7 +47,7 @@ export default function SuppliersPage() {
     },
     {
       accessorKey: "phone",
-      header: "رقم الجوال",
+      header: "رقم الموبايل",
       cell: ({ row }) => <div>{row.getValue("phone")}</div>,
     },
     {

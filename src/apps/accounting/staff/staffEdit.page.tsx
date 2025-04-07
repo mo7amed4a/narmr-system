@@ -44,10 +44,10 @@ export default function StaffEditPage() {
             </div>
             <div className="grid lg:grid-cols-2 gap-4">
                 <InputLabel
-                label="رقم الجوال"
+                label="رقم الموبايل"
                 required
                 value="0123456789"
-                placeholder="ادخل رقم الجوال"
+                placeholder="ادخل رقم الموبايل"
                 />
                 <InputLabel
                 label="الدور الوظيفي"

@@ -93,7 +93,7 @@ const columnsClientsDataTable = (action: (id: string) => void):ColumnDef<Clients
   },
   {
     accessorKey: "phone",
-    header: "رقم جوال",
+    header: "رقم الموبايل",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("phone")}</div>
     ),

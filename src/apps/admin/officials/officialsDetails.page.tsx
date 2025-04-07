@@ -70,7 +70,7 @@ export default function OfficialsDetailsPage() {
         <div className="grid gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CardBorderStart title="الاسم بالكامل" value={adminData.name}/>
-            <CardBorderStart title="رقم الجوال" value={adminData.phone}/>
+            <CardBorderStart title="رقم الموبايل" value={adminData.phone}/>
             <CardBorderStart title="فئة المستخدم" value={adminData.user_category}/>
           </div>
         </div>

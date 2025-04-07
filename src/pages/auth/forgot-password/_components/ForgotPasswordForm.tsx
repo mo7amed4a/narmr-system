@@ -40,7 +40,7 @@ export default function ForgotPasswordForm() {
        
         <div className="grid grid-cols-3 gap-2">
           <div className="space-y-2 col-span-2">
-            <Label htmlFor="phone">رقم الجوال :</Label>
+            <Label htmlFor="phone">رقم الموبايل :</Label>
             <Input
               id="phone"
               type="tel"

@@ -95,9 +95,9 @@ export default function SuppliersAddPage() {
               onChange={(e) => handleChange("email")(e.target.value)}
             />
             <InputLabel
-              label="رقم الجوال"
+              label="رقم الموبايل"
               required
-              placeholder="ادخل رقم الجوال"
+              placeholder="ادخل رقم الموبايل"
               value={formData.phone}
               onChange={(e) => handleChange("phone")(e.target.value)}
             />

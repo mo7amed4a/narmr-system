@@ -32,7 +32,7 @@ export default function SuppliersDetailsPage() {
           <CardBorderStart title="اسم المورد" value={supplier.name || "غير متوفر"} />
           <div className="flex gap-5 md:gap-20 lg:gap-32">
             <CardBorderStart title="اسم الشركة" value={supplier.company_name || "غير متوفر"} />
-            <CardBorderStart title="رقم الجوال" value={supplier.phone || "غير متوفر"} />
+            <CardBorderStart title="رقم الموبايل" value={supplier.phone || "غير متوفر"} />
             <CardBorderStart title="العنوان" value={`${supplier.city || "غير متوفر"}, ${supplier.country || "غير متوفر"}`} />
           </div>
           <div className="flex gap-5 md:gap-20 lg:gap-32">

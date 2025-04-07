@@ -46,7 +46,7 @@
 //             <CardBorderStart title="اسم الموظف" value={employee.name || "غير متوفر"} />
 //             <div className="flex flex-wrap justify-between gap-4">
 //               <CardBorderStart title="الدور الوظيفي" value={employee.role || "غير متوفر"} />
-//               <CardBorderStart title="رقم الجوال" value={employee.phone || "غير متوفر"} />
+//               <CardBorderStart title="رقم الموبايل" value={employee.phone || "غير متوفر"} />
 //               <CardBorderStart title="الراتب" value={`${employee.salary || "0"} $`} />
 //               <CardBorderStart title="تاريخ الاضافة" value={formatDate(employee.create_date)} />
 //             </div>
@@ -188,7 +188,7 @@ export default function DoctorDetailsPage() {
             <p className="font-semibold">{doctorInfo.name}</p>
           </div>
           <div className="border-s-2 ps-3">
-            <p className="text-gray-500">رقم الجوال</p>
+            <p className="text-gray-500">رقم الموبايل</p>
             <p className="font-semibold">{doctorInfo.phone}</p>
           </div>
           <div className="border-s-2 ps-3">

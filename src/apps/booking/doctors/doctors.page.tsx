@@ -56,14 +56,14 @@ export default function DoctorsPage() {
           textKey="اسم الطبيب"
           loading={loading}
           error={error}
-          columns={columnsUpcomingReservations(deleteDoctor)}
+          columns={columnsUpcomingReservations(deleteDoctor, user)}
           data={data?.data}
         >
-          <Link to={"add"}>
+          {user?.user_category === "admin" && <Link to={"add"}>
             <Button className="bg-green-700 md:px-7 hover:bg-green-800">
               اضافة جديد
             </Button>
-          </Link>
+          </Link>}
         </DataTable>
       </CardContent>
     </Card>
@@ -71,7 +71,7 @@ export default function DoctorsPage() {
 }
 
 const columnsUpcomingReservations = (
-  action: (id: string) => void
+  action: (id: string) => void,user: any
 ): ColumnDef<Doctor>[] => {
   return [
     {accessorKey: "id"
@@ -86,7 +86,7 @@ const columnsUpcomingReservations = (
     },
     {
       accessorKey: "phone",
-      header: "رقم الجوال",
+      header: "رقم الموبايل",
       cell: ({ row }) => <div>{row.getValue("phone")}</div>,
     },
     {
@@ -152,22 +152,23 @@ const columnsUpcomingReservations = (
       header: "اجراءات",
       cell: ({ row }) => (
         <div className="flex gap-1">
-          <Link to={`${row.original.id}`}>
-            <Button variant="ghost" size="icon">
-              <Eye className="size-5" />
-            </Button>
-          </Link>
-          <Link to={`${row.getValue("id")}/edit`}>
-            <Button variant="ghost" size="icon">
-              <Edit className="size-5" />
-            </Button>
-          </Link>
-
+            <Link to={`${row.original.id}`}>
+              <Button variant="ghost" size="icon">
+                <Eye className="size-5" />
+              </Button>
+            </Link>
+          {user?.user_category === "admin" && <>
+            <Link to={`${row.getValue("id")}/edit`}>
+              <Button variant="ghost" size="icon">
+                <Edit className="size-5" />
+              </Button>
+            </Link>
           <DeleteDialog action={() => action(row.getValue("id"))}>
             <Button variant="ghost" size="icon">
               <Trash className="size-5 text-red-500" />
             </Button>
           </DeleteDialog>
+          </>}
         </div>
       ),
     },

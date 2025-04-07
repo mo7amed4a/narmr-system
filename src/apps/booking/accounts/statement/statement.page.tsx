@@ -85,7 +85,7 @@ export default function StatementPage() {
           <div className="grid md:grid-cols-2 gap-4 lg:!-mt-5 bg-transparent lg:w-5/6">
             <div className="space-y-2">
               <CardBorderStart title="اسم العميل" value="محمد عبدالرحمن" />
-              <CardBorderStart title="رقم الجوال" value="20155115454" />
+              <CardBorderStart title="رقم الموبايل" value="20155115454" />
             </div>
             <div className="space-y-2">
               <CardBorderStart title="التاريخ الكشف">
