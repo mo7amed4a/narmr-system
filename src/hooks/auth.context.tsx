@@ -78,6 +78,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (error) {
       console.error("Logout failed: ", error);
+      setUser(null);
+      Cookies.remove("user");
+      window.location.reload();
       throw error;
     }
   };

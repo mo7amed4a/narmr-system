@@ -19,10 +19,10 @@ import CardBorderStart from "@/components/global/CardBorderStart";
 import LogoAndInfo from "@/components/global/LogoAndInfo";
 import ButtonExcel from "@/components/buttons/ButtonExcel";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
-import AccountsSelect from "@/components/selects/AccountsSelect";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import { exportStatement, printStatement } from "@/utils/prints/statement";
+import CustomerSelect from "@/components/selects/CustomerSelect";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function StatementAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>كشف حساب</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-            <AccountsSelect
+            <CustomerSelect
               value={account || ""}
               onValueChange={(value) => setAccount(value)}
             />

@@ -25,8 +25,8 @@ export default function AccountsSelect({ value, onValueChange }: AccountSelectPr
         </SelectTrigger>
         <SelectContent>
           {accounts.map((account: any) => (
-            <SelectItem key={account.id} value={account.id.toString()}>
-              {account.name}
+            <SelectItem key={account.account_id} value={account?.account_id?.toString()}>
+              {account.account_name}
             </SelectItem>
           ))}
         </SelectContent>

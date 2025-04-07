@@ -12,9 +12,11 @@ import DoctorSelect from "@/components/selects/DoctorSelect";
 import BranchSelect from "@/components/selects/BranchSelect";
 import ServiceSelect from "@/components/selects/ServiceSelect";
 import { Doctor } from "../doctors/doctors.page";
+import { useNavigate } from "react-router-dom";
 
 export default function AddReservationsPage() {
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     customer_id: 0,
@@ -156,7 +158,7 @@ export default function AddReservationsPage() {
           <Button variant="green" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "جاري الحفظ..." : "حفظ"}
           </Button>
-          <Button variant="ghost" className="text-primary">
+          <Button onClick={() => navigate(-1)} variant="ghost" className="text-primary">
             إلغاء
           </Button>
         </div>

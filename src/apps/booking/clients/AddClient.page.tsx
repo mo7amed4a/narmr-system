@@ -10,6 +10,7 @@ import api from "@/lib/axios";
 import SelectCustom from "@/components/ui/selectCustom"; // Your custom select component
 import { SelectItem } from "@/components/ui/select"; // Import SelectItem for options
 import { citiesByCountry, countries } from "@/static/countries";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required("الاسم بالكامل مطلوب"),
@@ -29,6 +30,7 @@ const validationSchema = Yup.object({
 
 
 export default function AddClientPage() {
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -56,6 +58,7 @@ export default function AddClientPage() {
 
         console.log("Client added:", response.data);
         toast.success("تم الحفظ بنجاح " + values.fullName);
+        navigate(-1);
       } catch (error) {
         console.error("Error adding client:", error);
         toast.error("حدث خطأ أثناء الحفظ");
@@ -124,9 +127,9 @@ export default function AddClientPage() {
             />
             <div className="grid md:grid-cols-3 gap-4 text-start">
               <InputLabel
-                label="رقم الجوال"
+                label="الموبايل"
                 required
-                placeholder="أدخل رقم جوالك"
+                placeholder="أدخل الموبايل"
                 type="tel"
                 name="phoneNumber"
                 value={formik.values.phoneNumber}
