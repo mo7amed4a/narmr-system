@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth.context";
 
 export default function TreasuryAccountingPage() {
-  const {user} = useUser()
+  const { user } = useUser();
   const [cashbox, setCashbox] = useState("");
   const [data, setData] = useState<any | null>(null); // Use 'any' temporarily since we don’t have a full type yet
   const [fromDate, setFromDate] = useState("");
@@ -24,8 +24,10 @@ export default function TreasuryAccountingPage() {
   const handleSubmit = async () => {
     if (fromDate && toDate) {
       try {
-        const res = await api.post(`/cashbox/report`, {
-          cashbox_id: cashbox || user?.user_id,
+        const url = cashbox ? `/cashbox/report` : `/cashbox/report1`;
+        const payload = cashbox ? { cashbox_id: cashbox } : { user_id: user?.user_id };
+        const res = await api.post(url, {
+          ...payload,
           date_from: fromDate,
           date_to: toDate,
         });
@@ -42,10 +44,12 @@ export default function TreasuryAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>الخزينة</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-            {user?.user_category != "transformer_employee" && <CashboxesSelect
-              value={cashbox || ""}
-              onValueChange={(value) => setCashbox(value)}
-            />}
+            {user?.user_category != "transformer_employee" && (
+              <CashboxesSelect
+                value={cashbox || ""}
+                onValueChange={(value) => setCashbox(value)}
+              />
+            )}
             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"
@@ -116,28 +120,32 @@ export default function TreasuryAccountingPage() {
                     }
                   >
                     <TableCell className="text-sm text-gray-600">
-                      {new Date(transaction.date).toLocaleString("ar-EG")}
+                      {new Date(transaction["التاريخ"]).toLocaleString("ar-EG")}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.type === "receipt" ? "قبض" : transaction.type === "payment" ? "دفع" : transaction.type}
+                      {transaction["نوع الفاتورة"] === "receipt"
+                        ? "قبض"
+                        : transaction["نوع الفاتورة"] === "payment"
+                        ? "دفع"
+                        : transaction["نوع الفاتورة"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.number}
+                      {transaction["الرقم"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.description}
+                      {transaction["الوصف"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.details}
+                      {transaction["التفاصيل"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.paid}
+                      {transaction["المدفوع"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.cost}
+                      {transaction["التكلفة"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction.status}
+                      {transaction["الحالة"]}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -156,7 +164,18 @@ export default function TreasuryAccountingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow className={"border [&>*]:border"}>
+                {Object.entries(data.summary).map(([key, value]) => (
+                  <TableRow key={key} className={"border [&>*]:border"}>
+                    <TableCell className="text-sm text-gray-600">
+                      {key}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {/* @ts-ignore */}
+                      {value}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {/* <TableRow className={"border [&>*]:border"}>
                   <TableCell className="text-sm text-gray-600">
                     الرصيد الافتتاحي
                   </TableCell>
@@ -180,14 +199,16 @@ export default function TreasuryAccountingPage() {
                     {data.summary.total_paid}
                   </TableCell>
                 </TableRow>
-                <TableRow className={"border [&>*]:border bg-green-700 text-white hover:text-green-500"}>
-                  <TableCell className="text-sm">
-                    الرصيد
-                  </TableCell>
+                <TableRow
+                  className={
+                    "border [&>*]:border bg-green-700 text-white hover:text-green-500"
+                  }
+                >
+                  <TableCell className="text-sm">الرصيد</TableCell>
                   <TableCell className="text-sm">
                     {data.summary.balance}
                   </TableCell>
-                </TableRow>
+                </TableRow> */}
               </TableBody>
             </Table>
           </CardContent>

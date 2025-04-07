@@ -29,7 +29,7 @@ export default function ReservationsPage() {
   const updateReservationStatus = async (id: string, newStatus: string) => {
     try {
       const response = await api.post(`/reservation/status`, {
-        user_id: user.user_id,
+        user_id: user?.user_id,
         reservation_code: id,
         status: newStatus,
       });
