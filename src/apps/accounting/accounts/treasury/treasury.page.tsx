@@ -12,8 +12,10 @@ import {
 import api from "@/lib/axios";
 import CashboxesSelect from "@/components/selects/CashboxesSelect";
 import toast from "react-hot-toast";
+import { useUser } from "@/hooks/auth.context";
 
 export default function TreasuryAccountingPage() {
+  const {user} = useUser()
   const [cashbox, setCashbox] = useState("");
   const [data, setData] = useState<any | null>(null); // Use 'any' temporarily since we don’t have a full type yet
   const [fromDate, setFromDate] = useState("");
@@ -23,7 +25,7 @@ export default function TreasuryAccountingPage() {
     if (cashbox && fromDate && toDate) {
       try {
         const res = await api.post(`/cashbox/report`, {
-          cashbox_id: cashbox,
+          cashbox_id: cashbox || user?.user_id,
           date_from: fromDate,
           date_to: toDate,
         });
@@ -40,10 +42,10 @@ export default function TreasuryAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>الخزينة</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-            <CashboxesSelect
+            {user?.user_category != "transformer_employee" && <CashboxesSelect
               value={cashbox || ""}
               onValueChange={(value) => setCashbox(value)}
-            />
+            />}
             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"

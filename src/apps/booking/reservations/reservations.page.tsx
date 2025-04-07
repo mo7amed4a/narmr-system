@@ -52,7 +52,7 @@ export default function ReservationsPage() {
           columns={columnsDataTable(updateReservationStatus)}
           data={data?.data}
           title="قائمة الحجوزات"
-          searchKey={["client_name"]}
+          searchKey={["client_name","customer_name", "doctor_name", "branch_name"]}
           textKey="اسم العميل"
         >
           <Link to={"add"}>
