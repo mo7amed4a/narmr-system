@@ -22,7 +22,7 @@ export default function TreasuryAccountingPage() {
   const [toDate, setToDate] = useState("");
 
   const handleSubmit = async () => {
-    if (cashbox && fromDate && toDate) {
+    if (fromDate && toDate) {
       try {
         const res = await api.post(`/cashbox/report`, {
           cashbox_id: cashbox || user?.user_id,
