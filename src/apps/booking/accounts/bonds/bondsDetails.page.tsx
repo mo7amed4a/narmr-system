@@ -27,7 +27,7 @@ export default function BondsDetailsPage() {
               <CardBorderStart title="الخزينة" value="خزينة محمد عام"/> 
             }
             <CardBorderStart title="المبلغ IQD" value="10.655"/>
-            <CardBorderStart title="محصل من" value="أستلام 100 ألف دينار محمد والي 014"/>
+            <CardBorderStart title="محصل من" value="أستلام 100 ألف دولار محمد والي 014"/>
             <div className="text-gray-500">
               <p className="text-gray-600 mt-4">المستلم</p>
               <p className="mt-2">موافقة بواسطة <span className="text-gray-400">______________</span></p>
@@ -40,7 +40,7 @@ export default function BondsDetailsPage() {
           <div className="space-y-2">
             <CardBorderStart title="التاريخ" value="10 يناير 2025 الساعة 05:30 م"/>
             <CardBorderStart title="المبلغ USD" value="66"/>
-            <CardBorderStart title="ملاحظات" value="أستلام 100 ألف دينار محمد والي 014 تصفير حساب"/>
+            <CardBorderStart title="ملاحظات" value="أستلام 100 ألف دولار محمد والي 014 تصفير حساب"/>
             
             <div className="text-gray-500">
               <p className="mt-2">الاسم / <span className="text-gray-400">______________</span></p>

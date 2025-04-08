@@ -140,7 +140,7 @@ export default function TreasuryPage() {
                     العملة
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
-                    دينار عراقي
+                    دولار
                   </TableCell>
                 </TableRow>
               </TableHeader>

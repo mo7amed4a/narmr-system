@@ -73,27 +73,27 @@ export default function SuppliersPage() {
     {
       accessorKey: "initial_balance",
       header: "الرصيد الأولي",
-      cell: ({ row }) => <div>{row.getValue("initial_balance")} دينار عراقي</div>,
+      cell: ({ row }) => <div>{row.getValue("initial_balance")} دولار</div>,
     },
     {
       accessorKey: "current_balance",
       header: "الرصيد الحالي",
-      cell: ({ row }) => <div>{row.getValue("current_balance")} دينار عراقي</div>,
+      cell: ({ row }) => <div>{row.getValue("current_balance")} دولار</div>,
     },
     {
       accessorKey: "debit",
       header: "مدين",
-      cell: ({ row }) => <div>{row.getValue("debit")} دينار عراقي</div>,
+      cell: ({ row }) => <div>{row.getValue("debit")} دولار</div>,
     },
     {
       accessorKey: "credit",
       header: "دائن",
-      cell: ({ row }) => <div>{row.getValue("credit")} دينار عراقي</div>,
+      cell: ({ row }) => <div>{row.getValue("credit")} دولار</div>,
     },
     {
       accessorKey: "amount",
       header: "المبلغ",
-      cell: ({ row }) => <div>{row.getValue("amount")} دينار عراقي</div>,
+      cell: ({ row }) => <div>{row.getValue("amount")} دولار</div>,
     },
     {
       id: "actions",

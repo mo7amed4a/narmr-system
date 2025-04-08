@@ -24,7 +24,7 @@ export const printSales = (documents: any) => {
       }
     ).join("");
 
-  const head2 = `<th>العملة</th> <th>دينار عراقي</th>`;
+  const head2 = `<th>العملة</th> <th>دولار</th>`;
 
   const body2 = `
         <tr>
