@@ -110,6 +110,9 @@ export default function TreasuryAccountingPage() {
                     دائن
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
+                    الرصيد
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
                     الحالة
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
@@ -150,6 +153,9 @@ export default function TreasuryAccountingPage() {
                     <TableCell className="text-sm text-gray-600">
                       {transaction["التكلفة"]}
                     </TableCell> */}
+                    <TableCell className="text-sm text-gray-600">
+                      {/* {transaction["المدفوع"]} */}
+                    </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {/* {transaction["المدفوع"]} */}
                     </TableCell>
