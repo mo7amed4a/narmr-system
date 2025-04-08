@@ -45,11 +45,14 @@ export default function TreasuryAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>الخزينة</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
+           { user?.user_category === "transformer_employee" ? 
+           <div className="border h-9 rounded-md flex items-center px-3 text-gray-600 text-sm">
+              {user?.name}
+            </div>:
             <CashboxesSelect
-              disabled={user?.user_category === "transformer_employee"}
               value={cashbox || ""}
               onValueChange={(value) => setCashbox(value)}
-            />
+            />}
             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"
