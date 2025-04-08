@@ -45,14 +45,16 @@ export default function TreasuryAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>الخزينة</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-           { user?.user_category === "transformer_employee" ? 
-           <div className="border h-9 rounded-md flex items-center px-3 text-gray-600 text-sm">
-              {user?.name}
-            </div>:
-            <CashboxesSelect
-              value={cashbox || ""}
-              onValueChange={(value) => setCashbox(value)}
-            />}
+            {user?.user_category === "transformer_employee" ? (
+              <div className="border h-9 rounded-md flex items-center px-3 text-gray-600 text-sm">
+                {user?.name}
+              </div>
+            ) : (
+              <CashboxesSelect
+                value={cashbox || ""}
+                onValueChange={(value) => setCashbox(value)}
+              />
+            )}
             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"
@@ -93,19 +95,9 @@ export default function TreasuryAccountingPage() {
                   <TableCell className="text-right font-semibold text-gray-700">
                     الرقم
                   </TableCell>
-                 
                   <TableCell className="text-right font-semibold text-gray-700">
                     التفاصيل
                   </TableCell>
-                  {/* <TableCell className="text-right font-semibold text-gray-700">
-                    الوصف
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    المدفوع
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    التكلفة
-                  </TableCell> */}
                   <TableCell className="text-right font-semibold text-gray-700">
                     مدين
                   </TableCell>
@@ -145,17 +137,7 @@ export default function TreasuryAccountingPage() {
                     <TableCell className="text-sm text-gray-600">
                       {transaction["التفاصيل"]}
                     </TableCell>
-                  
-                    {/* <TableCell className="text-sm text-gray-600">
-                      {transaction["الوصف"]}
-                    </TableCell>
-                   
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction["المدفوع"]}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {transaction["التكلفة"]}
-                    </TableCell> */}
+
                     <TableCell className="text-sm text-gray-600">
                       {/* {transaction["المدفوع"]} */}
                     </TableCell>
@@ -166,7 +148,11 @@ export default function TreasuryAccountingPage() {
                       {/* {transaction["التكلفة"]} */}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["الحالة"] === "تم" ? <Badge variant={"green"}>مؤكد</Badge> : <Badge variant={"yellow"}>غير مؤكد</Badge>}
+                      {transaction["الحالة"] === "تم" ? (
+                        <Badge variant={"green"}>مؤكد</Badge>
+                      ) : (
+                        <Badge variant={"yellow"}>غير مؤكد</Badge>
+                      )}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {new Date(transaction["التاريخ"]).toLocaleString("ar-EG")}
@@ -183,43 +169,42 @@ export default function TreasuryAccountingPage() {
                     العملة
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
-                    {data.summary.currency}
+                    دينار عراقي
                   </TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Object.entries(data.summary).map(([key, value]) => (
+                {/* {Object.entries(data.summary).map(([key, value]) => (
                   <TableRow key={key} className={"border [&>*]:border"}>
                     <TableCell className="text-sm text-gray-600">
                       {key}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {/* @ts-ignore */}
                       {value}
                     </TableCell>
                   </TableRow>
-                ))}
-                {/* <TableRow className={"border [&>*]:border"}>
+                ))} */}
+                <TableRow className={"border [&>*]:border"}>
                   <TableCell className="text-sm text-gray-600">
                     الرصيد الافتتاحي
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">
-                    {data.summary.opening_balance}
+                  <TableCell className="text-sm text-gray-600 text-center">
+                    {data.summary.opening_balance || "-"}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
                   <TableCell className="text-sm text-gray-600">
-                    إجمالي الفواتير
+                    مجموع المدين
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">
+                  <TableCell className="text-sm text-gray-600 text-center">
                     {data.summary.total_cost}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
                   <TableCell className="text-sm text-gray-600">
-                    إجمالي الدفع
+                    مجموع الدائن
                   </TableCell>
-                  <TableCell className="text-sm text-gray-600">
+                  <TableCell className="text-sm text-gray-600 text-center">
                     {data.summary.total_paid}
                   </TableCell>
                 </TableRow>
@@ -229,10 +214,10 @@ export default function TreasuryAccountingPage() {
                   }
                 >
                   <TableCell className="text-sm">الرصيد</TableCell>
-                  <TableCell className="text-sm">
+                  <TableCell className="text-sm text-center">
                     {data.summary.balance}
                   </TableCell>
-                </TableRow> */}
+                </TableRow>
               </TableBody>
             </Table>
           </CardContent>
