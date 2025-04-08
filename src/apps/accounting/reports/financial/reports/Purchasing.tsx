@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import ButtonExcel from "@/components/buttons/ButtonExcel";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
-import { exportPurchasing, printPurchasing } from "@/utils/prints/purchasing";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export default function Purchasing() {
   const [account, setAccount] = useState<string | null>(null);
@@ -52,14 +52,47 @@ export default function Purchasing() {
             <CardTitle className="py-2 w-full">تقارير المشتريات</CardTitle>
 
             <div className="flex w-full gap-2 justify-end">
-              <Button variant={"outline"} onClick={() => printPurchasing(data)}>
+              <Button
+                variant={"outline"}
+                onClick={() =>
+                  printPDF(
+                    [data?.data, data.summary],
+                    [
+                      "الوقت والتاريخ",
+                      "المنتج",
+                      "المورد",
+                      "الكمية المشتراة",
+                      "سعر الوحدة",
+                      "إجمالي المشتريات",
+                    ],["العملة","	دينار عراقي"]
+                  )
+                }
+              >
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <div onClick={() => exportPurchasing(data?.data)}>
+              <div
+                onClick={() =>
+                  exportExcel(data?.data, "المشتريات", [
+                    "الوقت والتاريخ",
+                    "المنتج",
+                    "المورد",
+                    "الكمية المشتراة",
+                    "سعر الوحدة",
+                    "إجمالي المشتريات",
+                  ])
+                }
+              >
                 <ButtonExcel />
               </div>
-              <div onClick={() => printPurchasing(data)}>
+              <div onClick={() => printPDF([data?.data, data.summary], [
+                      "الوقت والتاريخ",
+                      "المنتج",
+                      "المورد",
+                      "الكمية المشتراة",
+                      "سعر الوحدة",
+                      "إجمالي المشتريات",
+                    ],["العملة","	دينار عراقي"])}>
                 <ButtonPDF />
               </div>
             </div>

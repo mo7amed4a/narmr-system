@@ -32,7 +32,11 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password")], "كلمة السر غير متطابقة"),
 });
 
-export default function RegisterForm() {
+export default function RegisterForm({
+  setSteps
+}:{
+  setSteps: React.Dispatch<React.SetStateAction<number>>
+}) {
   const navigate = useNavigate();
 
   const initialValues = {
@@ -79,11 +83,11 @@ export default function RegisterForm() {
                 <div className="flex gap-3">
                   <Button
                     type="button"
-                    onClick={() => navigate(-1)}
+                    onClick={() => setSteps(1)}
                     variant="outline"
                     className="text-red-500"
                   >
-                    الغاء
+                    رجوع
                   </Button>
                   <Button type="submit" variant="green">
                     حفظ
@@ -150,6 +154,8 @@ export default function RegisterForm() {
                   label="رقم الموبايل"
                   name="phone"
                   required
+                  disabled
+                  className="[&>*]:!text-gray-600 [&>*]:cursor-not-allowed"
                   placeholder="+96650000000"
                   value={values.phone}
                   onChange={handleChange}

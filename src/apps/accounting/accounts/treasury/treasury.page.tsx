@@ -25,7 +25,7 @@ export default function TreasuryAccountingPage() {
     if (fromDate && toDate) {
       try {
         const url = cashbox ? `/cashbox/report` : `/cashbox/report1`;
-        const payload = cashbox ? { cashbox_id: cashbox } : { user_id: user?.user_id };
+        const payload = cashbox ? { cashbox_id: cashbox } : { user_id: 21 };
         const res = await api.post(url, {
           ...payload,
           date_from: fromDate,
@@ -44,12 +44,11 @@ export default function TreasuryAccountingPage() {
         <CardHeader className="p-4">
           <CardTitle>الخزينة</CardTitle>
           <div className="grid md:grid-cols-2 gap-4 pt-4 items-end">
-            {user?.user_category != "transformer_employee" && (
-              <CashboxesSelect
-                value={cashbox || ""}
-                onValueChange={(value) => setCashbox(value)}
-              />
-            )}
+            <CashboxesSelect
+              disabled={user?.user_category === "transformer_employee"}
+              value={cashbox || ""}
+              onValueChange={(value) => setCashbox(value)}
+            />
             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"

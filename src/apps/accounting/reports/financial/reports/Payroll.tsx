@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { Printer } from "lucide-react";
 import ButtonExcel from "@/components/buttons/ButtonExcel";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
-import { exportSalaries, printSalaries } from "@/utils/prints/salaries";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export default function Payroll() {
   const [account, setAccount] = useState<string | null>(null);
@@ -52,14 +52,35 @@ export default function Payroll() {
               <CardTitle className="py-2 w-full">تقارير المرتبات</CardTitle>
 
               <div className="flex w-full gap-2 justify-end">
-                <Button variant={"outline"} onClick={() => printSalaries(data)}>
+                <Button variant={"outline"} onClick={() => printPDF([data?.data, data?.summary], [
+    "الوقت والتاريخ",
+    "اسم الموظف",
+    "الراتب الاساسي",
+    "البدلات",
+    "الخصومات",
+    "صافي الراتب"
+  ],["العملة","	دينار عراقي"])}>
                   <span className="hidden md:block">طباعة الملف</span>
                   <Printer />
                 </Button>
-                <div onClick={() => exportSalaries(data?.data)}>
+                <div onClick={() => exportExcel(data?.data, "تقارير المرتبات", [
+    "الوقت والتاريخ",
+    "اسم الموظف",
+    "الراتب الاساسي",
+    "البدلات",
+    "الخصومات",
+    "صافي الراتب"
+  ])}>
                   <ButtonExcel />
                 </div>
-                <div onClick={() => printSalaries(data)}>
+                <div onClick={() => printPDF([data?.data, data?.summary], [
+    "الوقت والتاريخ",
+    "اسم الموظف",
+    "الراتب الاساسي",
+    "البدلات",
+    "الخصومات",
+    "صافي الراتب"
+  ],["العملة","	دينار عراقي"])}>
                   <ButtonPDF />
                 </div>
               </div>

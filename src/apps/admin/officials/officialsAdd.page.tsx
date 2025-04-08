@@ -4,7 +4,7 @@ import RegisterForm from "@/pages/auth/register/_components/RegisterForm";
 import { useState } from "react";
 
 export default function OfficialsAddPage() {
-  const [steps, setSteps] = useState(1);
+  const [steps, setSteps] = useState(2);
   return (
     <div>
       {steps === 1 && (
@@ -17,7 +17,7 @@ export default function OfficialsAddPage() {
           </CardContent>
         </Card>
       )}
-      {steps === 2 && <RegisterForm />}
+      {steps === 2 && <RegisterForm setSteps={setSteps} />}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { Eye, Printer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import useFetch from "@/hooks/use-fetch";
-import { exportBands, printBands } from "@/utils/prints/bands";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export type DocumentType = {
   document_number: string;
@@ -105,16 +105,15 @@ export default function BandsAccountingPage() {
   ];
 
   const handlePrint = () => {
-    if (data?.records) printBands(data.records);
+    if (data?.records) printPDF([data.records], [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ]);
   };
 
   const handleExportExcel = () => {
-    if (data?.records) exportBands(data.records, "سندات_محاسبة");
+    if (data?.records) exportExcel(data.records, "سندات_محاسبة", [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ]);
   };
 
   const handleExportPDF = () => {
-    // if (data?.records) exportToPDF(data.records, "سندات_محاسبة");
-    if (data?.records) printBands(data.records)
+    if (data?.records) printPDF([data.records], [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ])
   };
 
   return (

@@ -5,10 +5,11 @@ import LoadingSmall from "../api/loadingSmall";
 
 interface CashboxSelectProps {
   value: string;
+  disabled?: boolean
   onValueChange: (value: string) => void;
 }
 
-export default function CashboxesSelect({ value, onValueChange }: CashboxSelectProps) {
+export default function CashboxesSelect({ value, disabled, onValueChange }: CashboxSelectProps) {
   const { data, loading, error } = useFetch("/cashboxes");
 
   if (loading) return <LoadingSmall />;
@@ -19,7 +20,7 @@ export default function CashboxesSelect({ value, onValueChange }: CashboxSelectP
   return (
     <div className="space-y-2">
       <Label>اختر الخزنة</Label>
-      <Select onValueChange={onValueChange}>
+      <Select onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="اختر الخزنة" />
         </SelectTrigger>

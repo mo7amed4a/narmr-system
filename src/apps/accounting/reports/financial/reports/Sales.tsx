@@ -11,12 +11,12 @@ import BranchSelect from "@/components/selects/BranchSelect";
 import { Button } from "@/components/ui/button";
 import AccountsSelect from "@/components/selects/AccountsSelect";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
-import { exportSales, printSales } from "@/utils/prints/sales";
 import ButtonExcel from "@/components/buttons/ButtonExcel";
 import { Printer } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import api from "@/lib/axios";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export default function Sales() {
   const [account, setAccount] = useState<string | null>(null);
@@ -52,14 +52,31 @@ export default function Sales() {
               <CardTitle className="py-2 w-full">تقارير المبيعات</CardTitle>
 
               <div className="flex w-full gap-2 justify-end">
-                <Button variant={"outline"} onClick={() => printSales(data)}>
+                <Button variant={"outline"} onClick={() => printPDF([data?.data, data?.summary], [
+    "الوقت والتاريخ",
+    "اسم الخدمة",
+    "عدد الحجوزات",
+    "سعر البيع",
+    "إجمالي المبيعات",
+  ], ["العملة","	دينار عراقي"])}>
                   <span className="hidden md:block">طباعة الملف</span>
                   <Printer />
                 </Button>
-                <div onClick={() => exportSales(data?.data)}>
+                <div onClick={() => exportExcel(data?.data, "تقارير المبيعات", [
+    "الوقت والتاريخ",
+    "اسم الخدمة",
+    "عدد الحجوزات",
+    "سعر البيع",
+    "إجمالي المبيعات"])}>
                   <ButtonExcel />
                 </div>
-                <div onClick={() => printSales(data)}>
+                <div onClick={() => printPDF([data?.data, data?.summary], [
+    "الوقت والتاريخ",
+    "اسم الخدمة",
+    "عدد الحجوزات",
+    "سعر البيع",
+    "إجمالي المبيعات",
+  ], ["العملة","	دينار عراقي"])}>
                   <ButtonPDF />
                 </div>
               </div>

@@ -1,8 +1,13 @@
-import { utils, writeFile } from "xlsx";
+// 2. Dynamic Excel Export Function
+import * as XLSX from "xlsx"; // Assuming you're using SheetJS (xlsx library)
+
 
 // 1. Dynamic Print Function
-export const printTable = (head: string[], body: string, ...more : any[]) => {
+export const printTable = (data: any[]) => {
   const printWindow = window.open("", "_blank");
+  console.log(data);
+  
+  const isMore = data[2] != null ? true : false
   if (!printWindow) return;
   const htmlContent = `
     <html dir="rtl">
@@ -74,28 +79,30 @@ export const printTable = (head: string[], body: string, ...more : any[]) => {
         </style>
       </head>
       <body>
-        <h1>قائمة البيانات</h1>
+        <!---<h1>قائمة البيانات</h1>--->
+         ${isMore ? `<table>
+          <thead>
+            <tr>
+              ${data[2].map((h:any) => `<th>${h}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${data[3] || ""}
+          </tbody>
+        </table>` : ""}
+      </body>
+
         <table>
           <thead>
             <tr>
-              ${head.map((h) => `<th>${h}</th>`).join("")}
+              ${data[0].map((h:any) => `<th>${h}</th>`).join("")}
             </tr>
           </thead>
           <tbody>
-            ${body}
+            ${data[1] || ""}
           </tbody>
         </table>
-        ${more && `<table>
-          <thead>
-            <tr>
-              ${more[0]}
-            </tr>
-          </thead>
-          <tbody>
-            ${more[1]}
-          </tbody>
-        </table>`}
-      </body>
+       
     </html>
   `;
 
@@ -105,22 +112,79 @@ export const printTable = (head: string[], body: string, ...more : any[]) => {
   printWindow.print();
 };
 
-// 2. Dynamic Excel Export Function
-export const exportTableToExcel = (data: any[], headerMapping: Record<string, string>, filename: string = "تصدير") => {
+export const printPDF = ([data1, data2]: any, keys?: any[], keys2?: any[]) => {
+  // Get the keys from the first mapped document for the table header
+  const head = keys ? keys : Object.keys(data1[0]);
+
+  // Generate the table body
+  const body = data1
+    .map((doc: any) => {
+      const values = Object.values(doc);
+      const cells = values
+        .map((value) => {
+          return `<td>${value}</td>`;
+        })
+        .join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+    if (data2) {
+      const head2 = keys2 ? keys2 : Object.keys(data2);
+      const body2 = Object.values(data2).map((value) => {
+          return `<td>${value}</td>`;
+        })
+        .join("");
+
+      printTable([head, body,head2, `<tr>${body2}</tr>`]);
+    }
+
+    printTable([head, body]);
+};
+
+export const exportExcel = (
+  data: any[],
+  filename: string = "تصدير",
+  keys?: any[]
+) => {
+  // Check if data is valid
+  if (!Array.isArray(data) || data.length === 0) {
+    console.error("No valid data provided");
+    return;
+  }
+
+  // Get headers dynamically from the first object if no headerMapping is provided
+  const headers = keys || Object.keys(data[0]); // Fallback to raw keys from the first object
+
+  // Map the data to use translated headers and format values if needed
   const mappedData = data.map((item) => {
     const row: Record<string, any> = {};
-    for (const key in headerMapping) {
-      if (Object.prototype.hasOwnProperty.call(headerMapping, key)) {
-        row[headerMapping[key]] = item[key];
+
+    // If headerMapping is provided, use it; otherwise, use raw keys
+    const keys =  Object.keys(item);
+
+    for (const key of keys) {
+      const header = key; // Translated or raw header
+      let value = item[key];
+
+      // Optional: Apply formatting (e.g., for dates)
+      if (value !== undefined && (key.toLowerCase().includes("date") || key.toLowerCase().includes("time"))) {
+        value = formatDate(value);
       }
+
+      row[header] = value !== undefined ? value : ""; // Handle missing values
     }
+
     return row;
   });
 
-  const worksheet = utils.json_to_sheet(mappedData);
-  const workbook = utils.book_new();
-  utils.book_append_sheet(workbook, worksheet, filename);
-  writeFile(workbook, `${filename}.xlsx`);
+  // Create worksheet and workbook
+  const worksheet = XLSX.utils.json_to_sheet(mappedData, { header: headers });
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1"); // Use a default sheet name or customize
+
+  // Export to Excel
+  XLSX.writeFile(workbook, `${filename}.xlsx`);
 };
 
 // Helper functions (remain the same or can be adjusted based on your needs)

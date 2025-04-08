@@ -16,7 +16,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import BranchSelect from "@/components/selects/BranchSelect";
 import DoctorSelect from "@/components/selects/DoctorSelect";
-import { exportReservations, printReservations } from "@/utils/prints/reservations";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 
 export default function TreasuryAccountingPage() {
@@ -92,14 +92,38 @@ export default function TreasuryAccountingPage() {
         <Card className="border-none shadow-none">
           <CardContent className="pt-4 space-y-4">
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"} onClick={() => printReservations(data)}>
+              <Button variant={"outline"} onClick={() => printPDF([data?.data, data?.summary], [
+    "الموعد",
+    "الطبيب المعالج	",
+    "اسم العميل",
+    "فرع الحجز",
+    "حالة الحجز",
+    "أنشئ بواسطة",
+    "تاريخ العملية",
+  ], ["العملة","	دينار عراقي"])}>
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <div onClick={() => exportReservations(data?.data)}>
+              <div onClick={() => exportExcel(data?.data, "تقارير الاطباء", [
+    "الموعد",
+    "الطبيب المعالج	",
+    "اسم العميل",
+    "فرع الحجز",
+    "حالة الحجز",
+    "أنشئ بواسطة",
+    "تاريخ العملية",
+  ])}>
                 <ButtonExcel />
               </div>
-              <div onClick={() => printReservations(data)}>
+              <div onClick={() => printPDF([data?.data, data?.summary], [
+    "الموعد",
+    "الطبيب المعالج	",
+    "اسم العميل",
+    "فرع الحجز",
+    "حالة الحجز",
+    "أنشئ بواسطة",
+    "تاريخ العملية",
+  ], ["العملة","	دينار عراقي"])}>
                 <ButtonPDF />
               </div>
             </div>

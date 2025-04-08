@@ -21,8 +21,8 @@ import ButtonExcel from "@/components/buttons/ButtonExcel";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
-import { exportStatement, printStatement } from "@/utils/prints/statement";
 import AccountsSelect from "@/components/selects/AccountsSelect";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
@@ -105,14 +105,14 @@ export default function StatementAccountingPage() {
             </div>
             
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"} onClick={() => printStatement(data?.transactions)}>
+              <Button variant={"outline"} onClick={() => printPDF([data.transactions, data.summary])}>
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
-              <div onClick={() => exportStatement(data?.transactions)}>
+              <div onClick={() => exportExcel(data?.transactions, "كشف حساب")}>
                 <ButtonExcel />
               </div>
-              <div onClick={() => printStatement(data?.transactions)}>
+              <div onClick={() => printPDF([data.transactions, data.summary])}>
                 <ButtonPDF />
               </div>
             </div>

@@ -81,7 +81,7 @@ export default function RegisterPage() {
         </div>
 
         {steps === 1 && <OtpForm setSteps={setSteps}/>}
-        {steps === 2 && <RegisterForm />}
+        {steps === 2 && <RegisterForm setSteps={setSteps}/>}
 
         <div className="flex justify-between">
             <Link className="text-sm text-primary hover:underline" to="/forgot-password">نسيت كلمة السر؟</Link>

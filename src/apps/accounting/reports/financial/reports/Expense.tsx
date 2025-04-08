@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { Printer } from "lucide-react";
 import ButtonExcel from "@/components/buttons/ButtonExcel";
 import ButtonPDF from "@/components/buttons/ButtonPDF";
-import { exportExpenses, printExpenses } from "@/utils/prints/expenses";
+import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export default function Expense() {
   const [account, setAccount] = useState<string | null>(null);
@@ -29,8 +29,8 @@ export default function Expense() {
     if (account && branch) {
       try {
         const res = await api.post(`/reports/expenses`, {
-          account_id: account,
-          branch_id: branch,
+          // account_id: account,
+          branch_id: Number(branch),
           date_from: fromDate,
           date_to: toDate,
         });
@@ -52,14 +52,14 @@ export default function Expense() {
               <CardTitle className="py-2 w-full">تقارير المصاريف</CardTitle>
 
               <div className="flex w-full gap-2 justify-end">
-                <Button variant={"outline"} onClick={() => printExpenses(data)}>
+                <Button variant={"outline"} onClick={() => printPDF([data?.data, data?.summary],["الوقت والتاريخ", "الوصف", "المبلغ", "انشئ بواسطة", "ملاحظات"], ["العملة","	دينار عراقي"])}>
                   <span className="hidden md:block">طباعة الملف</span>
                   <Printer />
                 </Button>
-                <div onClick={() => exportExpenses(data?.data)}>
+                <div onClick={() => exportExcel(data?.data, "تقارير المصاريف", ["الوقت والتاريخ", "الوصف", "المبلغ", "انشئ بواسطة", "ملاحظات"])}>
                   <ButtonExcel />
                 </div>
-                <div onClick={() => printExpenses(data)}>
+                <div onClick={() => printPDF([data?.data, data?.summary], ["الوقت والتاريخ", "الوصف", "المبلغ", "انشئ بواسطة", "ملاحظات"],["العملة", "	دينار عراقي"])}>
                   <ButtonPDF />
                 </div>
               </div>
