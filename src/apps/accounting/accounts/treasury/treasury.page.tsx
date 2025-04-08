@@ -13,6 +13,7 @@ import api from "@/lib/axios";
 import CashboxesSelect from "@/components/selects/CashboxesSelect";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth.context";
+import { Badge } from "@/components/ui/badge";
 
 export default function TreasuryAccountingPage() {
   const { user } = useUser();
@@ -84,28 +85,35 @@ export default function TreasuryAccountingPage() {
               <TableHeader className="bg-gray-100">
                 <TableRow className="border [&>*]:border bg-[#F1F1F1]">
                   <TableCell className="text-right font-semibold text-gray-700">
-                    التاريخ
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    نوع الفاتورة
+                    نوع السند
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
                     الرقم
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    الوصف
-                  </TableCell>
+                 
                   <TableCell className="text-right font-semibold text-gray-700">
                     التفاصيل
+                  </TableCell>
+                  {/* <TableCell className="text-right font-semibold text-gray-700">
+                    الوصف
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
                     المدفوع
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
                     التكلفة
+                  </TableCell> */}
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    مدين
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    دائن
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
                     الحالة
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    التاريخ
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -119,9 +127,6 @@ export default function TreasuryAccountingPage() {
                     }
                   >
                     <TableCell className="text-sm text-gray-600">
-                      {new Date(transaction["التاريخ"]).toLocaleString("ar-EG")}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
                       {transaction["نوع الفاتورة"] === "receipt"
                         ? "قبض"
                         : transaction["نوع الفاتورة"] === "payment"
@@ -132,19 +137,30 @@ export default function TreasuryAccountingPage() {
                       {transaction["الرقم"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["الوصف"]}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
                       {transaction["التفاصيل"]}
                     </TableCell>
+                  
+                    {/* <TableCell className="text-sm text-gray-600">
+                      {transaction["الوصف"]}
+                    </TableCell>
+                   
                     <TableCell className="text-sm text-gray-600">
                       {transaction["المدفوع"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {transaction["التكلفة"]}
+                    </TableCell> */}
+                    <TableCell className="text-sm text-gray-600">
+                      {/* {transaction["المدفوع"]} */}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["الحالة"]}
+                      {/* {transaction["التكلفة"]} */}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {transaction["الحالة"] === "تم" ? <Badge variant={"green"}>مؤكد</Badge> : <Badge variant={"yellow"}>غير مؤكد</Badge>}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {new Date(transaction["التاريخ"]).toLocaleString("ar-EG")}
                     </TableCell>
                   </TableRow>
                 ))}
