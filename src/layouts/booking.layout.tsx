@@ -15,6 +15,7 @@ import AddBondsAccountingPage from "@/apps/accounting/accounts/bonds/AddBonds.pa
 import BondsDetailsAccountingPage from "@/apps/accounting/accounts/bonds/bondsDetails.page";
 import StatementAccountingPage from "@/apps/accounting/accounts/statement/statement.page";
 import TreasuryAccountingPage from "@/apps/accounting/accounts/treasury/treasury.page";
+import BondsAddAccountingPage from "@/apps/accounting/accounts/bonds/BondsAdd.page";
 
 const ClientsPage = lazy(() => import("@/apps/booking/clients/clients.page"));
 const ShowClientPage = lazy(() => import("@/apps/booking/clients/ShowClient.page"));
@@ -88,7 +89,9 @@ function BookingLayout() {
                  <Route path="/accounts/*" >
                       <Route index element={<BandsAccountingPage />} />
                       <Route path="bonds" element={<BandsAccountingPage />} />
-                      <Route path="bonds/add" element={<AddBondsAccountingPage />} />
+                      
+                      <Route path="bonds/add" element={<BondsAddAccountingPage />} />
+                      <Route path="bonds/add2" element={<AddBondsAccountingPage />} />
                       <Route path="bonds/:id" element={<BondsDetailsAccountingPage />} />
                       <Route path="statement" element={<StatementAccountingPage />} />
                       <Route path="treasury" element={<TreasuryAccountingPage />} />

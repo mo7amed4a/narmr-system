@@ -10,15 +10,22 @@ import useFetch from "@/hooks/use-fetch";
 import { exportExcel, printPDF } from "@/utils/exportUtils";
 
 export type DocumentType = {
+  id: number;
   document_number: string;
   document_type: string;
-  party_name: string;
-  amount: number;
-  payment_method: string;
-  branch: string;
-  added_by: string;
-  notes: string;
   document_date: string;
+  branch_name: string;
+  cashbox_name: string;
+  amount: number;
+  notes: string;
+  added_by: string;
+  lines: {
+    account_id: number;
+    account_name: string;
+    debit: number;
+    credit: number;
+    note: string;
+  }[];
 };
 
 export default function BandsAccountingPage() {
@@ -43,9 +50,12 @@ export default function BandsAccountingPage() {
       ),
     },
     {
-      accessorKey: "party_name",
+      accessorKey: "lines",
       header: "اسم العميل أو المورد",
-      cell: ({ row }) => <div>{row.getValue("party_name")}</div>,
+      cell: ({ row }) => {
+        const lines = row.getValue("lines") as DocumentType["lines"];
+        return <div>{lines[0]?.account_name || "غير محدد"}</div>;
+      },
     },
     {
       accessorKey: "amount",
@@ -53,14 +63,14 @@ export default function BandsAccountingPage() {
       cell: ({ row }) => <div>${row.getValue("amount")}</div>,
     },
     {
-      accessorKey: "payment_method",
+      accessorKey: "cashbox_name",
       header: "طريقة الدفع",
-      cell: ({ row }) => <div>{row.getValue("payment_method") === "cash" ? "نقدي" : row.getValue("payment_method")}</div>,
+      cell: ({ row }) => <div>{row.getValue("cashbox_name") || "نقدي"}</div>,
     },
     {
-      accessorKey: "branch",
+      accessorKey: "branch_name",
       header: "العيادة - الفرع",
-      cell: ({ row }) => <div>{row.getValue("branch")}</div>,
+      cell: ({ row }) => <div>{row.getValue("branch_name")}</div>,
     },
     {
       accessorKey: "added_by",
@@ -105,15 +115,82 @@ export default function BandsAccountingPage() {
   ];
 
   const handlePrint = () => {
-    if (data?.records) printPDF([data.records], [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ]);
+    if (data?.sandat) {
+      printPDF(
+        [data.sandat,
+        [
+          "رقم السند",
+          "نوع السند",
+          "اسم العميل أو المورد",
+          "المبلغ",
+          "طريقة الدفع",
+          "العيادة - الفرع",
+          "أُضيف بواسطة",
+          "ملاحظات",
+          "تاريخ الإضافة",
+        ]]
+        // [
+        //   "document_number",
+        //   "document_type",
+        //   (record: DocumentType) => record.lines[0]?.account_name || "غير محدد",
+        //   "amount",
+        //   "cashbox_name",
+        //   "branch_name",
+        //   "added_by",
+        //   "notes",
+        //   (record: DocumentType) =>
+        //     new Date(record.document_date).toLocaleDateString("ar-EG", {
+        //       day: "numeric",
+        //       month: "short",
+        //       year: "numeric",
+        //     }) +
+        //     ", " +
+        //     new Date(record.document_date).toLocaleTimeString("en-US", {
+        //       hour: "2-digit",
+        //       minute: "2-digit",
+        //     }),
+        // ]
+      );
+    }
   };
 
   const handleExportExcel = () => {
-    if (data?.records) exportExcel(data.records, "سندات_محاسبة", [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ]);
+    if (data?.sandat) {
+      exportExcel(
+        data.sandat,
+        "سندات_محاسبة",
+        [
+          "رقم السند",
+          "نوع السند",
+          "اسم العميل أو المورد",
+          "المبلغ",
+          "طريقة الدفع",
+          "العيادة - الفرع",
+          "أُضيف بواسطة",
+          "ملاحظات",
+          "تاريخ الإضافة",
+        ]
+      );
+    }
   };
 
   const handleExportPDF = () => {
-    if (data?.records) printPDF([data.records], [ "رقم السند", "نوع السند", "اسم العميل أو المورد", "المبلغ", "طريقة الدفع", "العيادة - الفرع", "أُضيف بواسطة", "ملاحظات", "تاريخ الإضافة", ])
+    if (data?.sandat) {
+      printPDF(
+       [ data.sandat,
+        [
+          "رقم السند",
+          "نوع السند",
+          "اسم العميل أو المورد",
+          "المبلغ",
+          "طريقة الدفع",
+          "العيادة - الفرع",
+          "أُضيف بواسطة",
+          "ملاحظات",
+          "تاريخ الإضافة",
+        ]]
+      );
+    }
   };
 
   return (
@@ -136,8 +213,8 @@ export default function BandsAccountingPage() {
         <DataTable
           title="السندات"
           columns={columnsDocuments}
-          data={data?.records || []}
-          searchKey={["document_number", "party_name"]}
+          data={data?.sandat || []}
+          searchKey={["document_number", "lines.account_name"]}
           textKey="رقم السند او اسم العميل"
           loading={loading}
           error={error}

@@ -3,69 +3,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import ProductsSelect from "@/components/selects/ProductsSelect"; // Adjust path as needed
 import { Plus, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import SuppliersSelect from "@/components/selects/SuppliersSelect";
 import api from "@/lib/axios";
-
+// ... باقي الاستيرادات كما هي
+// ..
 interface InvoiceFormProps {
   invoiceType?: "purchase" | "sale"; // Optional prop to set default invoice type
 }
 
-export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProps) {
+export default function InvoiceFormPage({ invoiceType = "purchase" }: InvoiceFormProps) {
   const navigate = useNavigate();
-  const [supplierId, setSupplierId] = useState<string|null>(null);
-  const [products, setProducts] = useState<{ product_id: string; quantity: string }[]>([
-    { product_id: "", quantity: "" },
-  ]);
+  const [supplierId, setSupplierId] = useState<string | null>(null);
+
+  const [products, setProducts] = useState<
+    { product_name: string; quantity: string; unit_price: string }[]
+  >([{ product_name: "", quantity: "", unit_price: "" }]);
+
   const [selectedInvoiceType] = useState<"purchase" | "sale">(invoiceType);
 
-  // Handle adding a new product row
   const handleAddProduct = () => {
-    setProducts([...products, { product_id: "", quantity: "" }]);
+    setProducts([...products, { product_name: "", quantity: "", unit_price: "" }]);
   };
 
-  // Handle removing a product row
   const handleRemoveProduct = (index: number) => {
     setProducts(products.filter((_, i) => i !== index));
   };
 
-  // Handle product selection change
-  const handleProductChange = (index: number, value: string) => {
+  const handleProductChange = (index: number, field: string, value: string) => {
     const updatedProducts = [...products];
-    updatedProducts[index].product_id = value;
+    (updatedProducts[index] as any)[field] = value;
     setProducts(updatedProducts);
   };
 
-  // Handle quantity change
-  const handleQuantityChange = (index: number, value: string) => {
-    const updatedProducts = [...products];
-    updatedProducts[index].quantity = value;
-    setProducts(updatedProducts);
-  };
-
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate supplier
     if (!supplierId) {
       toast.error("يرجى اختيار مورد");
       return;
     }
 
-    // Validate products
     const formattedProducts = products
-      .filter((p) => p.product_id && p.quantity) // Filter out incomplete entries
+      .filter((p) => p.product_name && p.quantity && p.unit_price)
       .map((p) => ({
-        product_id: parseInt(p.product_id),
+        product_name: p.product_name,
         quantity: parseInt(p.quantity),
+        unit_price: parseFloat(p.unit_price),
       }));
 
     if (formattedProducts.length === 0) {
-      toast.error("يرجى إضافة منتج واحد على الأقل مع كمية صحيحة");
+      toast.error("يرجى إضافة منتج واحد على الأقل مع جميع البيانات");
       return;
     }
 
@@ -76,14 +66,11 @@ export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProp
     };
 
     try {
-      const response = await api.post("/invoice1/add", {
-        ...payload,
-        supplier_id: parseInt(supplierId as any),  
-      });
+      const response = await api.post("/invoice1/add", payload);
 
       if (response.status === 200) {
         toast.success("تم إضافة الفاتورة بنجاح");
-        navigate(-1); // Navigate back on success
+        navigate(-1);
       } else {
         toast.error("فشل في إضافة الفاتورة");
       }
@@ -97,65 +84,69 @@ export default function InvoiceFormPage({invoiceType="purchase"}:InvoiceFormProp
     <Card className="w-full border-none shadow-none">
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Invoice Type Selection */}
           <SuppliersSelect
             value={supplierId?.toString() as string}
-            onValueChange={(value) => setSupplierId(value)} />
+            onValueChange={(value) => setSupplierId(value)}
+          />
 
-          {/* Products List */}
           <div className="space-y-4">
             {products.map((product, index) => (
-              <div key={index} className="flex gap-3 items-end">
-                <div className="flex-1">
-                  <ProductsSelect
-                    value={product.product_id}
-                    onValueChange={(value) => handleProductChange(index, value as string)}
-                  />
-                </div>
-                <div className="flex-1">
-                  <Label htmlFor={`quantity-${index}`}>الكمية</Label>
+              <div key={index} className="grid grid-cols-3 gap-3 items-end">
+                <div>
+                  <Label>اسم المنتج</Label>
                   <Input
-                    id={`quantity-${index}`}
-                    type="number"
-                    min="1"
-                    value={product.quantity}
-                    onChange={(e) => handleQuantityChange(index, e.target.value)}
-                    placeholder="ادخل الكمية"
+                    type="text"
+                    placeholder="اسم المنتج"
+                    value={product.product_name}
+                    onChange={(e) => handleProductChange(index, "product_name", e.target.value)}
                     required
                   />
                 </div>
-                {products.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveProduct(index)}
-                  >
-                    <Trash className="text-red-500" />
-                  </Button>
-                )}
+                <div>
+                  <Label>الكمية</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    placeholder="الكمية"
+                    value={product.quantity}
+                    onChange={(e) => handleProductChange(index, "quantity", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label>سعر الوحدة</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="السعر"
+                      value={product.unit_price}
+                      onChange={(e) => handleProductChange(index, "unit_price", e.target.value)}
+                      required
+                    />
+                  </div>
+                  {products.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveProduct(index)}
+                    >
+                      <Trash className="text-red-500" />
+                    </Button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Add Product Button */}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAddProduct}
-            className="w-fit"
-          >
+          <Button type="button" variant="outline" onClick={handleAddProduct} className="w-fit">
             إضافة منتج <Plus className="mr-2" />
           </Button>
 
-          {/* Form Actions */}
           <div className="flex gap-3 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              className="text-red-500"
-              onClick={() => navigate(-1)}
-            >
+            <Button type="button" variant="outline" className="text-red-500" onClick={() => navigate(-1)}>
               إلغاء
             </Button>
             <Button type="submit" variant="green">

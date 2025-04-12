@@ -25,13 +25,9 @@ export default function TreasuryAccountingPage() {
   const handleSubmit = async () => {
     if (fromDate && toDate) {
       try {
-        const url = cashbox ? `/cashbox/report` : `/cashbox/report1`;
-        const payload = cashbox ? { cashbox_id: cashbox } : { user_id: 21 };
-        const res = await api.post(url, {
-          ...payload,
-          date_from: fromDate,
-          date_to: toDate,
-        });
+        // const payload = cashbox ? { cashbox_id: cashbox } : { user_id: 21 };
+        const url = cashbox ? `/cashbox/report?cashbox_id=${cashbox}&date_from=${fromDate}&date_to=${toDate}` : `/cashbox/report1?user_id=${user?.user_id}&date_from=${fromDate}&date_to=${toDate}`;
+        const res = await api.get(url);
         setData(res.data);
       } catch (error) {
         console.error("Error fetching treasury report:", error);
@@ -99,6 +95,9 @@ export default function TreasuryAccountingPage() {
                     التفاصيل
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
+                    الوصف
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
                     مدين
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
@@ -137,15 +136,18 @@ export default function TreasuryAccountingPage() {
                     <TableCell className="text-sm text-gray-600">
                       {transaction["التفاصيل"]}
                     </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {transaction["الوصف"]}
+                    </TableCell>
 
                     <TableCell className="text-sm text-gray-600">
-                      {/* {transaction["المدفوع"]} */}
+                      {transaction["المدفوع"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {/* {transaction["المدفوع"]} */}
+                      {transaction["الدائن"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {/* {transaction["التكلفة"]} */}
+                      {transaction["المدفوع"] - transaction["الدائن"]}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {transaction["الحالة"] === "تم" ? (
@@ -169,7 +171,7 @@ export default function TreasuryAccountingPage() {
                     العملة
                   </TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">
-                    دينار عراقي
+                    {data.summary["العملة"]}
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -189,7 +191,7 @@ export default function TreasuryAccountingPage() {
                     الرصيد الافتتاحي
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary.opening_balance || "-"}
+                    {data.summary["الرصيد الافتتاحي"]}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
@@ -197,7 +199,7 @@ export default function TreasuryAccountingPage() {
                     مجموع المدين
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary.total_cost}
+                    {data.summary["إجمالي المدفوع"]}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
@@ -205,7 +207,8 @@ export default function TreasuryAccountingPage() {
                     مجموع الدائن
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary.total_paid}
+                    {data.summary["إجمالي الدائن"]}
+
                   </TableCell>
                 </TableRow>
                 <TableRow
@@ -215,7 +218,7 @@ export default function TreasuryAccountingPage() {
                 >
                   <TableCell className="text-sm">الرصيد</TableCell>
                   <TableCell className="text-sm text-center">
-                    {data.summary.balance}
+                    {data.summary["الرصيد"] === 0 ? data.summary["الرصيد الافتتاحي"] : data.summary["الرصيد"]}
                   </TableCell>
                 </TableRow>
               </TableBody>

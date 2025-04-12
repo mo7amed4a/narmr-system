@@ -58,29 +58,45 @@ export default function AddBondsAccountingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
+    // تحديد ما إذا كان نوع السند يتطلب supplier_id
     const isSupplierType = ["payment", "expenditure"].includes(bondValue);
-    const payload = {
+  
+    // إعداد payload الأساسي
+    let payload: any = {
       user_id: user.user_id, // Dynamic user ID from context
       document_type: bondValue,
       amount: Number(formData.amount),
-      payment_method: formData.payment_method,
-      cashbox_id: Number(formData.cashbox_id || user?.user_id), // Default if empty
-      document_date: formData.document_date || new Date().toISOString(),
       branch_id: Number(formData.branch_id), // From BranchSelect
-      // account_id: Number(formData.account_id), // From AccountsSelect
-      service_id: Number(formData.service_id), // From ServiceSelect
       notes: formData.notes || "",
-      customer_id: Number(formData.customer_id),
-      ...(isSupplierType
-        && { supplier_id: Number(formData.supplier_id)} ), // From CustomerSelect
     };
-
+  
+    // تخصيص payload بناءً على نوع السند
+    if (bondValue === "receipt") {
+      // صيغة خاصة بسند القبض
+      payload = {
+        ...payload,
+        // account_id: Number(formData.account_id) || undefined, // اختياري: إضافة account_id إذا كان موجودًا
+      };
+    } else {
+      // باقي أنواع السندات
+      payload = {
+        ...payload,
+        payment_method: formData.payment_method,
+        cashbox_id: Number(formData.cashbox_id || user?.user_id), // Default if empty
+        document_date: formData.document_date || new Date().toISOString(),
+        service_id: Number(formData.service_id), // From ServiceSelect
+        customer_id: Number(formData.customer_id) || undefined,
+        ...(isSupplierType && { supplier_id: Number(formData.supplier_id) }), // إضافة supplier_id لـ payment/expenditure
+      };
+    }
+  
+    // التحقق من صحة المبلغ
     if (!payload.amount || payload.amount <= 0) {
       toast.error("يرجى إدخال مبلغ صحيح");
       return;
     }
-
+  
     try {
       const response = await api.post("/sandat/create", payload);
       if (response.status === 200) {
@@ -93,7 +109,6 @@ export default function AddBondsAccountingPage() {
           document_date: "",
           branch_id: "",
           payment_method: "cash",
-          // account_id: "",
           service_id: "",
           amount: "",
         });

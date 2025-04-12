@@ -113,6 +113,8 @@ export const printTable = (data: any[]) => {
 };
 
 export const printPDF = ([data1, data2]: any, keys?: any[], keys2?: any[]) => {
+  console.log(data1);
+  
   // Get the keys from the first mapped document for the table header
   const head = keys ? keys : Object.keys(data1[0]);
 

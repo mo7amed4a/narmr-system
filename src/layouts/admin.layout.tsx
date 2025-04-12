@@ -26,6 +26,7 @@ import OfficialsEditPage from "@/apps/admin/officials/officialsEdit.page";
 import OfficialsDetailsPage from "@/apps/admin/officials/officialsDetails.page";
 import ProfileEditPage from "@/apps/profile/profileEdit.page";
 import StaffAddPage from "@/apps/accounting/staff/staffAdd.page";
+import BondsAddAccountingPage from "@/apps/accounting/accounts/bonds/BondsAdd.page";
 
 const Home = lazy(() => import("../apps/admin/home/Home"));
 
@@ -158,7 +159,8 @@ function AccountingLayout() {
                   <Route path="accounts/*" >
                       <Route index element={<BandsAccountingPage />} />
                       <Route path="bonds" element={<BandsAccountingPage />} />
-                      <Route path="bonds/add" element={<AddBondsAccountingPage />} />
+                      <Route path="bonds/add" element={<BondsAddAccountingPage />} />
+                      <Route path="bonds/add2" element={<AddBondsAccountingPage />} />
                       <Route path="bonds/:id" element={<BondsDetailsAccountingPage />} />
                       <Route path="statement" element={<StatementAccountingPage />} />
                       <Route path="treasury" element={<TreasuryAccountingPage />} />
