@@ -94,7 +94,7 @@ export default function ReceiptBond({
                     handleSelectChange("branch_id", value)
                   }
                 />
-                {bondType === "payment" && <AccountsSelect
+                {<AccountsSelect
                   value={formData.account_id}
                   onValueChange={(value) =>
                     handleSelectChange("account_id", value)
