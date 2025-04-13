@@ -15,6 +15,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@/hooks/auth.context";
+import { useNavigate } from "react-router-dom";
 
 interface ServiceItem {
   service_id: string;
@@ -22,6 +23,7 @@ interface ServiceItem {
 }
 
 export default function InvoicesAddPage() {
+  const navigate = useNavigate();
   const { user } = useUser();
   const [formData, setFormData] = useState({
     customer_id: "",
@@ -85,6 +87,7 @@ export default function InvoicesAddPage() {
 
       await api.post("/invoice/add", payload);
       toast.success("تم إضافة الفاتورة بنجاح");
+      navigate(-1);
       setFormData({
         customer_id: "",
         doctor_id: "",
