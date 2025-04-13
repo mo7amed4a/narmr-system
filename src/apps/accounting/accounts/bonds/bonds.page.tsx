@@ -55,7 +55,7 @@ export default function BandsAccountingPage() {
       header: "اسم العميل أو المورد",
       cell: ({ row }) => {
         const lines = row.getValue("lines") as DocumentType["lines"];
-        return <div>{lines[0]?.account_name || "غير محدد"}</div>;
+        return <div>{lines[0]?.account_name || ""}</div>;
       },
     },
     {
