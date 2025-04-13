@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
       </div>
       <Card className="w-full max-w-xl p-6 space-y-6 relative z-10">
         <div className="flex justify-center mb-6">
-          <svg
+          {/* <svg
             width={152}
             height={49}
             viewBox="0 0 152 49"
@@ -70,7 +70,10 @@ export default function ForgotPasswordPage() {
               d="M89.2048 46.6891V46.3905C89.2048 46.291 89.1719 46.2578 89.0731 46.2578H88.8755V46.8549H89.0401C89.1389 46.8549 89.2048 46.7886 89.2048 46.6891Z"
               fill="#8E3C3B"
             />
-          </svg>
+          </svg> */}
+           <div>
+            <img className="h-20 w-auto" src="/images/4.jpg" />
+          </div>
         </div>
 
         <div className="text-center space-y-2">
