@@ -15,11 +15,12 @@ export default function ReceiptBond({
 }) {
   const { user } = useUser();
   const [formData, setFormData] = useState({
-    branch_id: "", // الفرع (ID)
-    notes: "", // ملاحظات
-    amount: "", // المبلغ
-    account_id: ""
+    branch_id: "",
+    notes: "",
+    amount: "",
+    account_id: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false); // متغير جديد لتتبع حالة الإرسال
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,22 +34,28 @@ export default function ReceiptBond({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting) return; // منع الإرسال إذا كان النموذج قيد الإرسال
+
+    setIsSubmitting(true); // تعطيل الإرسال
+
     const payload = {
-      user_id: user.user_id, 
-      document_type: bondType, 
+      user_id: user.user_id,
+      document_type: bondType,
       amount: Number(formData.amount),
-      branch_id: Number(formData.branch_id), 
+      branch_id: Number(formData.branch_id),
       notes: formData.notes || "",
-      account_id: Number(formData.account_id) > 0 ? Number(formData.account_id) : undefined
+      account_id: Number(formData.account_id) > 0 ? Number(formData.account_id) : undefined,
     };
 
     if (!payload.amount || payload.amount <= 0) {
       toast.error("يرجى إدخال مبلغ صحيح");
+      setIsSubmitting(false); // إعادة تفعيل الإرسال
       return;
     }
 
     if (!payload.branch_id) {
       toast.error("يرجى اختيار الفرع");
+      setIsSubmitting(false); // إعادة تفعيل الإرسال
       return;
     }
 
@@ -60,7 +67,7 @@ export default function ReceiptBond({
           branch_id: "",
           notes: "",
           amount: "",
-          account_id: ""
+          account_id: "",
         });
       } else {
         toast.error("فشل في حفظ السند: خطأ غير معروف");
@@ -68,6 +75,8 @@ export default function ReceiptBond({
     } catch (err) {
       console.error("Error creating receipt bond:", err);
       toast.error("حدث خطأ أثناء حفظ السند");
+    } finally {
+      setIsSubmitting(false); // إعادة تفعيل الإرسال بعد انتهاء العملية
     }
   };
 
@@ -75,13 +84,18 @@ export default function ReceiptBond({
     <div className="space-y-4">
       <Card className="w-full border-none shadow-none p-0" dir="rtl">
         <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
-          <h3 className="mb-4 text-lg font-semibold"> سند 
-                {bondType === "receipt" && " قبض"}
-                {bondType === "payment" && " دفع"}
-                {/* {bondType === "receipt" && "قبض"} */}
-            </h3>
-          <Button variant="green" form="receipt-bond-form" type="submit">
-            حفظ السند
+          <h3 className="mb-4 text-lg font-semibold">
+            سند
+            {bondType === "receipt" && " قبض"}
+            {bondType === "payment" && " دفع"}
+          </h3>
+          <Button
+            variant="green"
+            form="receipt-bond-form"
+            type="submit"
+            disabled={isSubmitting} // تعطيل الزر أثناء الإرسال
+          >
+            {isSubmitting ? "جاري الحفظ..." : "حفظ السند"} {/* تغيير النص أثناء الإرسال */}
           </Button>
         </CardHeader>
         <CardContent className="pt-6">
@@ -90,16 +104,12 @@ export default function ReceiptBond({
               <div className="grid gap-6 lg:grid-cols-3 items-end">
                 <BranchSelect
                   value={formData.branch_id}
-                  onValueChange={(value) =>
-                    handleSelectChange("branch_id", value)
-                  }
+                  onValueChange={(value) => handleSelectChange("branch_id", value)}
                 />
-                {<AccountsSelect
+                <AccountsSelect
                   value={formData.account_id}
-                  onValueChange={(value) =>
-                    handleSelectChange("account_id", value)
-                  }
-                />}
+                  onValueChange={(value) => handleSelectChange("account_id", value)}
+                />
                 <InputLabel
                   label="المبلغ"
                   name="amount"

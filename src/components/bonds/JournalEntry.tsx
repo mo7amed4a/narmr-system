@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import InputLabel from "@/components/form/InputLabel";
 import BranchSelect from "@/components/selects/BranchSelect";
-import AccountsSelect from "@/components/selects/AccountsSelect"; // تأكد من المسار الصحيح
+import AccountsSelect from "@/components/selects/AccountsSelect";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/auth.context";
-import { Trash2 } from "lucide-react"; // أيقونة الحذف (تأكد من تثبيت lucide-react)
+import { Trash2 } from "lucide-react";
 
 interface Line {
   account_id: string;
@@ -17,11 +17,12 @@ interface Line {
 export default function JournalEntryBond() {
   const { user } = useUser();
   const [formData, setFormData] = useState({
-    branch_id: "", // الفرع (ID)
-    notes: "", // ملاحظات
-    amount: "", // المبلغ
+    branch_id: "",
+    notes: "",
+    amount: "",
   });
-  const [lines, setLines] = useState<Line[]>([{ account_id: "", note: "" }]); // مصفوفة لتخزين الحسابات
+  const [lines, setLines] = useState<Line[]>([{ account_id: "", note: "" }]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // متغير جديد لتتبع حالة الإرسال
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,7 +56,10 @@ export default function JournalEntryBond() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // إعداد payload مع lines
+    if (isSubmitting) return; // منع الإرسال إذا كان النموذج قيد الإرسال
+
+    setIsSubmitting(true); // تعطيل الإرسال
+
     const payload = {
       user_id: user.user_id,
       document_type: "journal_entry",
@@ -63,26 +67,28 @@ export default function JournalEntryBond() {
       branch_id: Number(formData.branch_id),
       notes: formData.notes || "",
       lines: lines
-        .filter((line) => line.account_id) // تصفية السطور غير المكتملة
+        .filter((line) => line.account_id)
         .map((line) => ({
           account_id: Number(line.account_id),
           note: line.note || "",
         })),
     };
 
-    // التحقق من البيانات
     if (!payload.amount || payload.amount <= 0) {
       toast.error("يرجى إدخال مبلغ صحيح");
+      setIsSubmitting(false); // إعادة تفعيل الإرسال
       return;
     }
 
     if (!payload.branch_id) {
       toast.error("يرجى اختيار الفرع");
+      setIsSubmitting(false); // إعادة تفعيل الإرسال
       return;
     }
 
     if (payload.lines.length < 2) {
       toast.error("يرجى إضافة حسابين على الأقل (مدين ودائن)");
+      setIsSubmitting(false); // إعادة تفعيل الإرسال
       return;
     }
 
@@ -95,13 +101,15 @@ export default function JournalEntryBond() {
           notes: "",
           amount: "",
         });
-        setLines([{ account_id: "", note: "" }]); // إعادة تعيين السطور
+        setLines([{ account_id: "", note: "" }]);
       } else {
         toast.error("فشل في حفظ السند: خطأ غير معروف");
       }
     } catch (err) {
       console.error("Error creating journal entry bond:", err);
       toast.error("حدث خطأ أثناء حفظ السند");
+    } finally {
+      setIsSubmitting(false); // إعادة تفعيل الإرسال بعد انتهاء العملية
     }
   };
 
@@ -110,8 +118,13 @@ export default function JournalEntryBond() {
       <Card className="w-full border-none shadow-none" dir="rtl">
         <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
           <h3 className="mb-4 text-lg font-semibold">إضافة سند قيد</h3>
-          <Button variant="green" form="journal-entry-form" type="submit">
-            حفظ السند
+          <Button
+            variant="green"
+            form="journal-entry-form"
+            type="submit"
+            disabled={isSubmitting} // تعطيل الزر أثناء الإرسال
+          >
+            {isSubmitting ? "جاري الحفظ..." : "حفظ السند"} {/* تغيير النص أثناء الإرسال */}
           </Button>
         </CardHeader>
         <CardContent className="pt-6">

@@ -21,7 +21,7 @@ interface FormValues {
 // Validation schema
 const validationSchema = Yup.object().shape({
   phone: Yup.string()
-    .matches(/^\+964[0-9]{9}$/, "رقم الموبايل يجب أن يبدأ بـ +964 ويكون 12 رقم")
+    .matches(/^\+964[0-9]{10}$/, "رقم الموبايل يجب أن يبدأ بـ +964 ويكون 12 رقم")
     .required("رقم الموبايل مطلوب"),
 });
 
@@ -83,7 +83,7 @@ export default function OtpForm({ setSteps, page = false }: OtpFormProps) {
                     setFieldValue("phone", value);
                   }
                 }}
-                maxLength={13} // +966 and 9 digits
+                maxLength={14} // +966 and 9 digits
               />
               {touched.phone && errors.phone && (
                 <div className="text-red-500 text-sm text-right">{errors.phone}</div>
