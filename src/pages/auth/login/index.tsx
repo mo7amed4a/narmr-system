@@ -39,7 +39,7 @@ export default function LoginForm() {
       <Card className="w-full max-w-xl p-6 space-y-6 relative z-10">
         <div className="flex justify-center mb-6">
           <div>
-            <img className="h-20 w-auto" src="/images/4.jpg" />
+            <img className="h-28 w-auto" src="/images/3.jpg" />
           </div>
         </div>
 
