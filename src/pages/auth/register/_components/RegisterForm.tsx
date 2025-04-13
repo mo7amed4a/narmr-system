@@ -10,114 +10,79 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
-  first_name: Yup.string()
-    .required("الاسم الأول مطلوب")
-    .min(2, "الاسم الأول يجب أن يكون على الأقل 2 أحرف"),
-  last_name: Yup.string()
-    .required("الاسم الثاني مطلوب")
-    .min(2, "الاسم الثاني يجب أن يكون على الأقل 2 أحرف"),
-  phone: Yup.string()
-    .required("رقم الموبايل مطلوب")
-    .matches(/^[0-9]+$/, "رقم الموبايل يجب أن يحتوي على أرقام فقط")
-    .min(10, "رقم الموبايل يجب أن يكون على الأقل 10 أرقام"),
-  otp_code: Yup.string()
-    .required("كود التحقق مطلوب")
-    .matches(/^[0-9]+$/, "كود التحقق يجب أن يحتوي على أرقام فقط"),
+  first_name: Yup.string().required("الاسم الأول مطلوب").min(2),
+  last_name: Yup.string().required("الاسم الثاني مطلوب").min(2),
+  phone: Yup.string().required("رقم الموبايل مطلوب").matches(/^[0-9]+$/, "يجب أن يكون أرقام").min(10),
+  otp_code: Yup.string().required("كود التحقق مطلوب").matches(/^[0-9]+$/, "أرقام فقط"),
   user_category: Yup.string().required("الدور مطلوب"),
-  password: Yup.string()
-    .required("كلمة السر مطلوبة")
-    .min(8, "كلمة السر يجب أن تكون على الأقل 8 أحرف"),
-  confirm_password: Yup.string()
-    .required("تأكيد كلمة السر مطلوب")
-    .oneOf([Yup.ref("password")], "كلمة السر غير متطابقة"),
+  password: Yup.string().required("كلمة السر مطلوبة").min(8),
+  confirm_password: Yup.string().oneOf([Yup.ref("password")], "كلمة السر غير متطابقة").required("مطلوب"),
 });
 
-export default function RegisterForm({
-  setSteps
-}:{
-  setSteps: React.Dispatch<React.SetStateAction<number>>
-}) {
+export default function RegisterForm({ setSteps }: { setSteps: React.Dispatch<React.SetStateAction<number>> }) {
   const navigate = useNavigate();
 
   const initialValues = {
     first_name: "",
     last_name: "",
-    phone: localStorage.getItem("otp_phone") || "",
+    phone: localStorage.getItem("otp_phone")?.replace(/^\+/, "") || "0500000000",
     otp_code: "",
     user_category: "transformer_employee",
     password: "",
     confirm_password: "",
   };
 
-  const handleSubmit = async (
-    values: any,
-    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
-  ) => {
+  const handleSubmit = async (values: any, { setSubmitting, setErrors }: any) => {
     try {
-      const response = await api.post("/create_portal_user", {...values,
-        phone: values.phone.split("+").join(""),
-      });
+      const response = await api.post("/create_portal_user", values);
       if (response.status === 200) {
-        toast.success("تم انشاء المستخدم بنجاح");
+        toast.success("تم إنشاء المستخدم بنجاح");
         navigate(-1);
       }
-    } catch (error) {
-      console.error("Submission failed:", error);
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "حدث خطأ أثناء الحفظ";
+      // toast.error(message);
+      setErrors({ submit: message });
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <Card className="w-full replaceAll flex flex-col gap-4 shadow-none border-none">
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ values, handleChange, setFieldValue, errors, touched }) => (
+    <Card className="w-full flex flex-col gap-4 shadow-none border-none">
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+        {({ values, handleChange, setFieldValue, errors, touched, isSubmitting }: any) => (
           <Form>
             <Card className="w-full shadow-none">
               <CardHeader className="flex justify-between flex-row items-center">
-                <CardTitle>اضافة مسؤول جديد</CardTitle>
+                <CardTitle>إضافة مسؤول جديد</CardTitle>
                 <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    onClick={() => setSteps(1)}
-                    variant="outline"
-                    className="text-red-500"
-                  >
+                  <Button type="button" onClick={() => setSteps(1)} variant="outline" className="text-red-500">
                     رجوع
                   </Button>
-                  <Button type="submit" variant="green">
-                    حفظ
+                  <Button type="submit" variant="green" disabled={isSubmitting}>
+                    {isSubmitting ? "جاري الحفظ..." : "حفظ"}
                   </Button>
                 </div>
               </CardHeader>
               <CardContent className="grid md:grid-cols-3 gap-4">
+                {errors.submit && <div className="col-span-full text-red-500 text-sm">{errors.submit}</div>}
+
                 <div className="col-span-full flex justify-start flex-wrap pb-4 gap-4">
                   <span>الدور</span>
                   <RadioGroup
                     dir="rtl"
                     name="user_category"
                     value={values.user_category}
-                    onValueChange={(value) =>
-                      setFieldValue("user_category", value)
-                    }
+                    onValueChange={(value) => setFieldValue("user_category", value)}
                     className="flex justify-center flex-wrap flex-col md:flex-row gap-2"
                   >
                     <div className="flex items-center gap-x-2">
-                      <RadioGroupItem
-                        value="transformer_employee"
-                        id="transformers"
-                      />
+                      <RadioGroupItem value="transformer_employee" id="transformers" />
                       <Label htmlFor="transformers">موظف الحجوزات</Label>
                     </div>
                     <div className="flex items-center gap-x-2">
-                      <RadioGroupItem
-                        value="accounting_employee"
-                        id="accounts"
-                      />
+                      <RadioGroupItem value="accounting_employee" id="accounts" />
                       <Label htmlFor="accounts">موظف الحسابات</Label>
                     </div>
                     <div className="flex items-center gap-x-2">
@@ -126,17 +91,15 @@ export default function RegisterForm({
                     </div>
                   </RadioGroup>
                   {errors.user_category && touched.user_category && (
-                    <div className="text-red-500 text-sm">
-                      {errors.user_category}
-                    </div>
+                    <div className="text-red-500 text-sm">{errors.user_category}</div>
                   )}
                 </div>
 
                 <InputLabel
-                  label="الاسم الاول"
+                  label="الاسم الأول"
                   name="first_name"
                   required
-                  placeholder="الاسم الاول"
+                  placeholder="الاسم الأول"
                   value={values.first_name}
                   onChange={handleChange}
                   error={touched.first_name && errors.first_name}
@@ -154,10 +117,10 @@ export default function RegisterForm({
                   label="رقم الموبايل"
                   name="phone"
                   required
-                  disabled
+                  readOnly
                   className="[&>*]:!text-gray-600 [&>*]:cursor-not-allowed"
-                  placeholder="+96650000000"
                   value={values.phone}
+                  placeholder="+96650000000"
                   onChange={handleChange}
                   error={touched.phone && errors.phone}
                 />
@@ -173,9 +136,9 @@ export default function RegisterForm({
                 <InputLabel
                   label="كلمة السر"
                   name="password"
-                  required
                   type="password"
-                  placeholder="ادخل كلمة السر"
+                  required
+                  placeholder="كلمة السر"
                   value={values.password}
                   onChange={handleChange}
                   error={touched.password && errors.password}
@@ -183,8 +146,8 @@ export default function RegisterForm({
                 <InputLabel
                   label="تأكيد كلمة السر"
                   name="confirm_password"
-                  required
                   type="password"
+                  required
                   placeholder="تأكيد كلمة السر"
                   value={values.confirm_password}
                   onChange={handleChange}
