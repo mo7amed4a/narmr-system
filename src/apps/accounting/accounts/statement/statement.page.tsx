@@ -22,49 +22,24 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import AccountsSelect from "@/components/selects/AccountsSelect";
 import { exportExcel, printPDF } from "@/utils/exportUtils";
+import InputLabel from "@/components/form/InputLabel";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
   const [data, setData] = useState<any | null>(null); // Use 'any' temporarily since we don’t have a full type yet
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const handleSubmit = async () => {
     if (account) {
       try {
-        const res = await api.get(`/account/statement?account_id=${account}`);
+        const res = await api.get(`/account/statement?account_id=${account}&date_from=${fromDate}&date_to=${toDate}`);
         setData(res.data);
       } catch (error) {
         console.error("Error fetching statement:", error);
       }
     } else toast.error("يرجى اختيار حساب");
   };
-
-  // Calculate totals from transactions if not provided by API
-  // const calculateTotals = (transactions: any[]) => {
-  //   let totalDebit = 0;
-  //   let totalCredit = 0;
-  //   let runningDebitBalance = 0;
-  //   let runningCreditBalance = 0;
-
-  //   transactions.forEach((t) => {
-  //     if (t.document_type === "receipt" || t.document_type === "loan") {
-  //       totalDebit += t.amount;
-  //       runningDebitBalance += t.amount;
-  //     } else if (t.document_type === "payment" || t.document_type === "expenditure") {
-  //       totalCredit += t.amount;
-  //       runningCreditBalance += t.amount;
-  //     }
-  //   });
-
-  //   return {
-  //     totalDebit,
-  //     totalCredit,
-  //     totalBalance: totalDebit - totalCredit,
-  //     openingBalance: 0, // Assume 0 unless API provides it
-  //   };
-  // };
-
-  // const totals = data?.transactions ? calculateTotals(data.transactions) : null;
-
   return (
     <div className="space-y-4" dir="rtl">
       <Card className="border-none shadow-none">
@@ -75,6 +50,25 @@ export default function StatementAccountingPage() {
               value={account || ""}
               onValueChange={(value) => setAccount(value)}
             />
+             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
+              <InputLabel
+                type="date"
+                label="المدة الزمنية من"
+                className="w-full"
+                placeholder=" "
+                classNameInput="!h-9"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+              <span className="text-xs md:text-base">إلى</span>
+              <InputLabel
+                type="date"
+                label="المدة الزمنية إلى"
+                className="w-full"
+                placeholder=" "
+                classNameInput="!h-9"
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
           </div>
           <div className="flex justify-end py-4">
             <Button variant={"green"} onClick={handleSubmit}>
