@@ -72,7 +72,9 @@ export default function ForgotPasswordPage() {
             />
           </svg> */}
            <div>
-            <img className="h-20 w-auto" src="/images/4.jpg" />
+            <div>
+              <img className="h-28 w-auto" src="/images/3.jpg" />
+            </div>
           </div>
         </div>
 

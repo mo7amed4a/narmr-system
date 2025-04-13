@@ -11,6 +11,7 @@ import LinkActive from "./LinkActive";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { ChevronDown, SquareMenu } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import LogoSideBar from "../logo/logo";
 
 
 export function AccountingSidebar() {
@@ -21,9 +22,7 @@ export function AccountingSidebar() {
       <SidebarContent className="px-2 hidden-scrollbar">
         <div className="rounded-2xl dark:bg-[hsla(215,49%,7%,1)] p-4">
             <SidebarGroup className="pb-0 space-y-4">
-                <div>
-                    <img className="h-20 w-auto" src="/images/4.jpg" />
-                </div>
+                <LogoSideBar />
                 {/* <SearchInput placeholder="بحث"/> */}
             </SidebarGroup>
             <SidebarGroup className="py-4 space-y-4">
