@@ -20,41 +20,43 @@ export const printTable = (data: any[]) => {
             margin: 20px;
             padding: 0;
             background-color: #fff;
-            color: #333;
+            color: #1F1726; /* اللون الداكن للنصوص */
           }
           h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #1F1726; /* اللون الداكن للعنوان */
             font-size: 24px;
             margin-bottom: 20px;
+            border-bottom: 2px solid #68191A; /* خط سفلي باللون الأحمر الداكن */
+            padding-bottom: 8px;
           }
           table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(31, 23, 38, 0.1); /* ظل باستخدام اللون الداكن */
           }
           th, td {
             padding: 12px 15px;
             text-align: right;
-            border: 2px solid #bdc3c7;
+            border: 2px solid #68191A; /* حدود الجدول باللون الأحمر الداكن */
             font-size: 14px;
             vertical-align: middle;
           }
           th {
-            background-color: #ecf0f1;
+            background-color: #68191A; /* خلفية العناوين باللون الداكن */
             font-weight: bold;
-            color: #2c3e50;
-            border-bottom: 3px solid #7f8c8d;
+            color: #fff; /* نص أبيض للتباين */
+            border-bottom: 3px solid #68191A; /* خط سفلي أحمر داكن */
           }
           td {
             background-color: #fff;
           }
           tr:nth-child(even) td {
-            background-color: #f9f9f9;
+            background-color: #f9eaea; /* خلفية خفيفة مستوحاة من الأحمر الداكن */
           }
           tr:hover td {
-            background-color: #f1f1f1;
+            background-color: #f5dada; /* تأثير hover بلون أحمر باهت */
           }
           .badge {
             padding: 4px 10px;
@@ -63,14 +65,23 @@ export const printTable = (data: any[]) => {
             display: inline-block;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
           }
-          .badge-green { background-color: #4caf50; color: white; }
-          .badge-yellow { background-color: #fbc02d; color: #333; }
+          .badge-green {
+            background-color: #4caf50; /* الاحتفاظ باللون الأخضر للتباين */
+            color: white;
+          }
+          .badge-yellow {
+            background-color: #fbc02d; /* الاحتفاظ باللون الأصفر للتباين */
+            color: #333;
+          }
           /* Print-specific styles */
           @media print {
             body { margin: 0; padding: 10mm; }
-            h1 { color: #000; page-break-before: avoid; }
+            h1 { color: #1F1726; page-break-before: avoid; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; page-break-after: auto; }
+            th { background-color: #1F1726 !important; color: #fff !important; }
+            td { border: 2px solid #68191A !important; }
+            tr:nth-child(even) td { background-color: #f9eaea !important; }
             .badge-green, .badge-yellow {
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
@@ -80,29 +91,30 @@ export const printTable = (data: any[]) => {
       </head>
       <body>
         <!---<h1>قائمة البيانات</h1>--->
-         ${isMore ? `<table>
+        ${isMore ? `
+        <table>
           <thead>
             <tr>
-              ${data[2].map((h:any) => `<th>${h}</th>`).join("")}
+              ${data[2].map((h: any) => `<th>${h}</th>`).join("")}
             </tr>
           </thead>
           <tbody>
             ${data[3] || ""}
           </tbody>
-        </table>` : ""}
-      </body>
-
+        </table>
+        <br />
+        ` : ""}
         <table>
           <thead>
             <tr>
-              ${data[0].map((h:any) => `<th>${h}</th>`).join("")}
+              ${data[0].map((h: any) => `<th>${h}</th>`).join("")}
             </tr>
           </thead>
           <tbody>
             ${data[1] || ""}
           </tbody>
         </table>
-       
+      </body>
     </html>
   `;
 

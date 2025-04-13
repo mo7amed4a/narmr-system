@@ -170,7 +170,7 @@ const columnsDataTable = (
     cell: ({ row }) => (
       <>
         <div className="lowercase line-clamp-1">
-          {row.getValue("reservation_type")}
+          {row.getValue("reservation_type") === "new" && "جديد" || row.getValue("reservation_type") === "follow_up" && "متابعة" }
         </div>
       </>
     ),

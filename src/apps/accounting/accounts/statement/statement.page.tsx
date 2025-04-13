@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -23,6 +18,7 @@ import toast from "react-hot-toast";
 import AccountsSelect from "@/components/selects/AccountsSelect";
 import { exportExcel, printPDF } from "@/utils/exportUtils";
 import InputLabel from "@/components/form/InputLabel";
+import { addCommasToNumber } from "@/utils/numbers";
 
 export default function StatementAccountingPage() {
   const [account, setAccount] = useState<string | null>(null);
@@ -33,7 +29,9 @@ export default function StatementAccountingPage() {
   const handleSubmit = async () => {
     if (account) {
       try {
-        const res = await api.get(`/account/statement?account_id=${account}&date_from=${fromDate}&date_to=${toDate}`);
+        const res = await api.get(
+          `/account/statement?account_id=${account}&date_from=${fromDate}&date_to=${toDate}`
+        );
         setData(res.data);
       } catch (error) {
         console.error("Error fetching statement:", error);
@@ -50,7 +48,7 @@ export default function StatementAccountingPage() {
               value={account || ""}
               onValueChange={(value) => setAccount(value)}
             />
-             <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
+            <div className="flex flex-wrap md:flex-nowrap gap-3 items-center w-full">
               <InputLabel
                 type="date"
                 label="المدة الزمنية من"
@@ -90,15 +88,19 @@ export default function StatementAccountingPage() {
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4 lg:!-mt-5 bg-transparent lg:w-5/6">
-                {Object.entries(data.summary).map(([key, value]) => (
-                  // @ts-ignore
-                  <CardBorderStart key={key} title={key} value={value} />
-                ))}
-                <CardBorderStart title="نوع الحساب" value="حساب عميل" /> {/* Static unless API provides */}
+              {Object.entries(data.summary).map(([key, value]) => (
+                // @ts-ignore
+                <CardBorderStart key={key} title={key} value={value} />
+              ))}
+              <CardBorderStart title="نوع الحساب" value="حساب عميل" />{" "}
+              {/* Static unless API provides */}
             </div>
-            
+
             <div className="flex w-full gap-2 justify-end py-6">
-              <Button variant={"outline"} onClick={() => printPDF([data.transactions, data.summary])}>
+              <Button
+                variant={"outline"}
+                onClick={() => printPDF([data.transactions, data.summary])}
+              >
                 <span className="hidden md:block">طباعة الملف</span>
                 <Printer />
               </Button>
@@ -130,49 +132,44 @@ export default function StatementAccountingPage() {
               </TableHeader>
               <TableBody>
                 <TableRow className="border [&>*]:border bg-[#F1F1F1]">
-                  <TableCell className="text-right font-semibold text-gray-700">التاريخ</TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    التاريخ
+                  </TableCell>
                   {/* <TableCell className="text-right font-semibold text-gray-700">الرقم</TableCell> */}
-                  <TableCell className="text-right font-semibold text-gray-700">الوصف</TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">دائن</TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">مدين</TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    الوصف
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    دائن
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-gray-700">
+                    مدين
+                  </TableCell>
                   {/* <TableCell className="text-right font-semibold text-gray-700">دائن</TableCell>
                   <TableCell className="text-right font-semibold text-gray-700">مدين</TableCell> */}
                 </TableRow>
-               {data.transactions.map((transaction: any, index: number) => {
-        // تحديد ما إذا كانت المعاملة دائنة أو مدينة بناءً على القيم
-        // const isDebit = transaction["مدين"] > 0;
-        // const isCredit = transaction["دائن"] > 0;
-        
-        return (
-          <TableRow
-            key={index}
-            className={"border [&>*]:border " + (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")}
-          >
-            <TableCell className="text-sm text-gray-600">
-              {new Date(transaction["التاريخ"]).toLocaleString("en-US")}
-            </TableCell>
-            {/* <TableCell className="text-sm text-gray-600">
-              {transaction["الرقم"]}
-            </TableCell> */}
-            <TableCell className="text-sm text-gray-600">
-              {transaction["الوصف"]}
-            </TableCell>
-            <TableCell className="text-sm text-gray-600">
-              {transaction["مدين"]}
-            </TableCell>
-            <TableCell className="text-sm text-gray-600">
-              {transaction["دائن"]}
-            </TableCell>
-            {/* إذا كنت تحتاج إلى إجماليات، ستحتاج إلى تمرير كائن totals كـ prop */}
-            {/* <TableCell className="text-sm text-gray-600">
-              {isDebit ? transaction["مدين"] : "0"} 
-            </TableCell>
-            <TableCell className="text-sm text-gray-600">
-              {isCredit ? transaction["دائن"] : "0"} 
-            </TableCell> */}
-          </TableRow>
-        );
-      })}
+                {data.transactions.map((transaction: any, index: number) => (
+                  <TableRow
+                    key={index}
+                    className={
+                      "border [&>*]:border " +
+                      (index % 2 === 0 ? "bg-white" : "bg-gray-50/50")
+                    }
+                  >
+                    <TableCell className="text-sm text-gray-600">
+                      {new Date(transaction["التاريخ"]).toLocaleString("en-US")}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {transaction["الوصف"]}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {addCommasToNumber(transaction["مدين"])}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">
+                      {addCommasToNumber(transaction["دائن"])}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
               {/* <TableFooter>
                 <TableRow className="border [&>*]:border">
@@ -185,64 +182,45 @@ export default function StatementAccountingPage() {
                 </TableRow>
               </TableFooter> */}
             </Table>
-            <Table className="md:w-2/4 lg:w-1/4 mt-5">
-              <TableHeader className="bg-gray-100">
-                <TableRow className="border [&>*]:border bg-[#F1F1F1]">
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    العملة
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-gray-700">
-                    {data.summary["العملة"]}
-                  </TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {/* {Object.entries(data.summary).map(([key, value]) => (
-                  <TableRow key={key} className={"border [&>*]:border"}>
-                    <TableCell className="text-sm text-gray-600">
-                      {key}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {value}
-                    </TableCell>
-                  </TableRow>
-                ))} */}
-                <TableRow className={"border [&>*]:border"}>
-                  <TableCell className="text-sm text-gray-600">
-                    الرصيد الافتتاحي
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["الرصيد الافتتاحي"]}
-                  </TableCell>
-                </TableRow>
-                <TableRow className={"border [&>*]:border"}>
-                  <TableCell className="text-sm text-gray-600">
+           <Table className="pt-7">
+           <TableBody>
+              <TableRow className={"border [&>*]:border"}>
+                <TableCell className="text-sm text-gray-600">
+                  الرصيد الافتتاحي
+                </TableCell>
+                <TableCell className="text-sm text-gray-600 text-center">
+                  {addCommasToNumber(data.summary["الرصيد الافتتاحي"])}
+                </TableCell>
+              </TableRow>
+              <TableRow className={"border [&>*]:border"}>
+                <TableCell className="text-sm text-gray-600">
                   إجمالي الدين
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["إجمالي الدين"]}
-                  </TableCell>
-                </TableRow>
-                <TableRow className={"border [&>*]:border"}>
-                  <TableCell className="text-sm text-gray-600">
+                </TableCell>
+                <TableCell className="text-sm text-gray-600 text-center">
+                  {addCommasToNumber(data.summary["إجمالي الدين"])}
+                </TableCell>
+              </TableRow>
+              <TableRow className={"border [&>*]:border"}>
+                <TableCell className="text-sm text-gray-600">
                   إجمالي الائتمان
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["إجمالي الائتمان"]}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  className={
-                    "border [&>*]:border bg-green-700 text-white hover:text-green-500"
-                  }
-                >
-                  <TableCell className="text-sm">الاجمالي</TableCell>
-                  <TableCell className="text-sm text-center">
-                    {data.summary["الاجمالي"]}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                </TableCell>
+                <TableCell className="text-sm text-gray-600 text-center">
+                  {addCommasToNumber(data.summary["إجمالي الائتمان"])}
+                </TableCell>
+              </TableRow>
+              <TableRow
+                className={
+                  "border [&>*]:border bg-green-700 text-white hover:text-green-500"
+                }
+              >
+                <TableCell className="text-sm">الاجمالي</TableCell>
+                <TableCell className="text-sm text-center">
+                  {addCommasToNumber(data.summary["الاجمالي"])}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+           </Table>
+
           </CardContent>
         </Card>
       )}

@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useFetch from "@/hooks/use-fetch";
 import { exportExcel, printPDF } from "@/utils/exportUtils";
+import { addCommasToNumber } from "@/utils/numbers"; // استيراد الفانكشن لتنسيق الأرقام
 
 export type DocumentType = {
   id: number;
@@ -60,7 +61,7 @@ export default function BandsAccountingPage() {
     {
       accessorKey: "amount",
       header: "المبلغ",
-      cell: ({ row }) => <div>${row.getValue("amount")}</div>,
+      cell: ({ row }) => <div>{addCommasToNumber(row.getValue("amount"))}</div>,
     },
     {
       accessorKey: "cashbox_name",
@@ -114,82 +115,59 @@ export default function BandsAccountingPage() {
     },
   ];
 
+  // تحويل البيانات لتتناسب مع المفاتيح المترجمة
+  const preparePrintData = (sandat: DocumentType[]) => {
+    return sandat.map((record) => ({
+      "المعرف": record.id,
+      "رقم السند": record.document_number,
+      "نوع السند": record.document_type === "receipt" ? "سند قبض" : "سند صرف",
+      "تاريخ الوثيقة": new Date(record.document_date).toLocaleString("ar-EG", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      "اسم الفرع": record.branch_name,
+      "اسم الخزينة": record.cashbox_name || "نقدي",
+      "المبلغ": addCommasToNumber(record.amount), // استخدام الفانكشن لتنسيق الأرقام
+      "الملاحظات": record.notes,
+      "أُضيف بواسطة": record.added_by,
+      "اسم العميل أو المورد": record.lines[0]?.account_name || "غير محدد",
+    }));
+  };
+
+  const printKeys = [
+    "المعرف",
+    "رقم السند",
+    "نوع السند",
+    "تاريخ الوثيقة",
+    "اسم الفرع",
+    "اسم الخزينة",
+    "المبلغ",
+    "الملاحظات",
+    "أُضيف بواسطة",
+    "اسم العميل أو المورد",
+  ];
+
   const handlePrint = () => {
     if (data?.sandat) {
-      printPDF(
-        [data.sandat,
-        [
-          "رقم السند",
-          "نوع السند",
-          "اسم العميل أو المورد",
-          "المبلغ",
-          "طريقة الدفع",
-          "العيادة - الفرع",
-          "أُضيف بواسطة",
-          "ملاحظات",
-          "تاريخ الإضافة",
-        ]]
-        // [
-        //   "document_number",
-        //   "document_type",
-        //   (record: DocumentType) => record.lines[0]?.account_name || "غير محدد",
-        //   "amount",
-        //   "cashbox_name",
-        //   "branch_name",
-        //   "added_by",
-        //   "notes",
-        //   (record: DocumentType) =>
-        //     new Date(record.document_date).toLocaleDateString("ar-EG", {
-        //       day: "numeric",
-        //       month: "short",
-        //       year: "numeric",
-        //     }) +
-        //     ", " +
-        //     new Date(record.document_date).toLocaleTimeString("en-US", {
-        //       hour: "2-digit",
-        //       minute: "2-digit",
-        //     }),
-        // ]
-      );
+      const preparedData = preparePrintData(data.sandat);
+      printPDF([preparedData], printKeys);
     }
   };
 
   const handleExportExcel = () => {
     if (data?.sandat) {
-      exportExcel(
-        data.sandat,
-        "سندات_محاسبة",
-        [
-          "رقم السند",
-          "نوع السند",
-          "اسم العميل أو المورد",
-          "المبلغ",
-          "طريقة الدفع",
-          "العيادة - الفرع",
-          "أُضيف بواسطة",
-          "ملاحظات",
-          "تاريخ الإضافة",
-        ]
-      );
+      const preparedData = preparePrintData(data.sandat);
+      exportExcel(preparedData, "سندات_محاسبة", printKeys);
     }
   };
 
   const handleExportPDF = () => {
     if (data?.sandat) {
-      printPDF(
-       [ data.sandat,
-        [
-          "رقم السند",
-          "نوع السند",
-          "اسم العميل أو المورد",
-          "المبلغ",
-          "طريقة الدفع",
-          "العيادة - الفرع",
-          "أُضيف بواسطة",
-          "ملاحظات",
-          "تاريخ الإضافة",
-        ]]
-      );
+      const preparedData = preparePrintData(data.sandat);
+      printPDF([preparedData], printKeys);
     }
   };
 

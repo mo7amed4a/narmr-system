@@ -14,13 +14,13 @@ export default function BookingBondThree() {
                 <InputLabel label="حساب المدين" classNameInput="!h-10"/>
               </div> 
               <div>
-                <InputLabel label="المبلغ بالدولار" classNameInput="!h-10"/>
+                <InputLabel label="المبلغ بالدينار العراقي" classNameInput="!h-10"/>
               </div>
               <div>
                 <InputLabel label="حساب الدائن" classNameInput="!h-10"/>
               </div>
               <div>
-                <InputLabel label="المبلغ بالدولار" classNameInput="!h-10"/>
+                <InputLabel label="المبلغ بالدينار العراقي" classNameInput="!h-10"/>
               </div>
             </div>
           </div>

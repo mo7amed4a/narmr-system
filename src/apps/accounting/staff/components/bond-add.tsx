@@ -53,10 +53,10 @@ export default function BondAddInStaff({ open }: VoucherFormDialogProps) {
             </SelectCustom>
             <InputLabel
             classNameInput="h-9"
-              label="المبلغ بالدولار"
+              label="المبلغ بالدينار العراقي"
               required
               value="150"
-              placeholder="ادخل المبلغ بالدولار"
+              placeholder="ادخل المبلغ بالدينار العراقي"
             />
           </div>
         </div>

@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/auth.context";
 import AccountsSelect from "../selects/AccountsSelect";
+import { useNavigate } from "react-router-dom";
 
 export default function ReceiptBond({
   bondType = "receipt",
@@ -14,6 +15,7 @@ export default function ReceiptBond({
   bondType?: "receipt" | "payment" | "expenditure" | "loan" | "journal_entry";
 }) {
   const { user } = useUser();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     branch_id: "",
     notes: "",
@@ -63,6 +65,7 @@ export default function ReceiptBond({
       const response = await api.post("/sandat/create", payload);
       if (response.status === 200) {
         toast.success("تم حفظ سند القبض بنجاح");
+        navigate(-1)
         setFormData({
           branch_id: "",
           notes: "",

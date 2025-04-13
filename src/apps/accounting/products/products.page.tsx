@@ -57,7 +57,7 @@ export default function ProductsPage() {
     {
       accessorKey: "price",
       header: "السعر",
-      cell: ({ row }) => <div>{row.getValue("price")} دولار</div>,
+      cell: ({ row }) => <div>{row.getValue("price")} دينار العراقي</div>,
     },
     {
       accessorKey: "stock_quantity",

@@ -14,6 +14,7 @@ import CashboxesSelect from "@/components/selects/CashboxesSelect";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/auth.context";
 import { Badge } from "@/components/ui/badge";
+import { addCommasToNumber } from "@/utils/numbers"; // استيراد الفانكشن
 
 export default function TreasuryAccountingPage() {
   const { user } = useUser();
@@ -25,8 +26,9 @@ export default function TreasuryAccountingPage() {
   const handleSubmit = async () => {
     if (fromDate && toDate) {
       try {
-        // const payload = cashbox ? { cashbox_id: cashbox } : { user_id: 21 };
-        const url = cashbox ? `/cashbox/report?cashbox_id=${cashbox}&date_from=${fromDate}&date_to=${toDate}` : `/cashbox/report1?user_id=${user?.user_id}&date_from=${fromDate}&date_to=${toDate}`;
+        const url = cashbox
+          ? `/cashbox/report?cashbox_id=${cashbox}&date_from=${fromDate}&date_to=${toDate}`
+          : `/cashbox/report1?user_id=${user?.user_id}&date_from=${fromDate}&date_to=${toDate}`;
         const res = await api.get(url);
         setData(res.data);
       } catch (error) {
@@ -139,15 +141,16 @@ export default function TreasuryAccountingPage() {
                     <TableCell className="text-sm text-gray-600">
                       {transaction["الوصف"]}
                     </TableCell>
-
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["المدفوع"]}
+                      {addCommasToNumber(transaction["المدفوع"])}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["الدائن"]}
+                      {addCommasToNumber(transaction["الدائن"])}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {transaction["المدفوع"] - transaction["الدائن"]}
+                      {addCommasToNumber(
+                        transaction["المدفوع"] - transaction["الدائن"]
+                      )}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {transaction["الحالة"] === "تم" ? (
@@ -176,22 +179,12 @@ export default function TreasuryAccountingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {/* {Object.entries(data.summary).map(([key, value]) => (
-                  <TableRow key={key} className={"border [&>*]:border"}>
-                    <TableCell className="text-sm text-gray-600">
-                      {key}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">
-                      {value}
-                    </TableCell>
-                  </TableRow>
-                ))} */}
                 <TableRow className={"border [&>*]:border"}>
                   <TableCell className="text-sm text-gray-600">
                     الرصيد الافتتاحي
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["الرصيد الافتتاحي"]}
+                    {addCommasToNumber(data.summary["الرصيد الافتتاحي"])}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
@@ -199,7 +192,7 @@ export default function TreasuryAccountingPage() {
                     مجموع المدين
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["إجمالي المدفوع"]}
+                    {addCommasToNumber(data.summary["إجمالي المدفوع"])}
                   </TableCell>
                 </TableRow>
                 <TableRow className={"border [&>*]:border"}>
@@ -207,8 +200,7 @@ export default function TreasuryAccountingPage() {
                     مجموع الدائن
                   </TableCell>
                   <TableCell className="text-sm text-gray-600 text-center">
-                    {data.summary["إجمالي الدائن"]}
-
+                    {addCommasToNumber(data.summary["إجمالي الدائن"])}
                   </TableCell>
                 </TableRow>
                 <TableRow
@@ -218,7 +210,11 @@ export default function TreasuryAccountingPage() {
                 >
                   <TableCell className="text-sm">الرصيد</TableCell>
                   <TableCell className="text-sm text-center">
-                    {data.summary["الرصيد"] === 0 ? data.summary["الرصيد الافتتاحي"] : data.summary["الرصيد"]}
+                    {addCommasToNumber(
+                      data.summary["الرصيد"] === 0
+                        ? data.summary["الرصيد الافتتاحي"]
+                        : data.summary["الرصيد"]
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>

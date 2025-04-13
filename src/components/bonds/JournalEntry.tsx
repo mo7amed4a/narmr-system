@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/auth.context";
 import { Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Line {
   account_id: string;
@@ -16,6 +17,7 @@ interface Line {
 
 export default function JournalEntryBond() {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     branch_id: "",
     notes: "",
@@ -39,9 +41,7 @@ export default function JournalEntryBond() {
     value: string
   ) => {
     setLines((prev) =>
-      prev.map((line, i) =>
-        i === index ? { ...line, [field]: value } : line
-      )
+      prev.map((line, i) => (i === index ? { ...line, [field]: value } : line))
     );
   };
 
@@ -101,6 +101,7 @@ export default function JournalEntryBond() {
           notes: "",
           amount: "",
         });
+        navigate(-1);
         setLines([{ account_id: "", note: "" }]);
       } else {
         toast.error("فشل في حفظ السند: خطأ غير معروف");
@@ -124,7 +125,8 @@ export default function JournalEntryBond() {
             type="submit"
             disabled={isSubmitting} // تعطيل الزر أثناء الإرسال
           >
-            {isSubmitting ? "جاري الحفظ..." : "حفظ السند"} {/* تغيير النص أثناء الإرسال */}
+            {isSubmitting ? "جاري الحفظ..." : "حفظ السند"}{" "}
+            {/* تغيير النص أثناء الإرسال */}
           </Button>
         </CardHeader>
         <CardContent className="pt-6">

@@ -162,7 +162,7 @@ export default function BondsDetailsAccountingPage() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="">
+      {false && <CardContent className="">
         <Table className="mt-6">
           <TableHeader>
             <TableRow className="border [&>*]:border">
@@ -191,8 +191,8 @@ export default function BondsDetailsAccountingPage() {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-      <CardFooter className="w-full">
+      </CardContent>}
+      {false && <CardFooter className="w-full">
         <div className="flex w-full gap-2 justify-end py-6">
           <Button variant={"outline"} onClick={handlePrint}>
             <span className="hidden md:block">طباعة الملف</span>
@@ -223,7 +223,7 @@ export default function BondsDetailsAccountingPage() {
             </svg>
           </Button>
         </div>
-      </CardFooter>
+      </CardFooter>}
     </Card>
   );
 }
