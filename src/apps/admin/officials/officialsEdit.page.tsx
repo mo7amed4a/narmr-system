@@ -69,7 +69,7 @@ export default function EditAdminPage() {
           ...(values.salary && { salary: parseFloat(values.salary) }), // Include only if provided
           ...(values.password && { password: values.password }), // Include only if provided
         };
-        const response = await api.post(`/user/update-full/${id}`, payload);
+        const response = await api.post(`/user/update/${id}`, payload);
 
         console.log("User updated:", response.data);
         toast.success("تم تحديث بيانات المستخدم بنجاح");
