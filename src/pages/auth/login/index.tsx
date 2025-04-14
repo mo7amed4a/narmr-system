@@ -32,7 +32,7 @@ export default function LoginForm() {
     >
       <div className="grid grid-cols-2 w-screen h-screen fixed inset-0">
         <img
-          src="/auth/background.png"
+          src="/auth/background.svg"
           className="h-screen fixed start-0 top-0 w-2/4"
         />
       </div>
@@ -102,7 +102,7 @@ export default function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full bg-[#8B2635] hover:bg-[#7A2230]"
+            className="w-full bg-primary hover:bg-primary/90"
           >
             تسجيل الدخول
           </Button>

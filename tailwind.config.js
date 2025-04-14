@@ -70,7 +70,11 @@ export default {
 		screens: {
 			'3xl': '1750px',
 		}
-  	}
+  	},
+  },
+  blocklist: {
+	'fill-current': ['fill-current'],
+
   },
   plugins: [require("tailwindcss-animate")],
 }

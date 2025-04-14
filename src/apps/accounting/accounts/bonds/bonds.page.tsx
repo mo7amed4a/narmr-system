@@ -20,7 +20,7 @@ export type DocumentType = {
   amount: number;
   notes: string;
   added_by: string;
-  lines: {
+  accounts: {
     account_id: number;
     account_name: string;
     debit: number;
@@ -51,11 +51,12 @@ export default function BandsAccountingPage() {
       ),
     },
     {
-      accessorKey: "lines",
-      header: "اسم العميل أو المورد",
+      accessorKey: "accounts",
+      header: "اسم الحساب",
       cell: ({ row }) => {
-        const lines = row.getValue("lines") as DocumentType["lines"];
-        return <div>{lines[0]?.account_name || ""}</div>;
+        const accounts = row.getValue("accounts") as DocumentType["accounts"];
+        const isName = accounts[0]?.account_name || row.getValue("cashbox_name")
+        return <div>{isName ||  ""}</div>;
       },
     },
     {
@@ -63,11 +64,11 @@ export default function BandsAccountingPage() {
       header: "المبلغ",
       cell: ({ row }) => <div>{addCommasToNumber(row.getValue("amount"))}</div>,
     },
-    {
-      accessorKey: "cashbox_name",
-      header: "طريقة الدفع",
-      cell: ({ row }) => <div>{row.getValue("cashbox_name") || "نقدي"}</div>,
-    },
+    // {
+    //   accessorKey: "cashbox_name",
+    //   header: "طريقة الدفع",
+    //   cell: ({ row }) => <div>{row.getValue("cashbox_name") || "نقدي"}</div>,
+    // },
     {
       accessorKey: "branch_name",
       header: "العيادة - الفرع",
@@ -133,7 +134,7 @@ export default function BandsAccountingPage() {
       "المبلغ": addCommasToNumber(record.amount), // استخدام الفانكشن لتنسيق الأرقام
       "الملاحظات": record.notes,
       "أُضيف بواسطة": record.added_by,
-      "اسم العميل أو المورد": record.lines[0]?.account_name || "غير محدد",
+      "اسم العميل أو المورد": record.accounts[0]?.account_name || "غير محدد",
     }));
   };
 
@@ -192,7 +193,7 @@ export default function BandsAccountingPage() {
           title="السندات"
           columns={columnsDocuments}
           data={data?.sandat || []}
-          searchKey={["document_number", "lines.account_name"]}
+          searchKey={["document_number", "accounts.account_name"]}
           textKey="رقم السند او اسم العميل"
           loading={loading}
           error={error}

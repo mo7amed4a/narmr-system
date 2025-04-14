@@ -86,7 +86,7 @@ export default function InvoiceFormPage({ invoiceType = "purchase" }: InvoiceFor
         <form onSubmit={handleSubmit} className="space-y-6">
           <SuppliersSelect
             value={supplierId?.toString() as string}
-            onValueChange={(value) => setSupplierId(value)}
+            onValueChange={(value) => setSupplierId(value as string)}
           />
 
           <div className="space-y-4">

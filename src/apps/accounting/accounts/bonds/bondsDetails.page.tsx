@@ -98,7 +98,7 @@ export default function BondsDetailsAccountingPage() {
             {bondTypeArabic === "سند صرف" ? (
               <CardBorderStart
                 title="اسم المورد"
-                value={bond.lines[0]?.account_name || "غير محدد"}
+                value={bond.accounts[0]?.account_name || "غير محدد"}
               />
             ) : (
               <CardBorderStart
@@ -112,7 +112,7 @@ export default function BondsDetailsAccountingPage() {
             />
             <CardBorderStart
               title="محصل من"
-              value={bond.notes || "غير محدد"}
+              value={bond.accounts[0]?.account_name || "غير محدد"}
             />
             <div className="text-gray-500">
               <p className="text-gray-600 mt-4">المستلم</p>
@@ -146,7 +146,7 @@ export default function BondsDetailsAccountingPage() {
               <p className="mt-2">
                 الاسم /{" "}
                 <span className="text-gray-400">
-                  {bond.lines[0]?.account_name || "غير محدد"}
+                  {bond.accounts[0]?.account_name || "غير محدد"}
                 </span>
               </p>
               <p>
@@ -177,7 +177,7 @@ export default function BondsDetailsAccountingPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bond.lines.map((line: any, index: number) => (
+            {bond.accounts.map((line: any, index: number) => (
               <TableRow key={index} className="border [&>*]:border">
                 <TableCell className="text-blue-500">{line.account_id}</TableCell>
                 <TableCell>{line.account_name}</TableCell>

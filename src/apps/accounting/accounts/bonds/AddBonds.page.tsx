@@ -154,7 +154,7 @@ export default function AddBondsAccountingPage() {
                   {["payment", "expenditure"].includes(bondValue) && (
                     <SuppliersSelect
                       value={formData.supplier_id}
-                      onValueChange={(value) => handleSelectChange("supplier_id", value)}
+                      onValueChange={(value) => handleSelectChange("supplier_id", value as string)}
                     />
                   )}
                   <CustomerSelect

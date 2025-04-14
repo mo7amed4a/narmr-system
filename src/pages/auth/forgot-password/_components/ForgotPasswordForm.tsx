@@ -75,7 +75,7 @@ export default function ForgotPasswordForm() {
             onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
           />
         </div>
-        <Button type="submit" className="w-full bg-[#8B2635] hover:bg-[#7A2230]">
+        <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
           حفظ التغييرات
         </Button>
       </form>

@@ -92,7 +92,7 @@ export default function OtpForm({ setSteps, page = false }: OtpFormProps) {
 
             <Button
               type="submit"
-              className={`bg-[#8B2635] hover:bg-[#7A2230] ${page ? "h-9" : "w-full"}`}
+              className={`bg-primary hover:bg-primary/90 ${page ? "h-9" : "w-full"}`}
               disabled={isSubmitting}
             >
               {isSubmitting ? "جاري الإرسال..." : "رمز التحقق"}

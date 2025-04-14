@@ -138,7 +138,7 @@ export default function InvoicesAddPage() {
               <div className="space-y-2 w-full h-8">
                 <label className="text-sm font-medium">سعر الخدمة</label>
                 <div className="flex items-center gap-2">
-                  <span className="border px-2 py-[0.33rem] rounded-md w-24">
+                  <span className="border px-2 py-[0.33rem] rounded-md w-24 md:w-auto">
                     {service.price} دينار العراقي
                   </span>
                   <Button

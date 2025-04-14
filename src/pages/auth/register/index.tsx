@@ -15,7 +15,7 @@ export default function RegisterPage() {
       dir="rtl"
     >
       <div className="grid grid-cols-2 w-screen h-screen fixed inset-0">
-        <img src="/auth/background.png" className="h-screen fixed start-0 top-0 w-2/4" />
+        <img src="/auth/background.svg" className="h-screen fixed start-0 top-0 w-2/4" />
       </div>
       <Card className="w-full max-w-xl p-6 space-y-6 relative z-10">
         <div className="flex justify-center mb-6">
