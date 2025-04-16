@@ -28,7 +28,7 @@ const validationSchema = Yup.object({
   fullName: Yup.string().required("الاسم بالكامل مطلوب"),
   phoneNumber: Yup.string()
     .required("رقم الموبايل مطلوب")
-    .matches(/^964[0-9]{9}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 12 رقم"),
+    .matches(/^964[0-9]{10}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 13 رقم"),
   birthDate: Yup.date().required("تاريخ الميلاد مطلوب"),
   city: Yup.string().required("المدينة مطلوبة"),
   bloodType: Yup.string(),
@@ -148,7 +148,7 @@ export default function AddClientPage() {
                       const value = e.target.value.replace(/[^0-9]/g, "");
                       setFieldValue("phoneNumber", value);
                     }}
-                    maxLength={12}
+                    maxLength={13}
                     error={touched.phoneNumber && errors.phoneNumber}
                   />
                   <InputLabel

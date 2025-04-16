@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
     .max(50, "الاسم طويل جداً")
     .required("اسم المورد مطلوب"),
   phone: Yup.string()
-    .matches(/^964[0-9]{9}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 12 رقم")
+    .matches(/^964[0-9]{10}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 13 رقم")
     .required("رقم الموبايل مطلوب"),
   company_name: Yup.string()
     .min(2, "اسم الشركة يجب أن يكون أكثر من حرفين")
@@ -135,7 +135,7 @@ export default function SuppliersAddPage() {
                     const value = e.target.value.replace(/[^0-9]/g, "");
                     setFieldValue("phone", value);
                   }}
-                  maxLength={12}
+                  maxLength={13}
                   error={touched.phone && errors.phone}
                 />
                 <InputLabel

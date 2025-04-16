@@ -39,7 +39,7 @@ const validationSchema = Yup.object().shape({
     .max(50, "الاسم طويل جداً")
     .required("اسم الطبيب مطلوب"),
   phone: Yup.string()
-    .matches(/^964[0-9]{9}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 12 رقم")
+    .matches(/^964[0-9]{10}$/, "رقم الموبايل يجب أن يبدأ بـ 964 ويكون 13 رقم")
     .required("رقم الموبايل مطلوب"),
   specialization: Yup.string().required("التخصص مطلوب"),
   branch_ids: Yup.array()
@@ -171,7 +171,7 @@ export default function AddDoctorPage() {
                       name="phone"
                       placeholder="964xxxxxxxxx"
                       type="tel"
-                      maxLength={12}
+                      maxLength={13}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value.replace(/[^0-9]/g, "");
                         setFieldValue("phone", value);
