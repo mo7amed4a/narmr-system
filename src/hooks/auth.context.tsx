@@ -1,4 +1,4 @@
-import api from "@/lib/axios";
+import api, { baseURL } from "@/lib/axios";
 import axios from "axios";
 import { role } from "@/utils/roleStatic";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -39,7 +39,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (credentials: any) => {
     try {
-      const response = await axios.post("https://bms-apps.com/api/login", credentials, {
+      const response = await axios.post(baseURL + "/login", credentials, {
         withCredentials: true
       });  
       if (response.status === 200) {

@@ -2,8 +2,10 @@ import axios from "axios";
 // import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
 
+export const baseURL = "https:web.narmr.com/api";
+
 const api = axios.create({
-  baseURL: "https://bms-apps.com/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
     // "Cookie": "session_id=59613d1968c56038004b3609653b45d7975eb186"
